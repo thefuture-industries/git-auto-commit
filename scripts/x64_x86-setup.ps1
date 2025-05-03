@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 $gitRoot = & git rev-parse --show-toplevel
 Set-Location $gitRoot
 
-$binarySource = "git-auto-commit"
+$binarySource = "git-auto-commit/git-auto-commit"
 $hookBinary = ".git/hooks/auto-commit"
 
 if (-Not (Test-Path ".git")) {
@@ -16,7 +16,7 @@ if (-Not (Test-Path ".git")) {
 Copy-Item $binarySource $hookBinary -Force
 Write-Output "[+] The binary is copied to .git/hooks/auto-commit"
 
-git config --local alias.ac "!\".git/hooks/auto-commit\""
+git config --local alias.ac '!./.git/hooks/auto-commit'
 
 Write-Output "[+] Git alias 'git ac' is configured. Now you can run: git ac"
 Read-Host -Prompt "Press Enter to exit"
