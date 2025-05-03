@@ -27,75 +27,151 @@ func GetDiff(file string) string {
 	return out.String()
 }
 
+// func BuildCommitMessage(funcs []string) (string, error) {
+// 	added, err := utils.AdFileFolder()
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	addedMessage := strings.Join(added, ", ")
+
+// 	deleted, err := utils.DelFileFolder()
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	deletedMessage := strings.Join(deleted, ", ")
+
+// 	renamed, err := utils.RnFileFolder()
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	renamedMessage := strings.Join(renamed, ", ")
+
+// 	changed, err := utils.ChFileFolder()
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	changedMessage := strings.Join(changed, ", ")
+
+// 	n := len(funcs)
+// 	if n == 0 && len(added) == 0 && len(deleted) == 0 && len(renamed) == 0 {
+// 		return "auto commit (github@git-auto-commit)", nil
+// 	}
+
+// 	if n == 0 && len(added) == 0 && len(deleted) == 0 {
+// 		return strings.ToLower("renamed " + renamedMessage), nil
+// 	}
+
+// 	if n == 0 && len(added) == 0 {
+// 		return strings.ToLower("deleted " + deletedMessage + ", and renamed " + renamedMessage), nil
+// 	}
+
+// 	if n == 0 && len(deleted) == 0 {
+// 		return strings.ToLower("including added " + addedMessage + ", and renamed " + renamedMessage), nil
+// 	}
+
+// 	if len(added) > 0 && len(deleted) == 0 && len(renamed) == 0 {
+// 		return strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality, including " + addedMessage), nil
+// 	}
+
+// 	if len(added) == 0 && len(deleted) > 0 && len(renamed) == 0 {
+// 		return strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality, and deleted " + deletedMessage), nil
+// 	}
+
+// 	if len(added) == 0 && len(deleted) == 0 && len(renamed) > 0 {
+// 		return strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality, and renamed " + renamedMessage), nil
+// 	}
+
+// 	commit := strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality, including " + addedMessage + ", deleted " + deletedMessage + " and renamed " + renamedMessage)
+// 	commitPrepare := strings.ReplaceAll(commit, "  ", " ")
+// 	if uint8(len(commitPrepare)) > constants.COMMIT_LENGTH {
+// 		if n > 0 {
+// 			return strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + ", and " + funcs[n-1] + " functionality"), nil
+// 		}
+
+// 		if len(addedMessage) > 0 {
+// 			return strings.ToLower("including " + addedMessage), nil
+// 		}
+
+// 		if len(deletedMessage) > 0 {
+// 			return strings.ToLower("deleted " + deletedMessage), nil
+// 		}
+
+// 		if len(renamedMessage) > 0 {
+// 			return strings.ToLower("renamed " + renamedMessage), nil
+// 		}
+// 	}
+
+// 	return commitPrepare, nil
+// }
+
 func BuildCommitMessage(funcs []string) (string, error) {
-	added, err := utils.NewFileFolder()
+	added, err := utils.AdFileFolder()
 	if err != nil {
 		return "", err
 	}
-	addedMessage := strings.Join(added, ", ")
-
-	deleted, err := utils.DeleteFileFolder()
+	deleted, err := utils.DelFileFolder()
 	if err != nil {
 		return "", err
 	}
-	deletedMessage := strings.Join(deleted, ", ")
-
-	renamed, err := utils.RenameFileFolder()
+	renamed, err := utils.RnFileFolder()
 	if err != nil {
 		return "", err
 	}
-	renamedMessage := strings.Join(renamed, ", ")
+	changed, err := utils.ChFileFolder()
+	if err != nil {
+		return "", err
+	}
 
-	n := len(funcs)
-	if n == 0 && len(added) == 0 && len(deleted) == 0 && len(renamed) == 0 {
+	var parts []string
+
+	if len(funcs) > 0 {
+		if len(funcs) == 1 {
+			parts = append(parts, "added "+funcs[0]+" functionality")
+		} else {
+			last := funcs[len(funcs)-1]
+			parts = append(parts, "added "+strings.Join(funcs[:len(funcs)-1], ", ")+" and "+last+" functionality")
+		}
+	}
+
+	if len(added) > 0 {
+		parts = append(parts, "including "+strings.Join(added, ", "))
+	}
+	if len(deleted) > 0 {
+		parts = append(parts, "deleted "+strings.Join(deleted, ", "))
+	}
+	if len(renamed) > 0 {
+		parts = append(parts, "renamed "+strings.Join(renamed, ", "))
+	}
+	if len(changed) > 0 {
+		parts = append(parts, "changed "+strings.Join(changed, ", "))
+	}
+
+	if len(parts) == 0 {
 		return "auto commit (github@git-auto-commit)", nil
 	}
 
-	if n == 0 && len(added) == 0 && len(deleted) == 0 {
-		return strings.ToLower("renamed " + renamedMessage), nil
-	}
+	commit := strings.ToLower(strings.Join(parts, ", "))
+	commit = strings.ReplaceAll(commit, "  ", " ")
 
-	if n == 0 && len(added) == 0 {
-		return strings.ToLower("deleted " + deletedMessage + ", and renamed " + renamedMessage), nil
-	}
-
-	if n == 0 && len(deleted) == 0 {
-		return strings.ToLower("including added " + addedMessage + ", and renamed " + renamedMessage), nil
-	}
-
-	if len(added) > 0 && len(deleted) == 0 && len(renamed) == 0 {
-		return strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality, including " + addedMessage), nil
-	}
-
-	if len(added) == 0 && len(deleted) > 0 && len(renamed) == 0 {
-		return strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality, and deleted " + deletedMessage), nil
-	}
-
-	if len(added) == 0 && len(deleted) == 0 && len(renamed) > 0 {
-		return strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality, and renamed " + renamedMessage), nil
-	}
-
-	commit := strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality, including " + addedMessage + ", deleted " + deletedMessage + " and renamed " + renamedMessage)
-	commitPrepare := strings.ReplaceAll(commit, "  ", " ")
-	if uint8(len(commitPrepare)) > constants.COMMIT_LENGTH {
-		if n > 0 {
-			return strings.ToLower("added " + strings.Join(funcs[:n-1], ", ") + ", and " + funcs[n-1] + " functionality"), nil
+	if uint8(len(commit)) > constants.COMMIT_LENGTH {
+		if len(funcs) > 0 {
+			return strings.ToLower("added " + strings.Join(funcs, ", ") + " functionality"), nil
 		}
-
-		if len(addedMessage) > 0 {
-			return strings.ToLower("including " + addedMessage), nil
+		if len(added) > 0 {
+			return strings.ToLower("including " + strings.Join(added, ", ")), nil
 		}
-
-		if len(deletedMessage) > 0 {
-			return strings.ToLower("deleted " + deletedMessage), nil
+		if len(deleted) > 0 {
+			return strings.ToLower("deleted " + strings.Join(deleted, ", ")), nil
 		}
-
-		if len(renamedMessage) > 0 {
-			return strings.ToLower("renamed " + renamedMessage), nil
+		if len(renamed) > 0 {
+			return strings.ToLower("renamed " + strings.Join(renamed, ", ")), nil
+		}
+		if len(changed) > 0 {
+			return strings.ToLower("changed " + strings.Join(changed, ", ")), nil
 		}
 	}
 
-	return commitPrepare, nil
+	return commit, nil
 }
 
 func Commit(commitMessage string) error {
