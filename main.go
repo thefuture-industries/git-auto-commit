@@ -1,46 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
+	"git-auto-commit/constants"
+	"git-auto-commit/pkg"
 	"os"
 	"os/exec"
-	"path/filepath"
-	"regexp"
 	"strings"
 )
-
-var extLangMap = map[string]string{
-	".py":   "python",
-	".go":   "golang",
-	".js":   "javascript",
-	".ts":   "typescript",
-	".cpp":  "cpp",
-	".c":    "c",
-	".java": "java",
-}
-
-var funcPatterns = map[string]*regexp.Regexp{
-	"python":     regexp.MustCompile(`^\+\s*def\s+(\w+)\s*\(`),
-	"golang":     regexp.MustCompile(`^\+\s*func\s+(\w+)\s*\(`),
-	"javascript": regexp.MustCompile(`^\+\s*(?:function\s+)?(\w+)\s*\(`),
-	"cpp":        regexp.MustCompile(`^\+\s*(?:[\w:<>,\s\*]+)\s+(\w+)\s*\([^)]*\)\s*\{`),
-	"c":          regexp.MustCompile(`^\+\s*(?:[\w\s\*]+)\s+(\w+)\s*\([^)]*\)\s*\{`),
-	"java":       regexp.MustCompile(`^\+\s*(?:public|private|protected)?\s+[\w<>\[\]]+\s+(\w+)\s*\(`),
-}
-
-func detectLang(filename string) string {
-	ext := filepath.Ext(filename)
-	return extLangMap[ext]
-}
-
-func getDiff(file string) string {
-	cmd := exec.Command("git", "diff", "--cached", file)
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	cmd.Run()
-	return out.String()
-}
 
 func getStagedFiles() []string {
 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
@@ -50,7 +17,7 @@ func getStagedFiles() []string {
 }
 
 func extractFunctions(diff, lang string) []string {
-	re, ok := funcPatterns[lang]
+	re, ok := constants.FUNC_PATTERNS[lang]
 	if !ok {
 		return nil
 	}
@@ -77,18 +44,18 @@ func buildCommitMessage(funcs []string) string {
 	if n == 1 {
 		return "added " + funcs[0] + " function"
 	}
-	return "added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functions"
+	return "added " + strings.Join(funcs[:n-1], ", ") + " and " + funcs[n-1] + " functionality"
 }
 
 func main() {
 	files := getStagedFiles()
 	allFuncs := []string{}
 	for _, file := range files {
-		lang := detectLang(file)
+		lang := pkg.DetectLang(file)
 		if lang == "" {
 			continue
 		}
-		diff := getDiff(file)
+		diff := pkg.GetDiff(file)
 		funcs := extractFunctions(diff, lang)
 		allFuncs = append(allFuncs, funcs...)
 	}
