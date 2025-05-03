@@ -5,7 +5,7 @@ $ErrorActionPreference = "Stop"
 $gitRoot = & git rev-parse --show-toplevel
 Set-Location $gitRoot
 
-$binarySource = "git-auto-commit/git-auto-commit"
+$binarySource = "git-auto-commit"
 $hookBinary = ".git/hooks/auto-commit"
 
 if (-Not (Test-Path ".git")) {

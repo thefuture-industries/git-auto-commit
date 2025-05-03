@@ -5,7 +5,7 @@ set -e
 HOME="$(git rev-parse --show-toplevel)"
 cd "$HOME"
 
-BINARY_NAME="git-auto-commit/git-auto-commit"
+BINARY_NAME="git-auto-commit"
 HOOKS_DIR=".git/hooks"
 TARGET="$HOOKS_DIR/auto-commit"
 
