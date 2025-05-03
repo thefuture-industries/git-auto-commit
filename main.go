@@ -17,6 +17,11 @@ func getStagedFiles() []string {
 
 func main() {
 	files := getStagedFiles()
+	if len(files) == 0 {
+		fmt.Println("No files staged for commit.")
+		return
+	}
+
 	allFuncs := []string{}
 	for _, file := range files {
 		lang := pkg.DetectLang(file)
@@ -28,9 +33,15 @@ func main() {
 		allFuncs = append(allFuncs, funcs...)
 	}
 
-	msg := pkg.BuildCommitMessage(allFuncs)
+	commit, err := pkg.BuildCommitMessage(allFuncs)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
 
-	if err := pkg.Commit(msg); err != nil {
+	fmt.Printf("[git-auto-commit] commit is: %s\n", commit)
+
+	if err := pkg.Commit(commit); err != nil {
 		fmt.Println(err.Error())
 	}
 }
