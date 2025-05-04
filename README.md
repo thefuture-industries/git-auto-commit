@@ -8,33 +8,21 @@ This is an open source project, which is covered by the Mit License version 1 (s
 
 You will need two things for installation
 
-1. Our ready-made binary
-2. Our installer script
+-   If you're on windows
 
-On the [releases](https://github.com/thefuture-industries/git-auto-commit/releases) find the release message and install it in Assets
+```bash
+iex ((New-Object Net.WebClient).DownloadString('https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/auto-commit.ps1?raw=true'))
+```
 
--   bin/auto-commit
--   If you're on windows -> `x64_x86-setup.ps1`
--   If you're on linux -> `bash-linux.sh `
+-   If you're on linux
+
+```bash
+bash <(curl -s https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/auto-commit.sh?raw=true)
+```
 
 ## Setting up
 
-1. To configure, transfer the twisted files to your project code (after rebuilding, you can delete the files)
-2. Run the downloaded script
-
--   If you're on windows -> `x64_x86-setup.ps1`
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\x64_x86-setup.ps1
-```
-
--   If you're on linux -> `bash-linux.sh`
-
-```bash
-bash bash-linux.sh
-```
-
-3. Launch
+### Launch
 
 Everything is ready now, after making changes to the code, just run:
 
