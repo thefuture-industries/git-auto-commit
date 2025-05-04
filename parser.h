@@ -1,7 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-static const char* keywords[] = {"test", "tests", "testing", "http", "https", "struct", "class"};
+static const char* keywords[] = {"test", "tests", "testing", "http", "https", "image", "resource"};
 static const size_t keyword_count = sizeof(keywords) / sizeof(keywords[0]);
 
 typedef struct {
