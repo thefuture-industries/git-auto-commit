@@ -1,20 +1,19 @@
-.PHONY: fmt lint test
+bindir = bindir
 
-fmt:
-	gofmt -w .
-	goimports -w .
+BUILDIN_MAIN = main.c
+BUILDIN_COMMIT = commit.c
+BUILDIN_DETECT = detect.c
+BUILDIN_DIFF = diff.c
+BUILDIN_FILE = file.c
+BUILDIN_GET_STAGED = get-staged.c
+BUILDIN_STRINGS = stdlib/strings.c
 
-lint:
-	golangci-lint run
+MAIN_OUT = "$(bindir)/auto-commit"
 
-check: fmt lint test
-	@echo "All checks passed!"
+CC = gcc
+
 build:
-	@echo "Running build..."
-	@go build -o bin/git-auto-commit main.go
-
-test:
-	@go test -v ./...
-
-run: build
-	@./bin/git-auto-commit
+	@if not exist $(bindir) mkdir $(bindir)
+	$(CC) $(BUILDIN_MAIN) -o $(MAIN_OUT) $(BUILDIN_COMMIT) \
+	$(BUILDIN_DETECT) $(BUILDIN_DIFF) $(BUILDIN_FILE) \
+	$(BUILDIN_GET_STAGED) $(BUILDIN_STRINGS)
