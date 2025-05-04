@@ -32,7 +32,7 @@ int main() {
         }
     }
 
-    char* commit_msg = build_commit((char**)funcs, func_count);
+    char* commit_msg = build_commit(funcs, func_count);
     printf("[git auto-commit] commit is: %s\n", commit_msg);
 
     // int result = git_commit(commit_msg);

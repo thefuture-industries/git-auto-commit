@@ -1,12 +1,12 @@
 #ifndef FILE_H
 #define FILE_H
 
-char** AdFileFolder(int* count);
+char** ad_f(int* count);
 
-char** DelFileFolder(int* count);
+char** del_f(int* count);
 
-char** RnFileFolder(int* count);
+char** rn_f(int* count);
 
-char** ChFileFolder(int* count);
+char** ch_f(int* count);
 
 #endif

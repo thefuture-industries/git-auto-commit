@@ -31,7 +31,7 @@ char* exec_command(const char* cmd) {
     return output;
 }
 
-char** AdFileFolder(int* count) {
+char** ad_f(int* count) {
     char* cmd_output = exec_command("git diff --cached --name-status");
     if (cmd_output == NULL) {
         *count = 0;
@@ -61,7 +61,7 @@ char** AdFileFolder(int* count) {
     return add;
 }
 
-char** DelFileFolder(int* count) {
+char** del_f(int* count) {
     char* cmd_output = exec_command("git diff --cached --name-status");
     if (cmd_output == NULL) {
         *count = 0;
@@ -91,7 +91,7 @@ char** DelFileFolder(int* count) {
     return del;
 }
 
-char** RnFileFolder(int* count) {
+char** rn_f(int* count) {
     char* cmd_output = exec_command("git diff --cached --name-status");
     if (cmd_output == NULL) {
         *count = 0;
@@ -127,7 +127,7 @@ char** RnFileFolder(int* count) {
     return rn;
 }
 
-char** ChFileFolder(int* count) {
+char** ch_f(int* count) {
     char* cmd_output = exec_command("git status --porcelain");
     if (cmd_output == NULL) {
         *count = 0;

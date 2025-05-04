@@ -5,4 +5,6 @@ char* concat_strings(const char* str1, const char* str2);
 
 char* join_strings(char* arr[], int len, const char* separator);
 
+void remove_all_spaces(char* str);
+
 #endif
