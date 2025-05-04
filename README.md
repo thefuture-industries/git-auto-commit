@@ -13,7 +13,7 @@ You will need two things for installation
 
 On the [releases](https://github.com/thefuture-industries/git-auto-commit/releases) find the release message and install it in Assets
 
--   git-auto-commit/git-auto-commit
+-   bin/auto-commit
 -   If you're on windows -> `x64_x86-setup.ps1`
 -   If you're on linux -> `bash-linux.sh `
 
