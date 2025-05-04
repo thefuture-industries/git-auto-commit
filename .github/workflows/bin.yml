@@ -1,0 +1,25 @@
+name: Check bin/auto-commit
+
+on:
+    pull_request:
+        branches: [main]
+
+jobs:
+    validate-binary:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Check that bin/auto-commit exists
+              run: |
+                  if [ ! -f "bin/auto-commit" ]; then
+                    echo "[-] bin/auto-commit not found."
+                    exit 1
+                  fi
+                  echo "[+] bin/auto-commit exists."
+
+            - name: (Optional) Run binary with --help or version
+              run: |
+                  ./bin/auto-commit --help || echo "Help output not available (optional check)."
