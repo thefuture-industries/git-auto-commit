@@ -3,10 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "get-staged.h"
 #include "define.h"
 #include "detect.h"
 #include "commit.h"
+#include "parser.h"
 #include "diff.h"
 
 int main() {
@@ -32,11 +32,19 @@ int main() {
         }
     }
 
-    char* commit_msg = build_commit(funcs, func_count);
-    printf("[git auto-commit] commit is: %s\n", commit_msg);
+    char* p_commit_msg = tb_keywords(funcs, file_count);
+    if (p_commit_msg && strlen(p_commit_msg) > 0) {
+        printf("[git auto-commit] commit is: %s\n", p_commit_msg);
 
-    // int result = git_commit(commit_msg);
-    // free(commit_msg);
+        int result = git_commit(p_commit_msg);
+        free(p_commit_msg);
+    } else {
+        char* commit_msg = build_commit(funcs, func_count);
+        printf("[git auto-commit] commit is: %s\n", commit_msg);
+
+        int result = git_commit(commit_msg);
+        free(commit_msg);
+    }
 
     for (int i = 0; i < file_count; i++) {
         free(files[i]);
