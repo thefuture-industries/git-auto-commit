@@ -1,0 +1,12 @@
+#ifndef DEFINE_H
+#define DEFINE_H
+
+#define MAX_BUFFER 100000
+
+#define MAX_FUNC_COUNT 128
+#define MAX_FUNC_NAME 256
+
+#define MAX_LINE_LENGTH 1024
+#define COMMIT_LENGTH 255
+
+#endif

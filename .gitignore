@@ -1,34 +1,35 @@
-# Binaries for programs and plugins
-*.exe~
-*.so
-*.dylib
-
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
-
-# Dependency directories (remove the comment below to include it)
-# vendor/
-
-# Go workspace file
-go.work
-go.work.sum
-
-# env file
-.env
-
-.DS_Store
-vendor/
-*.log
-tmp/
-*.vscode
-
-# caches
-go/
-.cache/
-*.cache
-bin/
-*.vs/
-*obj/
+*+
+/config.mak
+/autom4te.cache
+/config.cache
+/config.log
+/config.status
+/config.mak.autogen
+/config.mak.append
+/configure
+/.vscode/
+/tags
+/TAGS
+/cscope*
+/compile_commands.json
+/.cache/
+*.hcc
+*.obj
+*.lib
+*.sln
+*.sp
+*.suo
+*.ncb
+*.vcproj
+*.user
+*.idb
+*.pdb
+*.ilk
+*.iobj
+*.ipdb
+*.dll
+.vs/
+Debug/
+Release/
+*.exe
+bindir/
