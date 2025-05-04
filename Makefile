@@ -11,10 +11,30 @@ BUILDIN_STRINGS = stdlib/strings.c
 
 MAIN_OUT = "$(bindir)/auto-commit"
 
+UNAME_S := $(shell uname -s)
+
 CC = gcc
 
+ifeq ($(OS),Windows_NT)
+    MKDIR = mkdir $(bindir) || echo "Directory already exists"
+    REMOVE_EXT = mv $(MAIN_OUT).exe $(MAIN_OUT)
+else
+    MKDIR = mkdir -p $(bindir)
+    OS_TYPE = $(shell uname -s)
+	REMOVE_EXT = true
+endif
+
 build:
-	@if not exist $(bindir) mkdir $(bindir)
+	$(MKDIR)
+	$(CC) $(BUILDIN_MAIN) -o $(MAIN_OUT) $(BUILDIN_COMMIT) \
+	$(BUILDIN_DETECT) $(BUILDIN_DIFF) $(BUILDIN_FILE) \
+	$(BUILDIN_GET_STAGED) $(BUILDIN_STRINGS) $(BUILDIN_GIT_ROOT) \
+	$(BUILDIN_PARSER)
+
+	$(REMOVE_EXT)
+
+buildt:
+	$(MKDIR)
 	$(CC) $(BUILDIN_MAIN) -o $(MAIN_OUT) $(BUILDIN_COMMIT) \
 	$(BUILDIN_DETECT) $(BUILDIN_DIFF) $(BUILDIN_FILE) \
 	$(BUILDIN_GET_STAGED) $(BUILDIN_STRINGS) $(BUILDIN_GIT_ROOT) \

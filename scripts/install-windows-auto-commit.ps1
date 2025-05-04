@@ -24,5 +24,5 @@ try {
     return
 }
 
-git config --local alias.ac "!./.git/hooks/auto-commit"
-Write-Host "[+] Git alias 'git ac' configured. Now you can run: git ac"
+git config --local alias.auto "!./.git/hooks/auto-commit"
+Write-Host "[+] Git alias 'git auto' configured. Now you can run: git auto"

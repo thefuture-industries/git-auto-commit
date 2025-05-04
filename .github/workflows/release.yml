@@ -149,7 +149,9 @@ jobs:
 
                       [©thefuture-industries](https://github.com/thefuture-industries)
                   files: |
-                      ./git-auto-commit/git-auto-commit
+                      ./bin/auto-commit
+                      ./scripts/install-linux-auto-commit.sh
+                      ./install-windows-auto-commit.ps1
 
             - name: Create new branch for next version
               run: |
