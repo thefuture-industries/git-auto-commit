@@ -1,0 +1,53 @@
+name: Static Go Check
+
+on:
+    pull_request:
+        branches: [main]
+
+jobs:
+    go_check:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Clone repository
+              uses: actions/checkout@v3
+
+            - name: Install Go
+              uses: actions/setup-go@v4
+              with:
+                  go-version: '1.23.0'
+
+            - name: Install dependencies
+              run: |
+                  go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+                  go install golang.org/x/tools/cmd/goimports@latest
+
+            - name: Go mod tidy & download
+              run: |
+                  go mod tidy
+                  go mod download
+
+            - name: Check formatting (gofmt)
+              run: |
+                  if [ -n "$(gofmt -l .)" ]; then
+                    echo "Файлы не отформатированы. Запустите 'gofmt -w .'"
+                    gofmt -l .
+                    exit 1
+                  fi
+
+            - name: Check imports (goimports)
+              run: |
+                  if [ -n "$(goimports -l .)" ]; then
+                    echo "Неверный импорт. Запустите 'goimports -w .'"
+                    goimports -l .
+                    exit 1
+                  fi
+
+            - name: Lint (golangci-lint)
+              run: |
+                  make lint
+
+            - name: Build binary
+              run: |
+                  mkdir -p bin
+                  make build

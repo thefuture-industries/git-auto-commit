@@ -1,41 +1,20 @@
-bindir = bin
+.PHONY: fmt lint test
 
-BUILDIN_MAIN = main.c
-BUILDIN_COMMIT = commit.c
-BUILDIN_DETECT = detect.c
-BUILDIN_DIFF = diff.c
-BUILDIN_FILE = file.c
-BUILDIN_GIT_ROOT = git-root.c
-BUILDIN_PARSER = parser.c
-BUILDIN_STRINGS = stdlib/strings.c
+fmt:
+	gofmt -w .
+	goimports -w .
 
-MAIN_OUT = "$(bindir)/auto-commit"
+lint:
+	golangci-lint run
 
-UNAME_S := $(shell uname -s)
-
-CC = gcc
-
-ifeq ($(OS),Windows_NT)
-    MKDIR = mkdir $(bindir) || echo "Directory already exists"
-    REMOVE_EXT = mv $(MAIN_OUT).exe $(MAIN_OUT)
-else
-    MKDIR = mkdir -p $(bindir)
-    OS_TYPE = $(shell uname -s)
-	REMOVE_EXT = true
-endif
-
+check: fmt lint test
+	@echo "All checks passed!"
 build:
-	$(MKDIR)
-	$(CC) $(BUILDIN_MAIN) -o $(MAIN_OUT) $(BUILDIN_COMMIT) \
-	$(BUILDIN_DETECT) $(BUILDIN_DIFF) $(BUILDIN_FILE) \
-	$(BUILDIN_GET_STAGED) $(BUILDIN_STRINGS) $(BUILDIN_GIT_ROOT) \
-	$(BUILDIN_PARSER)
+	@echo "Running build..."
+	@go build -o bin/auto-commit .
 
-	$(REMOVE_EXT)
+test:
+	@go test -v ./...
 
-buildt:
-	$(MKDIR)
-	$(CC) $(BUILDIN_MAIN) -o $(MAIN_OUT) $(BUILDIN_COMMIT) \
-	$(BUILDIN_DETECT) $(BUILDIN_DIFF) $(BUILDIN_FILE) \
-	$(BUILDIN_GET_STAGED) $(BUILDIN_STRINGS) $(BUILDIN_GIT_ROOT) \
-	$(BUILDIN_PARSER)
+run: build
+	@./bin/auto-commit
