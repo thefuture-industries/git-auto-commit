@@ -11,7 +11,12 @@ func Parser(files []string) (string, error) {
 			return "", err
 		}
 
-		formattedVar, err := FormattedVariables(diff)
+		lang := DetectLanguage(file)
+		if lang == "" {
+			continue // README.md, etc.
+		}
+
+		formattedVar, err := FormattedVariables(diff, lang)
 		if err != nil {
 			return "", err
 		}
@@ -25,5 +30,5 @@ func Parser(files []string) (string, error) {
 		} // else -> continue
 	}
 
-	return "", nil
+	return commitMsg, nil
 }

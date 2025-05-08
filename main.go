@@ -16,9 +16,11 @@ func main() {
 	}
 
 	// Парсер
-	_, err = Parser(files)
+	parserMsg, err := Parser(files)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
+
+	fmt.Println(parserMsg)
 }
