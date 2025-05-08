@@ -16,16 +16,21 @@ func Parser(files []string) (string, error) {
 			continue // README.md, etc.
 		}
 
-		formattedVar, err := FormattedVariables(diff, lang)
-		if err != nil {
-			return "", err
-		}
-
+		formattedVar := FormattedVariables(diff, lang)
 		if formattedVar != "" {
 			if len(commitMsg) == 0 {
 				commitMsg = formattedVar
 			} else {
-				commitMsg = fmt.Sprintf(" and %s", formattedVar)
+				commitMsg += fmt.Sprintf(" | %s", formattedVar)
+			}
+		} // else -> continue
+
+		formattedFunc := FormattedFunction(diff, lang)
+		if formattedFunc != "" {
+			if len(commitMsg) == 0 {
+				commitMsg = formattedFunc
+			} else {
+				commitMsg += fmt.Sprintf(" | %s", formattedFunc)
 			}
 		} // else -> continue
 	}
