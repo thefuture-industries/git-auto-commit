@@ -65,7 +65,6 @@ func FormattedVariables(diff, lang string) (string, error) {
 		}
 
 		if oldVar != nil && newVar != nil {
-			fmt.Println(oldVar.Name, newVar.Name)
 			if oldVar.Name == newVar.Name && oldVar.Type != newVar.Type {
 				return fmt.Sprintf("changed %s -> %s", oldVar.Type, newVar.Type), nil
 			}
