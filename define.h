@@ -7,6 +7,8 @@
 #define MAX_FUNC_NAME 256
 
 #define MAX_LINE_LENGTH 1024
+#define MAX_STRING_LENGTH 1024
+
 #define COMMIT_LENGTH 255
 
 #endif

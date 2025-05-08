@@ -13,4 +13,6 @@ char* ct_prepare(const char* str);
 
 char* tb_keywords(char funcs[][MAX_FUNC_NAME], size_t func_count);
 
+void parser(char** files, int file_count);
+
 #endif

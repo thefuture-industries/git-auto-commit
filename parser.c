@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include "diff.h"
+#include "var.h"
+#include "detect.h"
 #include "define.h"
 #include "parser.h"
 
@@ -52,4 +55,33 @@ char* tb_keywords(char funcs[][MAX_FUNC_NAME], size_t func_count) {
     }
 
     return result;
+}
+
+void parser(char** files, int file_count) {
+    char commit_msg[COMMIT_LENGTH] = "";
+
+    for (int i = 0; i < file_count; ++i) {
+        const char* lang = detect_language(files[i]);
+        if (lang == NULL) continue;
+
+        char* diff = get_diff(files[i]);
+        if (diff == NULL) continue;
+
+        char* msg = vars_msg(files[i], diff);
+        printf("%s\n", msg);
+        if (msg && strlen(msg) > 0) {
+            if (strlen(commit_msg) + strlen(msg) < COMMIT_LENGTH) {
+                strcat(commit_msg, msg);
+            } else {
+                free(msg);
+                break;
+            }
+        }
+
+        free(msg);
+        free(diff);
+    }
+
+    printf("commit is: %s\n", commit_msg);
+    // commit(commit_msg);
 }
