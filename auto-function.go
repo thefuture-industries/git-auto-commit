@@ -8,29 +8,18 @@ import (
 )
 
 func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
-	m := functionRegex.FindStringSubmatch(line)
-	if m == nil {
+	switch lang {
+	case "go":
+		return parseGoFunction(line)
+	case "python":
+		return parsePythonFunction(line)
+	case "typescript", "javascript":
+		return parseTSJSFunction(line)
+	case "c", "cpp", "java":
+		return parseCJavaFunction(line)
+	default:
 		return nil
 	}
-
-	name := m[1]
-	paramsString := m[2]
-	params := []types.FunctionParameters{}
-
-	for _, p := range strings.Split(paramsString, ",") {
-		p = strings.TrimSpace(p)
-		if p == "" {
-			continue
-		}
-
-		parts := strings.Fields(p)
-		if len(parts) == 2 {
-			params = append(params, types.FunctionParameters{Name: parts[0], Type: parts[1]})
-		}
-	}
-
-	return &types.FunctionSignature{Name: name, Params: params}
 }
 
 func FormattedFunction(diff, lang string) string {
@@ -48,6 +37,10 @@ func FormattedFunction(diff, lang string) string {
 				i++
 			} else {
 				newFunc = nil
+
+				if oldFunc != nil {
+					return fmt.Sprintf("deleted function %s", oldFunc.Name)
+				}
 			}
 		} else if strings.HasPrefix(line, "+") {
 			newFunc = ParseToStructureFunction(line[1:], lang)
@@ -84,4 +77,114 @@ func FormattedFunction(diff, lang string) string {
 	return ""
 }
 
-func Test(name string) {}
+func parseGoFunction(line string) *types.FunctionSignature {
+	functionRegex := regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
+	m := functionRegex.FindStringSubmatch(line)
+	if m == nil {
+		return nil
+	}
+
+	name := m[1]
+	paramsString := m[2]
+	params := []types.FunctionParameters{}
+
+	for _, p := range strings.Split(paramsString, ",") {
+		p = strings.TrimSpace(p)
+		if p == "" {
+			continue
+		}
+
+		parts := strings.Fields(p)
+		if len(parts) == 2 {
+			params = append(params, types.FunctionParameters{Name: parts[0], Type: parts[1]})
+		}
+	}
+
+	return &types.FunctionSignature{Name: name, Params: params}
+}
+
+func parsePythonFunction(line string) *types.FunctionSignature {
+	functionRegex := regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)`)
+	m := functionRegex.FindStringSubmatch(line)
+	if m == nil {
+		return nil
+	}
+
+	name := m[1]
+	params := []types.FunctionParameters{}
+
+	for _, p := range strings.Split(m[2], ",") {
+		p = strings.TrimSpace(p)
+		if p == "" {
+			continue
+		}
+
+		parts := strings.Split(p, ":")
+		if len(parts) == 2 {
+			params = append(params, types.FunctionParameters{Name: strings.TrimSpace(parts[0]), Type: strings.TrimSpace(parts[1])})
+		} else {
+			params = append(params, types.FunctionParameters{Name: p, Type: ""})
+		}
+	}
+
+	return &types.FunctionSignature{Name: name, Params: params}
+}
+
+func parseTSJSFunction(line string) *types.FunctionSignature {
+	functionRegex := regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
+	m := functionRegex.FindStringSubmatch(line)
+	if m == nil {
+		return nil
+	}
+
+	name := m[1]
+	returnType := ""
+	if len(m) > 4 {
+		returnType = m[4]
+	}
+
+	params := []types.FunctionParameters{}
+	for _, p := range strings.Split(m[2], ",") {
+		p = strings.TrimSpace(p)
+		if p == "" {
+			continue
+		}
+
+		parts := strings.Split(p, ":")
+		if len(parts) == 2 {
+			params = append(params, types.FunctionParameters{Name: strings.TrimSpace(parts[0]), Type: strings.TrimSpace(parts[1])})
+		} else {
+			params = append(params, types.FunctionParameters{Name: p, Type: ""})
+		}
+	}
+
+	return &types.FunctionSignature{Name: name, Params: params, ReturnType: returnType}
+}
+
+func parseCJavaFunction(line string) *types.FunctionSignature {
+	functionRegex := regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
+	m := functionRegex.FindStringSubmatch(line)
+	if m == nil {
+		return nil
+	}
+
+	returnType := m[1]
+	name := m[2]
+
+	params := []types.FunctionParameters{}
+	for _, p := range strings.Split(m[3], ",") {
+		p = strings.TrimSpace(p)
+		if p == "" {
+			continue
+		}
+
+		parts := strings.Fields(p)
+		if len(parts) == 2 {
+			params = append(params, types.FunctionParameters{Name: parts[1], Type: parts[0]})
+		} else if len(parts) == 1 {
+			params = append(params, types.FunctionParameters{Name: parts[0], Type: ""})
+		}
+	}
+
+	return &types.FunctionSignature{Name: name, Params: params, ReturnType: returnType}
+}

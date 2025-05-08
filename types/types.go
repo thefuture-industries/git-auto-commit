@@ -9,6 +9,7 @@ type VariableSignature struct {
 type FunctionSignature struct {
 	Name   string
 	Params []FunctionParameters
+	ReturnType string
 }
 
 type FunctionParameters struct {
