@@ -83,3 +83,5 @@ func FormattedFunction(diff, lang string) string {
 
 	return ""
 }
+
+func Test(name string) {}
