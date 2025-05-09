@@ -34,6 +34,10 @@ func Parser(files []string) (string, error) {
 			FormattedFunction(diff, lang),
 			FormattedClass(diff, lang),
 			FormattedLogic(diff, lang),
+			FormattedStruct(diff, lang),
+			FormattedType(diff, lang),
+			FormattedInterface(diff, lang),
+			FormattedEnum(diff, lang),
 		} {
 			if formatted != "" {
 				commitMsg = appendMsg(commitMsg, formatted)

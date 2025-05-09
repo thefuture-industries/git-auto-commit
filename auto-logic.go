@@ -79,7 +79,7 @@ func FormattedLogic(line, lang string) string {
 			cases := ""
 
 			if len(sw.Cases) > 0 {
-				cases = fmt.Sprintf(" (cases: %s)", strings.Join(sw.Cases, ", "))
+				cases = fmt.Sprintf(" (cases: %s)", strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
 			}
 
 			parts = append(parts, fmt.Sprintf("%s%s", sw.Expr, cases))
@@ -94,7 +94,7 @@ func FormattedLogic(line, lang string) string {
 			cases := ""
 
 			if len(sw.Cases) > 0 {
-				cases = fmt.Sprintf(" (cases: %s)", strings.Join(sw.Cases, ", "))
+				cases = fmt.Sprintf(" (cases: %s)", strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
 			}
 
 			parts = append(parts, fmt.Sprintf("%s%s", sw.Expr, cases))
@@ -107,7 +107,7 @@ func FormattedLogic(line, lang string) string {
 		osw := oldSwitches[0]
 		nsw := newSwitches[0]
 		if osw.Expr != nsw.Expr || strings.Join(osw.Cases, ",") != strings.Join(nsw.Cases, ",") {
-			return fmt.Sprintf("changed logic switch '%s (cases: %s)' -> '%s (cases: %s)'", osw.Expr, strings.Join(osw.Cases, ", "), nsw.Expr, strings.Join(nsw.Cases, ", "))
+			return fmt.Sprintf("changed logic switch '%s (cases: %s)' -> '%s (cases: %s)'", osw.Expr, strings.Join(osw.Cases, ", "), nsw.Expr, strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
 		}
 	}
 
