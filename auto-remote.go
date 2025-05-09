@@ -11,6 +11,9 @@ func FormattedByRemote(token string) (string, error) {
 	}
 
 	issue := ExtractIssueNumber(branch)
+	if issue == "" {
+		return "", nil
+	}
 
 	owner, repo, err := GetOwnerRepository()
 	if err != nil {
