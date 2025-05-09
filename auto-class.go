@@ -54,7 +54,7 @@ func parsePythonClass(line string) *types.ClassSignature {
 	}
 
 	methods := make(map[string]string)
-	methodRegex := regexp.MustCompile(`def\\s+(_{0,2}\\w+)\\s*\\(`)
+	methodRegex := regexp.MustCompile(`def\s+(_{0,2}\w+)\s*\(`)
 	for _, l := range strings.Split(line, "\n") {
 		mm := methodRegex.FindStringSubmatch(l)
 		if mm != nil {

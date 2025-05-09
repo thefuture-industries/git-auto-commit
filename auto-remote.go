@@ -3,8 +3,6 @@ package main
 import "fmt"
 
 func FormattedByRemote(token string) (string, error) {
-	var commitMsg string = ""
-
 	branch, err := GetCurrentBranch()
 	if err != nil {
 		return "", err
@@ -25,7 +23,7 @@ func FormattedByRemote(token string) (string, error) {
 		return "", err
 	}
 
-	commitMsg = fmt.Sprintf("%s (%d)", issueName, issueNumber)
+	commitMsg := fmt.Sprintf("%s (%d)", issueName, issueNumber)
 
 	return commitMsg, nil
 }

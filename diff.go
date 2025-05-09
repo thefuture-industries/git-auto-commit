@@ -8,7 +8,7 @@ import (
 )
 
 func GetDiff(file string) (string, error) {
-	root, err := GetGitRoot();
+	root, err := GetGitRoot()
 	if err != nil {
 		return "", err
 	}
