@@ -174,7 +174,7 @@ func FormattedClass(diff, lang string) string {
 		}
 
 		if oldClass.Parent != newClass.Parent {
-			return fmt.Sprintf("changed heir %s", oldClass.Name)
+			return fmt.Sprintf("the heir was changed to %s", oldClass.Name)
 		}
 
 		for m, oldMod := range oldClass.Methods {

@@ -2,6 +2,14 @@ package main
 
 import "fmt"
 
+func appendMsg(commitMsg, addition string) string {
+	if len(commitMsg) == 0 {
+		return addition
+	}
+
+	return fmt.Sprintf("%s | %s", commitMsg, addition)
+}
+
 func Parser(files []string) (string, error) {
 	var commitMsg string = ""
 
@@ -17,6 +25,7 @@ func Parser(files []string) (string, error) {
 
 		lang := DetectLanguage(file)
 		if lang == "" {
+			appendMsg(commitMsg, fmt.Sprintf("the '%s' file has been changed", file))
 			continue // README.md, etc.
 		}
 
@@ -55,6 +64,9 @@ func Parser(files []string) (string, error) {
 				commitMsg += fmt.Sprintf(" | %s", formattedLogic)
 			}
 		} // else -> continue
+	}
+
+	if len(commitMsg) == 0 {
 	}
 
 	return commitMsg, nil
