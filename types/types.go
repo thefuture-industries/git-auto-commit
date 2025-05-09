@@ -32,8 +32,3 @@ type GithubIssue struct {
 	Title  string `json:"title"`
 	Number uint32 `json:"number"`
 }
-
-type GithubIsue struct {
-	Title  string `json:"title"`
-	Number uint32 `json:"number"`
-}
