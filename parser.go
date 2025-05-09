@@ -14,7 +14,7 @@ func Parser(files []string) (string, error) {
 	var commitMsg string = ""
 
 	for _, file := range files {
-		if uint16(len(commitMsg)) > MAX_STRING_LENGTH {
+		if uint16(len(commitMsg)) > MAX_COMMIT_LENGTH {
 			break
 		}
 
