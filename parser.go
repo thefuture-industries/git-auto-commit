@@ -6,6 +6,10 @@ func Parser(files []string) (string, error) {
 	var commitMsg string = ""
 
 	for _, file := range files {
+		if uint16(len(commitMsg)) > MAX_STRING_LENGTH {
+			break
+		}
+
 		diff, err := GetDiff(file)
 		if err != nil {
 			return "", err
@@ -31,6 +35,24 @@ func Parser(files []string) (string, error) {
 				commitMsg = formattedFunc
 			} else {
 				commitMsg += fmt.Sprintf(" | %s", formattedFunc)
+			}
+		} // else -> continue
+
+		formattedClass := FormattedClass(diff, lang)
+		if formattedClass != "" {
+			if len(commitMsg) == 0 {
+				commitMsg = formattedClass
+			} else {
+				commitMsg += fmt.Sprintf(" | %s", formattedClass)
+			}
+		} // else -> continue
+
+		formattedLogic := FormattedLogic(diff, lang)
+		if formattedLogic != "" {
+			if len(commitMsg) == 0 {
+				commitMsg = formattedLogic
+			} else {
+				commitMsg += fmt.Sprintf(" | %s", formattedLogic)
 			}
 		} // else -> continue
 	}
