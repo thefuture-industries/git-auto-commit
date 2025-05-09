@@ -10,5 +10,4 @@ func Commit(commitMsg string) error {
 
 	cmd := exec.Command("git", "commit", "-m", commitMsg)
 	return cmd.Run()
-	return nil
 }
