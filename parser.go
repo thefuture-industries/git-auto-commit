@@ -25,48 +25,38 @@ func Parser(files []string) (string, error) {
 
 		lang := DetectLanguage(file)
 		if lang == "" {
-			appendMsg(commitMsg, fmt.Sprintf("the '%s' file has been changed", file))
+			commitMsg = appendMsg(commitMsg, fmt.Sprintf("the '%s' file has been changed", file))
 			continue // README.md, etc.
 		}
 
-		formattedVar := FormattedVariables(diff, lang)
-		if formattedVar != "" {
-			if len(commitMsg) == 0 {
-				commitMsg = formattedVar
-			} else {
-				commitMsg += fmt.Sprintf(" | %s", formattedVar)
-			}
-		} // else -> continue
-
-		formattedFunc := FormattedFunction(diff, lang)
-		if formattedFunc != "" {
-			if len(commitMsg) == 0 {
-				commitMsg = formattedFunc
-			} else {
-				commitMsg += fmt.Sprintf(" | %s", formattedFunc)
-			}
-		} // else -> continue
-
-		formattedClass := FormattedClass(diff, lang)
-		if formattedClass != "" {
-			if len(commitMsg) == 0 {
-				commitMsg = formattedClass
-			} else {
-				commitMsg += fmt.Sprintf(" | %s", formattedClass)
-			}
-		} // else -> continue
-
-		formattedLogic := FormattedLogic(diff, lang)
-		if formattedLogic != "" {
-			if len(commitMsg) == 0 {
-				commitMsg = formattedLogic
-			} else {
-				commitMsg += fmt.Sprintf(" | %s", formattedLogic)
-			}
-		} // else -> continue
+		for _, formatted := range []string{
+			FormattedVariables(diff, lang),
+			FormattedFunction(diff, lang),
+			FormattedClass(diff, lang),
+			FormattedLogic(diff, lang),
+		} {
+			if formatted != "" {
+				commitMsg = appendMsg(commitMsg, formatted)
+			} // else -> continue
+		}
 	}
 
 	if len(commitMsg) == 0 {
+		formattedByRemote, err := FormattedByRemote("")
+		if err != nil {
+			return "", err
+		}
+
+		formattedByBranch, err := FormattedByBranch()
+		if err != nil {
+			return "", err
+		}
+
+		if formattedByRemote != "" {
+			commitMsg = appendMsg(commitMsg, formattedByRemote)
+		} else {
+			commitMsg = appendMsg(commitMsg, formattedByBranch)
+		}
 	}
 
 	return commitMsg, nil

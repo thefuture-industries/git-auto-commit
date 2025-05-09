@@ -27,3 +27,8 @@ type SwitchSignature struct {
 	Expr  string
 	Cases []string
 }
+
+type GithubIssue struct {
+	Title  string `json:"title"`
+	Number uint32 `json:"number"`
+}
