@@ -22,3 +22,8 @@ type ClassSignature struct {
 	Parent  string
 	Methods map[string]string
 }
+
+type SwitchSignature struct {
+	Expr  string
+	Cases []string
+}
