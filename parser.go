@@ -33,6 +33,15 @@ func Parser(files []string) (string, error) {
 				commitMsg += fmt.Sprintf(" | %s", formattedFunc)
 			}
 		} // else -> continue
+
+		formattedClass := FormattedClass(diff, lang)
+		if formattedClass != "" {
+			if len(commitMsg) == 0 {
+				commitMsg = formattedClass
+			} else {
+				commitMsg += fmt.Sprintf(" | %s", formattedClass)
+			}
+		} // else -> continue
 	}
 
 	return commitMsg, nil
