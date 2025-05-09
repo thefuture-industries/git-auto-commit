@@ -17,6 +17,8 @@ func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
 		return parseTSJSFunction(line)
 	case "c", "cpp", "java":
 		return parseCJavaFunction(line)
+	case "csharp":
+		return parseCSharpFunction(line)
 	default:
 		return nil
 	}
@@ -187,4 +189,31 @@ func parseCJavaFunction(line string) *types.FunctionSignature {
 	}
 
 	return &types.FunctionSignature{Name: name, Params: params, ReturnType: returnType}
+}
+
+func parseCSharpFunction(line string) *types.FunctionSignature {
+	functionRegex := regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
+
+	m := functionRegex.FindStringSubmatch(line)
+	if m == nil {
+		return nil
+	}
+
+	name := m[4]
+	params := []types.FunctionParameters{}
+	for _, p := range strings.Split(m[5], ",") {
+		p = strings.TrimSpace(p)
+		if p == "" {
+			continue
+		}
+
+		parts := strings.Fields(p)
+		if len(parts) == 2 {
+			params = append(params, types.FunctionParameters{Name: parts[1], Type: parts[0]})
+		} else if len(parts) == 1 {
+			params = append(params, types.FunctionParameters{Name: parts[0], Type: ""})
+		}
+	}
+
+	return &types.FunctionSignature{Name: name, Params: params, ReturnType: m[3]}
 }

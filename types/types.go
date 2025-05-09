@@ -28,6 +28,24 @@ type SwitchSignature struct {
 	Cases []string
 }
 
+type StructureSignature struct {
+	Name string
+}
+
+type TypeSignature struct {
+	Name string
+}
+
+type EnumSignature struct {
+	Name   string
+	Values []string
+}
+
+type InterfaceSignature struct {
+	Name    string
+	Methods []string
+}
+
 type GithubIssue struct {
 	Title  string `json:"title"`
 	Number uint32 `json:"number"`
