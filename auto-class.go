@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	
+	classRegexTSJS = regexp.MustCompile(`class\s+(\w+)(?:\s+extends\s+(\w+))?`)
 )
 
 func ParseToStructureClass(line, lang string) *types.ClassSignature {
