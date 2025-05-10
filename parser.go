@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 func appendMsg(commitMsg, addition string) string {
 	if len(commitMsg) == 0 {
@@ -11,7 +14,11 @@ func appendMsg(commitMsg, addition string) string {
 }
 
 func Parser(files []string) (string, error) {
-	
+	var (
+		payloadMsg string
+		mu sync.Mutex
+		wg sync.WaitGroup
+	)
 
 	var payloadMsg string = ""
 
