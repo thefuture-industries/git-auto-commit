@@ -23,13 +23,7 @@ func WatchCommit(path string) {
 
 	InfoLogger("Started commit watcher...")
 
-	root, err := GetGitRoot()
-	if err != nil {
-		ErrorLogger(err)
-		return
-	}
-
-	if err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+	if err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() && !strings.HasPrefix(path, ".git") {
 			if err := watcher.Add(path); err != nil {
 				return err
