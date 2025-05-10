@@ -11,6 +11,8 @@ func appendMsg(commitMsg, addition string) string {
 }
 
 func Parser(files []string) (string, error) {
+	
+
 	var payloadMsg string = ""
 
 	for _, file := range files {
