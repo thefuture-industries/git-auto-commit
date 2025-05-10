@@ -98,3 +98,5 @@ func WatchCommit() {
 }
 
 func name() {}
+func name1() {}
+func nam1() {}
