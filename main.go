@@ -53,6 +53,8 @@ func Watch() {
 	}
 	defer watcher.Close()
 
+	InfoLogger("Started commit watcher...")
+
 	root, err := GetGitRoot()
 	if err != nil {
 		ErrorLogger(err)
@@ -80,7 +82,10 @@ func Watch() {
 	for {
 		select {
 		case event := <-watcher.Events:
+			InfoLogger("Event: " + event.Name)
 			if event.Op&fsnotify.Write == fsnotify.Write {
+				InfoLogger("File modified: " + event.Name)
+
 				exec.Command("git", "add", ".").Run()
 
 				files, err := GetStagedFiles()
