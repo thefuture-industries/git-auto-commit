@@ -39,7 +39,7 @@ func Parser(files []string) (string, error) {
 
 				diff, err := GetDiff(file)
 				if err != nil {
-					err
+					errChan <- fmt.Sprintf("error getting diff for %s: %w", file, err)
 				}
 			}
 		}()
