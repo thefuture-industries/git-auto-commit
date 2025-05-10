@@ -54,10 +54,17 @@ func WatchCommit() {
 		select {
 		case event := <-watcher.Events:
 			if strings.Contains(filepath.ToSlash(event.Name), "/.git/") {
+				fmt.Println("event.Name", event.Name)
 				continue
 			}
 
 			if event.Op&fsnotify.Write == fsnotify.Write {
+				// check need is commit
+				cmd := exec.Command("git", "diff", "--quiet")
+				if err := cmd.Run(); err == nil {
+					continue
+				}
+
 				if err := exec.Command("git", "add", ".").Run(); err != nil {
 					ErrorLogger(err)
 					return
