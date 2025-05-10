@@ -5,14 +5,14 @@ Write-Host @"
 
         _ _                 _                                            _ _
    __ _(_) |_    __ _ _   _| |_ ___         ___ ___  _ __ ___  _ __ ___ (_) |_
-  / _` | | __|  / _` | | | | __/ _ \ _____ / __/ _ \| '_ ` _ \| '_ ` _ \| | __|
+  / _` | | __|  / _` | | | |   __/ _ \ _____ / __/ _ \| '_ ` _ \| '_ ` _ \| | __|
  | (_| | | |_  | (_| | |_| | || (_) |_____| (_| (_) | | | | | | | | | | | | |_
   \__, |_|\__|  \__,_|\__,_|\__\___/       \___\___/|_| |_| |_|_| |_| |_|_|\__|
   |___/
 
 "@
 
-Write-Host "Git Auto-Commit is an extension for the Git version control system designed to automatically generate meaningful and context—sensitive commit messages based on changes made to the codebase. The tool simplifies developers' workflows by allowing them to focus on the content of edits rather than on the formulation of descriptions for commits."
+Write-Host "Git Auto-Commit is an extension for the Git version control system designed to automatically generate meaningful and context-sensitive commit messages based on changes made to the codebase. The tool simplifies developers workflows by allowing them to focus on the content of edits rather than on the formulation of descriptions for commits" -ForegroundColor Yellow
 
 $gitRoot = & git rev-parse --show-toplevel
 Set-Location $gitRoot
@@ -35,11 +35,15 @@ try {
         # Install auto-commit
         Write-Host "Install $Url..." -ForegroundColor Green
         Invoke-WebRequest -Uri $Url -OutFile $hookPath -UseBasicParsing
-        Write-Host "File saved as $hookPath"
+        Write-Host "File saved as $hookPath" -ForegroundColor Yellow
 
-        Write-Host "Successful installation and copying of auto-commit." -ForegroundColor Green
+        git config --local alias.auto '!./.git/hooks/auto-commit'
+
+        Write-Host "Successful installation and settings alias for auto-commit." -ForegroundColor Green
 
         Write-Host ""
+        Write-Host "More detailed: https://github.com/thefuture-industries/git-auto-commit"
+        Write-Host "Now you can run: git auto"
     } elseif ($answer -eq "N" -or $answer -eq "n") {
         Write-Host "Skipping installation." -ForegroundColor Yellow
         exit
@@ -51,6 +55,3 @@ try {
     Write-Error "Error installing: $_"
     return
 }
-
-git config --local alias.auto "!./.git/hooks/auto-commit"
-Write-Host "[+] Git alias 'git auto' configured. Now you can run: git auto"
