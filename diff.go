@@ -5,7 +5,14 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"sync"
 )
+
+var diffBufferPool = sync.Pool{
+	New: func() interface{} {
+		return new(bytes.Buffer)
+	},
+}
 
 func GetDiff(file string) (string, error) {
 	root, err := GetGitRoot()
@@ -14,14 +21,17 @@ func GetDiff(file string) (string, error) {
 	}
 
 	cmd := exec.Command("git", "diff", "--cached", "--", fmt.Sprintf("%s/%s", root, file))
-	var out bytes.Buffer
 
-	cmd.Stdout = &out
+	buf := diffBufferPool.Get().(*bytes.Buffer)
+	buf.Reset()
+	defer diffBufferPool.Put(buf)
+
+	cmd.Stdout = buf
 	if err := cmd.Run(); err != nil {
 		return "", err
 	}
 
-	return out.String(), nil
+	return buf.String(), nil
 }
 
 func GetStagedFiles() ([]string, error) {

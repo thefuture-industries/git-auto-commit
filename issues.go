@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
 	"git-auto-commit/types"
 	"io"
@@ -9,7 +9,14 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+	"sync"
 )
+
+var bufferPool = sync.Pool{
+	New: func() interface{} {
+		return new(bytes.Buffer)
+	},
+}
 
 func ExtractIssueNumber(branch string) string {
 	re := regexp.MustCompile(`(\\d+)`)
@@ -52,9 +59,18 @@ func GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
 	}
 	defer resp.Body.Close()
 
-	body, _ := io.ReadAll(resp.Body)
+	buf := bufferPool.Get().(*bytes.Buffer)
+	buf.Reset()
+	defer bufferPool.Put(buf)
+
+	_, err = io.Copy(buf, resp.Body)
+	if err != nil {
+		return "", 0, err
+	}
+
+	// body, _ := io.ReadAll(resp.Body)
 	var githubIssue types.GithubIssue
-	if err := json.Unmarshal(body, &githubIssue); err != nil {
+	if err := json.Unmarshal(buf.Bytes(), &githubIssue); err != nil {
 		return "", 0, err
 	}
 
