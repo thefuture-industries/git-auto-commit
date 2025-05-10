@@ -14,7 +14,7 @@ func main() {
 		}
 
 		if len(os.Args) > 2 {
-			path = os.Args[2]
+			path = fmt.Sprintf("%s/%s", path, os.Args[2])
 		}
 
 		WatchCommit(path)
