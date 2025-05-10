@@ -9,7 +9,7 @@ import (
 
 var (
 	functionRegexGo = regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
-	functionRegexPython = regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
+	functionRegexPython = regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)`)
 	functionRegexTSJS = regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
 	functionRegexCJava = regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
 	functionRegexCSharp = regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
