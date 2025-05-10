@@ -54,7 +54,6 @@ func WatchCommit() {
 		select {
 		case event := <-watcher.Events:
 			if strings.Contains(filepath.ToSlash(event.Name), "/.git/") {
-				fmt.Println("event.Name", event.Name)
 				continue
 			}
 
@@ -97,3 +96,5 @@ func WatchCommit() {
 		time.Sleep(3 * time.Second)
 	}
 }
+
+func name() {}
