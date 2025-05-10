@@ -13,6 +13,10 @@ build:
 	@echo "Running build..."
 	@go build -o bin/auto-commit .
 
+buildrelease:
+	@echo "Running release build..."
+	@go build -ldflags="-s -w" -o bin/auto-commit .
+
 test:
 	@go test -v ./...
 
