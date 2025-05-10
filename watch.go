@@ -93,6 +93,6 @@ func WatchCommit(path string) {
 			ErrorLogger(err)
 		}
 
-		time.Sleep(3 * time.Second)
+		time.Sleep(COMMIT_TIME)
 	}
 }
