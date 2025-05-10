@@ -16,12 +16,13 @@ func appendMsg(commitMsg, addition string) string {
 func Parser(files []string) (string, error) {
 	var (
 		payloadMsg string
-		mu sync.Mutex
-		wg sync.WaitGroup
-		errChan = make()
+		mu         sync.Mutex
+		wg         sync.WaitGroup
+		errChan    = make(chan error, len(files))
 	)
 
-	var payloadMsg string = ""
+	workers := 3
+	jobs := make(chan string, len(files))
 
 	for _, file := range files {
 		if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
