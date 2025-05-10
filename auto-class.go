@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+var (
+	
+)
+
 func ParseToStructureClass(line, lang string) *types.ClassSignature {
 	switch lang {
 	case "typescript", "javascript":
