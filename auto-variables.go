@@ -56,6 +56,8 @@ func ParseToStructureVariable(line, lang string) *types.VariableSignature {
 func FormattedVariables(diff, lang string) string {
 	var oldVar, newVar *types.VariableSignature
 
+	var results []string
+
 	lines := strings.Split(diff, "\n")
 	for _, line := range lines {
 		if strings.HasPrefix(line, "-") {
@@ -66,6 +68,7 @@ func FormattedVariables(diff, lang string) string {
 
 		if oldVar != nil && newVar != nil {
 			if oldVar.Name == newVar.Name && oldVar.Type != newVar.Type {
+				results = append(results, )
 				return fmt.Sprintf("changed type of variable %s -> %s", oldVar.Type, newVar.Type)
 			}
 

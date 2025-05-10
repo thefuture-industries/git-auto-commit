@@ -82,6 +82,10 @@ func Watch() {
 	for {
 		select {
 		case event := <-watcher.Events:
+			if strings.Contains(event.Name, ".git") {
+				continue
+			}
+
 			InfoLogger("Event: " + event.Name)
 			if event.Op&fsnotify.Write == fsnotify.Write {
 				InfoLogger("File modified: " + event.Name)
@@ -96,7 +100,6 @@ func Watch() {
 
 				if len(files) == 0 {
 					InfoLogger("No files staged for commit.")
-					return
 				}
 
 				parser, err := Parser(files)
