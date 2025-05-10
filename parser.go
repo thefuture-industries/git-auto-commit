@@ -63,12 +63,12 @@ func Parser(files []string) (string, error) {
 					FormattedEnum(diff, lang),
 				} {
 					if formatted != "" {
-						payloadMsg = appendMsg(payloadMsg, formatted)
+						fileChanges = append(fileChanges, formatted)
 					} // else -> continue
 				}
 
 				if len(fileChanges) > 0 {
-					
+					mu.Lock()
 				}
 			}
 		}()
