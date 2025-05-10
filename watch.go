@@ -96,7 +96,3 @@ func WatchCommit() {
 		time.Sleep(3 * time.Second)
 	}
 }
-
-func name() {}
-func name1() {}
-func nam1() {}
