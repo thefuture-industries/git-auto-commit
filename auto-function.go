@@ -90,8 +90,7 @@ func FormattedFunction(diff, lang string) string {
 }
 
 func parseGoFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexGo.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
@@ -116,8 +115,7 @@ func parseGoFunction(line string) *types.FunctionSignature {
 }
 
 func parsePythonFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)`)
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexPython.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
@@ -143,8 +141,7 @@ func parsePythonFunction(line string) *types.FunctionSignature {
 }
 
 func parseTSJSFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexTSJS.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
