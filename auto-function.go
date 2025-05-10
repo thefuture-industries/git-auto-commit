@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	functionRegexGo = regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexGo     = regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
 	functionRegexPython = regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)`)
-	functionRegexTSJS = regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
-	functionRegexCJava = regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexTSJS   = regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
+	functionRegexCJava  = regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
 	functionRegexCSharp = regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
 )
 
@@ -171,8 +171,7 @@ func parseTSJSFunction(line string) *types.FunctionSignature {
 }
 
 func parseCJavaFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexCJava.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
@@ -199,9 +198,7 @@ func parseCJavaFunction(line string) *types.FunctionSignature {
 }
 
 func parseCSharpFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
-
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexCSharp.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
