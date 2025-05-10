@@ -97,8 +97,7 @@ func parseCppClass(line string) *types.ClassSignature {
 }
 
 func parseCSharpClass(line string) *types.ClassSignature {
-	classRegex := regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s*:\\s*(\\w+))?`)
-	m := classRegex.FindStringSubmatch(line)
+	m := classRegexCSharp.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
@@ -114,8 +113,7 @@ func parseCSharpClass(line string) *types.ClassSignature {
 }
 
 func parseGoStruct(line string) *types.ClassSignature {
-	structRegex := regexp.MustCompile(`type\\s+(\\w+)\\s+struct\\s*{`)
-	m := structRegex.FindStringSubmatch(line)
+	m := classRegexGo.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
@@ -125,8 +123,7 @@ func parseGoStruct(line string) *types.ClassSignature {
 }
 
 func parseJavaClass(line string) *types.ClassSignature {
-	classRegex := regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s+extends\\s+(\\w+))?`)
-	m := classRegex.FindStringSubmatch(line)
+	m := classRegexJava.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
