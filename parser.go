@@ -52,7 +52,24 @@ func Parser(files []string) (string, error) {
 				}
 
 				var fileChanges []string
-				
+				for _, formatted := range []string{
+					FormattedVariables(diff, lang),
+					FormattedFunction(diff, lang),
+					FormattedClass(diff, lang),
+					FormattedLogic(diff, lang),
+					FormattedStruct(diff, lang),
+					FormattedType(diff, lang),
+					FormattedInterface(diff, lang),
+					FormattedEnum(diff, lang),
+				} {
+					if formatted != "" {
+						payloadMsg = appendMsg(payloadMsg, formatted)
+					} // else -> continue
+				}
+
+				if len(fileChanges) > 0 {
+					
+				}
 			}
 		}()
 	}
