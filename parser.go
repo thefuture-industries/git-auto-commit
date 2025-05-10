@@ -69,6 +69,10 @@ func Parser(files []string) (string, error) {
 
 				if len(fileChanges) > 0 {
 					mu.Lock()
+					for _, change := range fileChanges {
+						payloadMsg = appendMsg(payloadMsg, change)
+					}
+					mu.Unlock()
 				}
 			}
 		}()
