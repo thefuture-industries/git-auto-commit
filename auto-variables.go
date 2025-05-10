@@ -97,6 +97,17 @@ func FormattedVariables(diff, lang string) string {
 			}
 
 			oldVar, oldVar = nil, nil
+		} else if newVar != nil && oldVar == nil {
+			builder.Reset()
+			builder.WriteString("added variable ")
+			builder.WriteString(newVar.Name)
+			if newVar.Type != "" {
+				builder.WriteString(" of type ")
+				builder.WriteString(newVar.Type)
+			}
+
+			results = append(results, builder.String())
+			newVar = nil
 		}
 	}
 
