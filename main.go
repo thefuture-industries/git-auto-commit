@@ -67,9 +67,7 @@ func Watch() {
 		}
 
 		return nil
-	}) // "." -> root git
-
-	var commitMsg string
+	}) // "." -> root git OR "/user"
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -86,10 +84,7 @@ func Watch() {
 				continue
 			}
 
-			InfoLogger("Event: " + event.Name)
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				InfoLogger("File modified: " + event.Name)
-
 				exec.Command("git", "add", ".").Run()
 
 				files, err := GetStagedFiles()
@@ -108,14 +103,10 @@ func Watch() {
 					return
 				}
 
-				commitMsg += parser
-				if len(strings.Fields(commitMsg)) >= 300 {
-					if err := Commit(commitMsg); err != nil {
-						ErrorLogger(err)
-						return
-					}
-
-					commitMsg = ""
+				ErrorLogger(fmt.Errorf("commitMsg: %s", parser))
+				if err := Commit(parser); err != nil {
+					ErrorLogger(err)
+					return
 				}
 			}
 		case err := <-watcher.Errors:

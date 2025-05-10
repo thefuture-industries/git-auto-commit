@@ -11,10 +11,10 @@ func appendMsg(commitMsg, addition string) string {
 }
 
 func Parser(files []string) (string, error) {
-	var commitMsg string = ""
+	var payloadMsg string = ""
 
 	for _, file := range files {
-		if uint16(len(commitMsg)) > MAX_COMMIT_LENGTH {
+		if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
 			break
 		}
 
@@ -25,7 +25,7 @@ func Parser(files []string) (string, error) {
 
 		lang := DetectLanguage(file)
 		if lang == "" {
-			commitMsg = appendMsg(commitMsg, fmt.Sprintf("the '%s' file has been changed", file))
+			payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", file))
 			continue // README.md, etc.
 		}
 
@@ -40,12 +40,12 @@ func Parser(files []string) (string, error) {
 			FormattedEnum(diff, lang),
 		} {
 			if formatted != "" {
-				commitMsg = appendMsg(commitMsg, formatted)
+				payloadMsg = appendMsg(payloadMsg, formatted)
 			} // else -> continue
 		}
 	}
 
-	if len(commitMsg) == 0 {
+	if len(payloadMsg) == 0 {
 		formattedByRemote, err := FormattedByRemote("")
 		if err != nil {
 			return "", err
@@ -57,11 +57,11 @@ func Parser(files []string) (string, error) {
 		}
 
 		if formattedByRemote != "" {
-			commitMsg = appendMsg(commitMsg, formattedByRemote)
+			payloadMsg = appendMsg(payloadMsg, formattedByRemote)
 		} else {
-			commitMsg = appendMsg(commitMsg, formattedByBranch)
+			payloadMsg = appendMsg(payloadMsg, formattedByBranch)
 		}
 	}
 
-	return commitMsg, nil
+	return payloadMsg, nil
 }
