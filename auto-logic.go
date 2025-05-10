@@ -85,7 +85,6 @@ func FormattedLogic(line, lang string) string {
 				builder.WriteString(" (cases: ")
 				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
 				builder.WriteString(")")
-				// cases = fmt.Sprintf(" (cases: %s)", strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
 			}
 		}
 

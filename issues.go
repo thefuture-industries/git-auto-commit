@@ -77,7 +77,6 @@ func GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
 		return "", 0, err
 	}
 
-	// body, _ := io.ReadAll(resp.Body)
 	var githubIssue types.GithubIssue
 	if err := json.Unmarshal(buf.Bytes(), &githubIssue); err != nil {
 		return "", 0, err

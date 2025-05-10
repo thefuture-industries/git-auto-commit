@@ -69,7 +69,6 @@ func FormattedVariables(diff, lang string) string {
 
 		if oldVar != nil && newVar != nil {
 			if oldVar.Name == newVar.Name && oldVar.Type != newVar.Type {
-				// results = append(results, fmt.Sprintf("changed type of variable %s -> %s", oldVar.Type, newVar.Type))
 				builder.Reset()
 				builder.WriteString("changed type of variable ")
 				builder.WriteString(oldVar.Type)
@@ -79,7 +78,6 @@ func FormattedVariables(diff, lang string) string {
 			}
 
 			if oldVar.Type == newVar.Type && oldVar.Value == newVar.Value && oldVar.Name != newVar.Name {
-				// results = append(results, fmt.Sprintf("renamed variable %s -> %s", oldVar.Name, newVar.Name))
 				builder.Reset()
 				builder.WriteString("renamed variable ")
 				builder.WriteString(oldVar.Name)
@@ -89,7 +87,6 @@ func FormattedVariables(diff, lang string) string {
 			}
 
 			if oldVar.Name == newVar.Name && oldVar.Type == newVar.Type && oldVar.Value != newVar.Value {
-				// results = append(results, fmt.Sprintf("changed value in variable %s", oldVar.Name))
 				builder.Reset()
 				builder.WriteString("changed value in variable ")
 				builder.WriteString(oldVar.Name)

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -30,9 +31,8 @@ func FormattedByRemote(token string) (string, error) {
 
 	builder.WriteString(issueName)
 	builder.WriteString(" (")
-	builder.WriteString(string(issueNumber))
+	builder.WriteString(strconv.Itoa(int(issueNumber)))
 	builder.WriteString(")")
-	// commitMsg := fmt.Sprintf("%s (%d)", issueName, issueNumber)
 
 	return builder.String(), nil
 }
