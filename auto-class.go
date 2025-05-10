@@ -49,8 +49,7 @@ func parseTSJSClass(line string) *types.ClassSignature {
 }
 
 func parsePythonClass(line string) *types.ClassSignature {
-	classRegex := regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
-	m := classRegex.FindStringSubmatch(line)
+	m := classRegexPython.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
