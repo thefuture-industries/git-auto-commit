@@ -11,8 +11,9 @@ var (
 	classRegexTSJS = regexp.MustCompile(`class\s+(\w+)(?:\s+extends\s+(\w+))?`)
 	classRegexPython = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
 	classRegexCpp = regexp.MustCompile(`class\\s+(\\w+)(?:\\s*:\\s*(public|protected|private)\\s+(\\w+))?`)
-	classCSharp = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s*:\\s*(\\w+))?`)
-	classCSharp = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s*:\\s*(\\w+))?`)
+	classRegexCSharp = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s*:\\s*(\\w+))?`)
+	classRegexGo = regexp.MustCompile(`type\\s+(\\w+)\\s+struct\\s*{`)
+	classRegexJava = regexp.MustCompile(`type\\s+(\\w+)\\s+struct\\s*{`)
 )
 
 func ParseToStructureClass(line, lang string) *types.ClassSignature {
