@@ -10,7 +10,7 @@ import (
 var (
 	classRegexTSJS = regexp.MustCompile(`class\s+(\w+)(?:\s+extends\s+(\w+))?`)
 	classRegexPython = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
-	classRegexCpp = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
+	classRegexCpp = regexp.MustCompile(`class\\s+(\\w+)(?:\\s*:\\s*(public|protected|private)\\s+(\\w+))?`)
 	classRegexPython = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
 )
 
