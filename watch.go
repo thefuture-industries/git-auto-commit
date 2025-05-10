@@ -13,7 +13,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-func WatchCommit() {
+func WatchCommit(path string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		ErrorLogger(err)
