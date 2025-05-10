@@ -68,21 +68,20 @@ func FormattedVariables(diff, lang string) string {
 
 		if oldVar != nil && newVar != nil {
 			if oldVar.Name == newVar.Name && oldVar.Type != newVar.Type {
-				results = append(results, )
-				return fmt.Sprintf("changed type of variable %s -> %s", oldVar.Type, newVar.Type)
+				results = append(results, fmt.Sprintf("changed type of variable %s -> %s", oldVar.Type, newVar.Type))
 			}
 
 			if oldVar.Type == newVar.Type && oldVar.Value == newVar.Value && oldVar.Name != newVar.Name {
-				return fmt.Sprintf("renamed variable %s -> %s", oldVar.Name, newVar.Name)
+				results = append(results, fmt.Sprintf("renamed variable %s -> %s", oldVar.Name, newVar.Name))
 			}
 
 			if oldVar.Name == newVar.Name && oldVar.Type == newVar.Type && oldVar.Value != newVar.Value {
-				return fmt.Sprintf("changed value in variable %s", oldVar.Name)
+				results = append(results, fmt.Sprintf("changed value in variable %s", oldVar.Name))
 			}
 
 			oldVar, oldVar = nil, nil
 		}
 	}
 
-	return ""
+	return strings.Join(results, ", ")
 }

@@ -27,6 +27,8 @@ func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
 func FormattedFunction(diff, lang string) string {
 	var oldFunc, newFunc *types.FunctionSignature
 
+	var results []string
+
 	lines := strings.Split(diff, "\n")
 	for i := 0; i < len(lines); i++ {
 		line := lines[i]
@@ -41,14 +43,14 @@ func FormattedFunction(diff, lang string) string {
 				newFunc = nil
 
 				if oldFunc != nil {
-					return fmt.Sprintf("deleted function %s", oldFunc.Name)
+					results = append(results, fmt.Sprintf("deleted function %s", oldFunc.Name))
 				}
 			}
 		} else if strings.HasPrefix(line, "+") {
 			newFunc = ParseToStructureFunction(line[1:], lang)
 
 			if oldFunc == nil && newFunc != nil {
-				return fmt.Sprintf("added function %s", newFunc.Name)
+				results = append(results, fmt.Sprintf("added function %s", newFunc.Name))
 			}
 		} else {
 			oldFunc, newFunc = nil, nil
@@ -57,17 +59,17 @@ func FormattedFunction(diff, lang string) string {
 
 		if oldFunc != nil && newFunc != nil {
 			if oldFunc.Name != newFunc.Name {
-				return fmt.Sprintf("renamed function %s -> %s", oldFunc.Name, newFunc.Name)
+				results = append(results, fmt.Sprintf("renamed function %s -> %s", oldFunc.Name, newFunc.Name))
 			}
 
 			if len(oldFunc.Params) == len(newFunc.Params) {
 				for i := range oldFunc.Params {
 					if oldFunc.Params[i].Name != newFunc.Params[i].Name && oldFunc.Params[i].Type == newFunc.Params[i].Type {
-						return fmt.Sprintf("changed parameter in %s function", oldFunc.Name)
+						results = append(results, fmt.Sprintf("changed parameter in %s function", oldFunc.Name))
 					}
 
 					if oldFunc.Params[i].Name == newFunc.Params[i].Name && oldFunc.Params[i].Type != newFunc.Params[i].Type {
-						return fmt.Sprintf("changed type '%s %s' -> '%s %s'", oldFunc.Params[i].Name, oldFunc.Params[i].Type, newFunc.Params[i].Name, newFunc.Params[i].Type)
+						results = append(results, fmt.Sprintf("changed type '%s %s' -> '%s %s'", oldFunc.Params[i].Name, oldFunc.Params[i].Type, newFunc.Params[i].Name, newFunc.Params[i].Type))
 					}
 				}
 			}
@@ -76,7 +78,7 @@ func FormattedFunction(diff, lang string) string {
 		}
 	}
 
-	return ""
+	return strings.Join(results, ", ")
 }
 
 func parseGoFunction(line string) *types.FunctionSignature {

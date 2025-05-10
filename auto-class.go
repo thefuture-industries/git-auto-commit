@@ -152,6 +152,8 @@ func FormattedClass(diff, lang string) string {
 	var oldClass, newClass *types.ClassSignature
 	var oldLines, newLines []string
 
+	var results []string
+
 	lines := strings.Split(diff, "\n")
 	for _, line := range lines {
 		if strings.HasPrefix(line, "-") {
@@ -165,24 +167,24 @@ func FormattedClass(diff, lang string) string {
 	newClass = ParseToStructureClass(strings.Join(newLines, "\n"), lang)
 
 	if oldClass != nil && newClass == nil {
-		return fmt.Sprintf("deleted class %s", oldClass.Name)
+		results = append(results, fmt.Sprintf("deleted class %s", oldClass.Name))
 	}
 
 	if oldClass != nil && newClass != nil {
 		if oldClass.Name != newClass.Name {
-			return fmt.Sprintf("renamed class %s -> %s", oldClass.Name, newClass.Name)
+			results = append(results, fmt.Sprintf("renamed class %s -> %s", oldClass.Name, newClass.Name))
 		}
 
 		if oldClass.Parent != newClass.Parent {
-			return fmt.Sprintf("the heir was changed to %s", oldClass.Name)
+			results = append(results, fmt.Sprintf("the heir was changed to %s", oldClass.Name))
 		}
 
 		for m, oldMod := range oldClass.Methods {
 			if newMod, ok := newClass.Methods[m]; ok && oldMod != newMod {
-				return fmt.Sprintf("the access modifier of the %s method has been changed", m)
+				results = append(results, fmt.Sprintf("the access modifier of the %s method has been changed", m))
 			}
 		}
 	}
 
-	return ""
+	return strings.Join(results, ", ")
 }
