@@ -3,8 +3,8 @@ package main
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"os/exec"
+	"strings"
 	"sync"
 )
 
@@ -15,12 +15,19 @@ var diffBufferPool = sync.Pool{
 }
 
 func GetDiff(file string) (string, error) {
+	var builder strings.Builder
+	builder.Reset()
+
 	root, err := GetGitRoot()
 	if err != nil {
 		return "", err
 	}
 
-	cmd := exec.Command("git", "diff", "--cached", "--", fmt.Sprintf("%s/%s", root, file))
+	builder.WriteString(root)
+	builder.WriteString("/")
+	builder.WriteString(file)
+
+	cmd := exec.Command("git", "diff", "--cached", "--", builder.String())
 
 	buf := diffBufferPool.Get().(*bytes.Buffer)
 	buf.Reset()

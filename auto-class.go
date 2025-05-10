@@ -1,19 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
 )
 
 var (
-	classRegexTSJS = regexp.MustCompile(`class\s+(\w+)(?:\s+extends\s+(\w+))?`)
+	classRegexTSJS   = regexp.MustCompile(`class\s+(\w+)(?:\s+extends\s+(\w+))?`)
 	classRegexPython = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
-	classRegexCpp = regexp.MustCompile(`class\\s+(\\w+)(?:\\s*:\\s*(public|protected|private)\\s+(\\w+))?`)
+	classRegexCpp    = regexp.MustCompile(`class\\s+(\\w+)(?:\\s*:\\s*(public|protected|private)\\s+(\\w+))?`)
 	classRegexCSharp = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s*:\\s*(\\w+))?`)
-	classRegexGo = regexp.MustCompile(`type\\s+(\\w+)\\s+struct\\s*{`)
-	classRegexJava = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s+extends\\s+(\\w+))?`)
+	classRegexGo     = regexp.MustCompile(`type\\s+(\\w+)\\s+struct\\s*{`)
+	classRegexJava   = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s+extends\\s+(\\w+))?`)
 )
 
 func ParseToStructureClass(line, lang string) *types.ClassSignature {
@@ -153,6 +152,7 @@ func parseAccessModifiers(line, regex string) map[string]string {
 
 func FormattedClass(diff, lang string) string {
 	var oldClass, newClass *types.ClassSignature
+	var builder strings.Builder
 	var oldLines, newLines []string
 
 	var results []string
@@ -170,24 +170,52 @@ func FormattedClass(diff, lang string) string {
 	newClass = ParseToStructureClass(strings.Join(newLines, "\n"), lang)
 
 	if oldClass != nil && newClass == nil {
-		results = append(results, fmt.Sprintf("deleted class %s", oldClass.Name))
+		builder.Reset()
+		builder.WriteString("deleted class ")
+		builder.WriteString(oldClass.Name)
+		results = append(results, builder.String())
 	}
 
 	if oldClass != nil && newClass != nil {
 		if oldClass.Name != newClass.Name {
-			results = append(results, fmt.Sprintf("renamed class %s -> %s", oldClass.Name, newClass.Name))
+			builder.Reset()
+			builder.WriteString("renamed class ")
+			builder.WriteString(oldClass.Name)
+			builder.WriteString(" -> ")
+			builder.WriteString(newClass.Name)
+			results = append(results, builder.String())
 		}
 
 		if oldClass.Parent != newClass.Parent {
-			results = append(results, fmt.Sprintf("the heir was changed to %s", oldClass.Name))
+			builder.Reset()
+			builder.WriteString("the heir was changed to ")
+			builder.WriteString(newClass.Parent)
+			results = append(results, builder.String())
 		}
 
 		for m, oldMod := range oldClass.Methods {
 			if newMod, ok := newClass.Methods[m]; ok && oldMod != newMod {
-				results = append(results, fmt.Sprintf("the access modifier of the %s method has been changed", m))
+				builder.Reset()
+				builder.WriteString("the access modifier of the ")
+				builder.WriteString(m)
+				builder.WriteString(" method has been changed")
+				results = append(results, builder.String())
 			}
 		}
 	}
 
-	return strings.Join(results, ", ")
+	if len(results) == 0 {
+		return ""
+	}
+
+	builder.Reset()
+	for i, result := range results {
+		if i > 0 {
+			builder.WriteString(", ")
+		}
+
+		builder.WriteString(result)
+	}
+
+	return builder.String()
 }

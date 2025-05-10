@@ -47,8 +47,17 @@ func GetOwnerRepository() (string, string, error) {
 }
 
 func GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/issues/%s", owner, repo, issue)
-	req, _ := http.NewRequest("GET", url, nil)
+	var builder strings.Builder
+	builder.Reset()
+
+	builder.WriteString("https://api.github.com/repos/")
+	builder.WriteString(owner)
+	builder.WriteString("/")
+	builder.WriteString(repo)
+	builder.WriteString("/issues/")
+	builder.WriteString(issue)
+
+	req, _ := http.NewRequest("GET", builder.String(), nil)
 	if token != "" {
 		req.Header.Set("Authorization", "token "+token)
 	}

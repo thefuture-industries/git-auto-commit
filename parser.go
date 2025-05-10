@@ -2,15 +2,22 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 )
 
 func appendMsg(commitMsg, addition string) string {
+	var builder strings.Builder
+	builder.Reset()
+
 	if len(commitMsg) == 0 {
 		return addition
 	}
 
-	return fmt.Sprintf("%s | %s", commitMsg, addition)
+	builder.WriteString(commitMsg)
+	builder.WriteString(" | ")
+	builder.WriteString(addition)
+	return builder.String()
 }
 
 func Parser(files []string) (string, error) {
@@ -77,38 +84,6 @@ func Parser(files []string) (string, error) {
 			}
 		}()
 	}
-
-	// for _, file := range files {
-	// 	if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
-	// 		break
-	// 	}
-
-	// 	diff, err := GetDiff(file)
-	// 	if err != nil {
-	// 		return "", err
-	// 	}
-
-	// 	lang := DetectLanguage(file)
-	// 	if lang == "" {
-	// 		payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", file))
-	// 		continue // README.md, etc.
-	// 	}
-
-	// 	for _, formatted := range []string{
-	// 		FormattedVariables(diff, lang),
-	// 		FormattedFunction(diff, lang),
-	// 		FormattedClass(diff, lang),
-	// 		FormattedLogic(diff, lang),
-	// 		FormattedStruct(diff, lang),
-	// 		FormattedType(diff, lang),
-	// 		FormattedInterface(diff, lang),
-	// 		FormattedEnum(diff, lang),
-	// 	} {
-	// 		if formatted != "" {
-	// 			payloadMsg = appendMsg(payloadMsg, formatted)
-	// 		} // else -> continue
-	// 	}
-	// }
 
 	for _, file := range files {
 		jobs <- file

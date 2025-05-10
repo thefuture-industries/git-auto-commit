@@ -15,7 +15,8 @@ build:
 
 buildrelease:
 	@echo "Running release build..."
-	@go build -ldflags="-s -w" -o bin/auto-commit .
+	@go build -ldflags="-s -w" -trimpath -o bin/auto-commit .
+	@upx.exe --best --lzma bin/auto-commit
 
 test:
 	@go test -v ./...

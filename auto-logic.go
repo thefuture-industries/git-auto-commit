@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -70,44 +69,61 @@ func extractSwitchBlocks(lines []string, lang string, isNew bool) []types.Switch
 
 func FormattedLogic(line, lang string) string {
 	lines := strings.Split(line, "\n")
+	var builder strings.Builder
 	oldSwitches := extractSwitchBlocks(lines, lang, false)
 	newSwitches := extractSwitchBlocks(lines, lang, true)
 
 	if len(oldSwitches) > 0 && len(newSwitches) == 0 {
-		var parts []string
-		for _, sw := range oldSwitches {
-			cases := ""
+		builder.WriteString("deleted switch: ")
+		for i, sw := range oldSwitches {
+			if i > 0 {
+				builder.WriteString("; ")
+			}
+			builder.WriteString(sw.Expr)
 
 			if len(sw.Cases) > 0 {
-				cases = fmt.Sprintf(" (cases: %s)", strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				builder.WriteString(" (cases: ")
+				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				builder.WriteString(")")
+				// cases = fmt.Sprintf(" (cases: %s)", strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
 			}
-
-			parts = append(parts, fmt.Sprintf("%s%s", sw.Expr, cases))
 		}
 
-		return fmt.Sprintf("deleted switch: %s", strings.Join(parts, "; "))
+		return builder.String()
 	}
 
 	if len(newSwitches) > 0 && len(oldSwitches) == 0 {
-		var parts []string
-		for _, sw := range newSwitches {
-			cases := ""
+		builder.WriteString("added switch: ")
+		for i, sw := range newSwitches {
+			if i > 0 {
+				builder.WriteString("; ")
+			}
+			builder.WriteString(sw.Expr)
 
 			if len(sw.Cases) > 0 {
-				cases = fmt.Sprintf(" (cases: %s)", strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				builder.WriteString(" (cases: ")
+				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				builder.WriteString(")")
 			}
-
-			parts = append(parts, fmt.Sprintf("%s%s", sw.Expr, cases))
 		}
 
-		return fmt.Sprintf("added switch: %s", strings.Join(parts, "; "))
+		return builder.String()
 	}
 
 	if len(oldSwitches) > 0 && len(newSwitches) > 0 {
 		osw := oldSwitches[0]
 		nsw := newSwitches[0]
 		if osw.Expr != nsw.Expr || strings.Join(osw.Cases, ",") != strings.Join(nsw.Cases, ",") {
-			return fmt.Sprintf("changed logic switch '%s (cases: %s)' -> '%s (cases: %s)'", osw.Expr, strings.Join(osw.Cases, ", "), nsw.Expr, strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
+			builder.WriteString("changed logic switch '")
+			builder.WriteString(osw.Expr)
+			builder.WriteString(" (cases: ")
+			builder.WriteString(strings.Join(osw.Cases, ", "))
+			builder.WriteString(")' -> '")
+			builder.WriteString(nsw.Expr)
+			builder.WriteString(" (cases: ")
+			builder.WriteString(strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
+			builder.WriteString(")'")
+			return builder.String()
 		}
 	}
 

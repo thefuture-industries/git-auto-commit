@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -34,7 +33,7 @@ func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
 
 func FormattedFunction(diff, lang string) string {
 	var oldFunc, newFunc *types.FunctionSignature
-
+	var builder strings.Builder
 	var results []string
 
 	lines := strings.Split(diff, "\n")
@@ -51,14 +50,20 @@ func FormattedFunction(diff, lang string) string {
 				newFunc = nil
 
 				if oldFunc != nil {
-					results = append(results, fmt.Sprintf("deleted function %s", oldFunc.Name))
+					builder.Reset()
+					builder.WriteString("deleted function ")
+					builder.WriteString(oldFunc.Name)
+					results = append(results, builder.String())
 				}
 			}
 		} else if strings.HasPrefix(line, "+") {
 			newFunc = ParseToStructureFunction(line[1:], lang)
 
 			if oldFunc == nil && newFunc != nil {
-				results = append(results, fmt.Sprintf("added function %s", newFunc.Name))
+				builder.Reset()
+				builder.WriteString("added function ")
+				builder.WriteString(newFunc.Name)
+				results = append(results, builder.String())
 			}
 		} else {
 			oldFunc, newFunc = nil, nil
@@ -67,17 +72,31 @@ func FormattedFunction(diff, lang string) string {
 
 		if oldFunc != nil && newFunc != nil {
 			if oldFunc.Name != newFunc.Name {
-				results = append(results, fmt.Sprintf("renamed function %s -> %s", oldFunc.Name, newFunc.Name))
+				builder.Reset()
+				builder.WriteString("renamed function ")
+				builder.WriteString(oldFunc.Name)
+				builder.WriteString(" -> ")
+				builder.WriteString(newFunc.Name)
+				results = append(results, builder.String())
 			}
 
 			if len(oldFunc.Params) == len(newFunc.Params) {
 				for i := range oldFunc.Params {
 					if oldFunc.Params[i].Name != newFunc.Params[i].Name && oldFunc.Params[i].Type == newFunc.Params[i].Type {
-						results = append(results, fmt.Sprintf("changed parameter in %s function", oldFunc.Name))
+						builder.Reset()
+						builder.WriteString("changed parameter in ")
+						builder.WriteString(oldFunc.Name)
+						builder.WriteString(" function")
+						results = append(results, builder.String())
 					}
 
 					if oldFunc.Params[i].Name == newFunc.Params[i].Name && oldFunc.Params[i].Type != newFunc.Params[i].Type {
-						results = append(results, fmt.Sprintf("changed type '%s %s' -> '%s %s'", oldFunc.Params[i].Name, oldFunc.Params[i].Type, newFunc.Params[i].Name, newFunc.Params[i].Type))
+						builder.Reset()
+						builder.WriteString("changed type ")
+						builder.WriteString(oldFunc.Params[i].Type)
+						builder.WriteString(" -> ")
+						builder.WriteString(newFunc.Params[i].Type)
+						results = append(results, builder.String())
 					}
 				}
 			}
@@ -86,7 +105,20 @@ func FormattedFunction(diff, lang string) string {
 		}
 	}
 
-	return strings.Join(results, ", ")
+	if len(results) == 0 {
+		return ""
+	}
+
+	builder.Reset()
+	for i, result := range results {
+		if i > 0 {
+			builder.WriteString(", ")
+		}
+
+		builder.WriteString(result)
+	}
+
+	return builder.String()
 }
 
 func parseGoFunction(line string) *types.FunctionSignature {

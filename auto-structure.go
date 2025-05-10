@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -90,6 +89,7 @@ func parseEnum(line, lang string) *types.EnumSignature {
 
 func FormattedStruct(diff, lang string) string {
 	var oldStruct, newStruct *types.StructureSignature
+	var builder strings.Builder
 	var oldLines, newLines []string
 
 	lines := strings.Split(diff, "\n")
@@ -105,15 +105,26 @@ func FormattedStruct(diff, lang string) string {
 	newStruct = parseStruct(strings.Join(newLines, "\n"), lang)
 
 	if oldStruct != nil && newStruct == nil {
-		return fmt.Sprintf("deleted struct %s", oldStruct.Name)
+		builder.Reset()
+		builder.WriteString("deleted struct ")
+		builder.WriteString(oldStruct.Name)
+		return builder.String()
 	}
 
 	if oldStruct == nil && newStruct != nil {
-		return fmt.Sprintf("added struct %s", newStruct.Name)
+		builder.Reset()
+		builder.WriteString("added struct ")
+		builder.WriteString(newStruct.Name)
+		return builder.String()
 	}
 
 	if oldStruct != nil && newStruct != nil && oldStruct.Name != newStruct.Name {
-		return fmt.Sprintf("renamed struct %s -> %s", oldStruct.Name, newStruct.Name)
+		builder.Reset()
+		builder.WriteString("renamed struct ")
+		builder.WriteString(oldStruct.Name)
+		builder.WriteString(" -> ")
+		builder.WriteString(newStruct.Name)
+		return builder.String()
 	}
 
 	return ""
@@ -121,6 +132,7 @@ func FormattedStruct(diff, lang string) string {
 
 func FormattedType(diff, lang string) string {
 	var oldType, newType *types.TypeSignature
+	var builder strings.Builder
 	var oldLines, newLines []string
 
 	lines := strings.Split(diff, "\n")
@@ -136,15 +148,26 @@ func FormattedType(diff, lang string) string {
 	newType = parseType(strings.Join(newLines, "\n"), lang)
 
 	if oldType != nil && newType == nil {
-		return fmt.Sprintf("deleted type %s", oldType.Name)
+		builder.Reset()
+		builder.WriteString("deleted type ")
+		builder.WriteString(oldType.Name)
+		return builder.String()
 	}
 
 	if oldType == nil && newType != nil {
-		return fmt.Sprintf("added type %s", newType.Name)
+		builder.Reset()
+		builder.WriteString("added type ")
+		builder.WriteString(newType.Name)
+		return builder.String()
 	}
 
 	if oldType != nil && newType != nil && oldType.Name != newType.Name {
-		return fmt.Sprintf("renamed type %s -> %s", oldType.Name, newType.Name)
+		builder.Reset()
+		builder.WriteString("renamed type ")
+		builder.WriteString(oldType.Name)
+		builder.WriteString(" -> ")
+		builder.WriteString(newType.Name)
+		return builder.String()
 	}
 
 	return ""
@@ -152,6 +175,7 @@ func FormattedType(diff, lang string) string {
 
 func FormattedInterface(diff, lang string) string {
 	var oldInterface, newInterface *types.InterfaceSignature
+	var builder strings.Builder
 	var oldLines, newLines []string
 
 	lines := strings.Split(diff, "\n")
@@ -167,15 +191,26 @@ func FormattedInterface(diff, lang string) string {
 	newInterface = parseInterface(strings.Join(newLines, "\n"), lang)
 
 	if oldInterface != nil && newInterface == nil {
-		return fmt.Sprintf("deleted interface %s", oldInterface.Name)
+		builder.Reset()
+		builder.WriteString("deleted interface ")
+		builder.WriteString(oldInterface.Name)
+		return builder.String()
 	}
 
 	if oldInterface == nil && newInterface != nil {
-		return fmt.Sprintf("added interface %s", newInterface.Name)
+		builder.Reset()
+		builder.WriteString("added interface ")
+		builder.WriteString(newInterface.Name)
+		return builder.String()
 	}
 
 	if oldInterface != nil && newInterface != nil && oldInterface.Name != newInterface.Name {
-		return fmt.Sprintf("renamed interface %s -> %s", oldInterface.Name, newInterface.Name)
+		builder.Reset()
+		builder.WriteString("renamed interface ")
+		builder.WriteString(oldInterface.Name)
+		builder.WriteString(" -> ")
+		builder.WriteString(newInterface.Name)
+		return builder.String()
 	}
 
 	return ""
@@ -183,6 +218,7 @@ func FormattedInterface(diff, lang string) string {
 
 func FormattedEnum(diff, lang string) string {
 	var oldEnum, newEnum *types.EnumSignature
+	var builder strings.Builder
 	var oldLines, newLines []string
 
 	lines := strings.Split(diff, "\n")
@@ -198,15 +234,26 @@ func FormattedEnum(diff, lang string) string {
 	newEnum = parseEnum(strings.Join(newLines, "\n"), lang)
 
 	if oldEnum != nil && newEnum == nil {
-		return fmt.Sprintf("deleted enum %s", oldEnum.Name)
+		builder.Reset()
+		builder.WriteString("deleted enum ")
+		builder.WriteString(oldEnum.Name)
+		return builder.String()
 	}
 
 	if oldEnum == nil && newEnum != nil {
-		return fmt.Sprintf("added enum %s", newEnum.Name)
+		builder.Reset()
+		builder.WriteString("added enum ")
+		builder.WriteString(newEnum.Name)
+		return builder.String()
 	}
 
 	if oldEnum != nil && newEnum != nil && oldEnum.Name != newEnum.Name {
-		return fmt.Sprintf("renamed enum %s -> %s", oldEnum.Name, newEnum.Name)
+		builder.Reset()
+		builder.WriteString("renamed enum ")
+		builder.WriteString(oldEnum.Name)
+		builder.WriteString(" -> ")
+		builder.WriteString(newEnum.Name)
+		return builder.String()
 	}
 
 	return ""
