@@ -28,6 +28,13 @@ func Parser(files []string) (string, error) {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
+
+			for file := range jobs {
+				mu.Lock()
+				if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
+					break
+				}
+			}
 		}
 	}
 
