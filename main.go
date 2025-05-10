@@ -36,4 +36,3 @@ func AutoCommit() {
 		return
 	}
 }
-
