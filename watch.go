@@ -79,7 +79,6 @@ func WatchCommit() {
 					return
 				}
 
-				ErrorLogger(fmt.Errorf("commitMsg: %s", parser))
 				if err := Commit(parser); err != nil {
 					ErrorLogger(err)
 				}
