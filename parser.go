@@ -39,7 +39,15 @@ func Parser(files []string) (string, error) {
 
 				diff, err := GetDiff(file)
 				if err != nil {
-					errChan <- fmt.Sprintf("error getting diff for %s: %w", file, err)
+					errChan <- fmt.Errorf("error getting diff for %s: %w", file, err)
+					continue
+				}
+
+				lang := DetectLanguage(file)
+				if lang == "" {
+					mu.Lock()
+					payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", file))
+					continue // README.md, etc.
 				}
 			}
 		}()
