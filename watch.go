@@ -29,13 +29,18 @@ func WatchCommit() {
 		return
 	}
 
-	filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+	if err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() && !strings.HasPrefix(path, ".git") {
-			watcher.Add(path)
+			if err := watcher.Add(path); err != nil {
+				return err
+			}
 		}
 
 		return nil
-	}) // "." -> root git OR "/user"
+	}); err != nil {
+		ErrorLogger(err)
+		return
+	} // "." -> root git OR "/user"
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
@@ -53,7 +58,10 @@ func WatchCommit() {
 			}
 
 			if event.Op&fsnotify.Write == fsnotify.Write {
-				exec.Command("git", "add", ".").Run()
+				if err := exec.Command("git", "add", ".").Run(); err != nil {
+					ErrorLogger(err)
+					return
+				}
 
 				files, err := GetStagedFiles()
 				if err != nil {
