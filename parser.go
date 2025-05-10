@@ -47,8 +47,12 @@ func Parser(files []string) (string, error) {
 				if lang == "" {
 					mu.Lock()
 					payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", file))
+					mu.Unlock()
 					continue // README.md, etc.
 				}
+
+				var fileChanges []string
+				
 			}
 		}()
 	}
