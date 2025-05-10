@@ -24,6 +24,13 @@ func Parser(files []string) (string, error) {
 	workers := 3
 	jobs := make(chan string, len(files))
 
+	for i := 0; i < workers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+		}
+	}
+
 	for _, file := range files {
 		if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
 			break
