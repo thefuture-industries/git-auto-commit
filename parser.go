@@ -39,7 +39,7 @@ func Parser(files []string) (string, error) {
 
 				diff, err := GetDiff(file)
 				if err != nil {
-					return "", err
+					err
 				}
 			}
 		}()
