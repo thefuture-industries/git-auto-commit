@@ -115,6 +115,15 @@ func Parser(files []string) (string, error) {
 	}
 	close(jobs)
 
+	wg.Wait()
+	close(errChan)
+
+	for err := range errChan {
+		if err != nil {
+			return "", err
+		}
+	}
+
 	if len(payloadMsg) == 0 {
 		formattedByRemote, err := FormattedByRemote("")
 		if err != nil {
