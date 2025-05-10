@@ -32,10 +32,17 @@ func Parser(files []string) (string, error) {
 			for file := range jobs {
 				mu.Lock()
 				if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
-					break
+					mu.Unlock()
+					continue
+				}
+				mu.Unlock()
+
+				diff, err := GetDiff(file)
+				if err != nil {
+					return "", err
 				}
 			}
-		}
+		}()
 	}
 
 	for _, file := range files {
