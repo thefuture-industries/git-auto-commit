@@ -8,11 +8,6 @@ import (
 )
 
 var (
-	classRegexTSJS = regexp.MustCompile(`class\s+(\w+)(?:\s+extends\s+(\w+))?`)
-	classRegexPython = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
-	classRegexCpp = regexp.MustCompile(`class\\s+(\\w+)(?:\\s*:\\s*(public|protected|private)\\s+(\\w+))?`)
-	classRegexCSharp = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s*:\\s*(\\w+))?`)
-	classRegexGo = regexp.MustCompile(`type\\s+(\\w+)\\s+struct\\s*{`)
 	functionRegexGo = regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
 	functionRegexPython = regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
 	functionRegexTSJS = regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
