@@ -20,6 +20,7 @@ func WatchCommit(path string) {
 		return
 	}
 	defer watcher.Close()
+	
 
 	InfoLogger("Started commit watcher...")
 
