@@ -18,6 +18,7 @@ func Parser(files []string) (string, error) {
 		payloadMsg string
 		mu sync.Mutex
 		wg sync.WaitGroup
+		errChan = make()
 	)
 
 	var payloadMsg string = ""
