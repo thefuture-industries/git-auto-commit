@@ -9,6 +9,9 @@ import (
 
 var (
 	classRegexTSJS = regexp.MustCompile(`class\s+(\w+)(?:\s+extends\s+(\w+))?`)
+	classRegexPython = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
+	classRegexCpp = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
+	classRegexPython = regexp.MustCompile(`class\\s+(\\w+)(?:\\((\\w+)\\))?:`)
 )
 
 func ParseToStructureClass(line, lang string) *types.ClassSignature {
