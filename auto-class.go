@@ -13,7 +13,7 @@ var (
 	classRegexCpp = regexp.MustCompile(`class\\s+(\\w+)(?:\\s*:\\s*(public|protected|private)\\s+(\\w+))?`)
 	classRegexCSharp = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s*:\\s*(\\w+))?`)
 	classRegexGo = regexp.MustCompile(`type\\s+(\\w+)\\s+struct\\s*{`)
-	classRegexJava = regexp.MustCompile(`type\\s+(\\w+)\\s+struct\\s*{`)
+	classRegexJava = regexp.MustCompile(`(?:public\\s+)?class\\s+(\\w+)(?:\\s+extends\\s+(\\w+))?`)
 )
 
 func ParseToStructureClass(line, lang string) *types.ClassSignature {
@@ -36,8 +36,7 @@ func ParseToStructureClass(line, lang string) *types.ClassSignature {
 }
 
 func parseTSJSClass(line string) *types.ClassSignature {
-	classRegex := regexp.MustCompile(`class\s+(\w+)(?:\s+extends\s+(\w+))?`)
-	m := classRegex.FindStringSubmatch(line)
+	m := classRegexTSJS.FindStringSubmatch(line)
 
 	name := m[1]
 	parent := ""
@@ -82,8 +81,7 @@ func parsePythonClass(line string) *types.ClassSignature {
 }
 
 func parseCppClass(line string) *types.ClassSignature {
-	classRegex := regexp.MustCompile(`class\\s+(\\w+)(?:\\s*:\\s*(public|protected|private)\\s+(\\w+))?`)
-	m := classRegex.FindStringSubmatch(line)
+	m := classRegexCpp.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
