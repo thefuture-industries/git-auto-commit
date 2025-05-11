@@ -17,8 +17,6 @@ var (
 
 func Test() {}
 
-func Sys() {}
-
 func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
 	switch lang {
 	case "go":
