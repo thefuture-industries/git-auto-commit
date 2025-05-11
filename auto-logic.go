@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -81,11 +80,6 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 		ifRegex = regexp.MustCompile(`if\s*\(([^)]+)\)`)
 	default:
 		ifRegex = regexp.MustCompile(`if`)
-	}
-
-	var ls bool = true
-	if ls == true {
-		fmt.Println("COOL")
 	}
 
 	for _, line := range lines {
