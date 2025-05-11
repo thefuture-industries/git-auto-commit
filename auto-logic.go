@@ -75,7 +75,7 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	case "python":
 		ifRegex = regexp.MustCompile(`if\s+([^:]+):`)
 	case "go":
-		ifRegex = regexp.MustCompile(`^if\\b`)
+		ifRegex = regexp.MustCompile(`^\s*if\b`)
 	case "c", "cpp", "java", "csharp", "typescript", "javascript":
 		ifRegex = regexp.MustCompile(`if\s*\(([^)]+)\)`)
 	default:
