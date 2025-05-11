@@ -15,6 +15,10 @@ var (
 	functionRegexCSharp    = regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
 )
 
+func Test() {}
+
+func Sys() {}
+
 func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
 	switch lang {
 	case "go":
@@ -33,9 +37,8 @@ func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
 }
 
 func FormattedFunction(diff, lang string) string {
+	var addedFuncs, deletedFuncs, renamedFuncs, changedParams, changedTypes []string
 	var oldFunc, newFunc *types.FunctionSignature
-	var builder strings.Builder
-	var results []string
 
 	lines := strings.Split(diff, "\n")
 	for i := 0; i < len(lines); i++ {
@@ -51,20 +54,25 @@ func FormattedFunction(diff, lang string) string {
 				newFunc = nil
 
 				if oldFunc != nil {
-					builder.Reset()
-					builder.WriteString("deleted function ")
-					builder.WriteString(oldFunc.Name)
-					results = append(results, builder.String())
+					deletedFuncs = append(deletedFuncs, oldFunc.Name)
 				}
+
+				// if oldFunc != nil {
+				// 	builder.Reset()
+				// 	builder.WriteString("deleted function ")
+				// 	builder.WriteString(oldFunc.Name)
+				// 	results = append(results, builder.String())
+				// }
 			}
 		} else if strings.HasPrefix(line, "+") {
 			newFunc = ParseToStructureFunction(line[1:], lang)
 
 			if oldFunc == nil && newFunc != nil {
-				builder.Reset()
-				builder.WriteString("added function ")
-				builder.WriteString(newFunc.Name)
-				results = append(results, builder.String())
+				addedFuncs = append(addedFuncs, newFunc.Name)
+				// builder.Reset()
+				// builder.WriteString("added function ")
+				// builder.WriteString(newFunc.Name)
+				// results = append(results, builder.String())
 			}
 		} else {
 			oldFunc, newFunc = nil, nil
@@ -73,31 +81,34 @@ func FormattedFunction(diff, lang string) string {
 
 		if oldFunc != nil && newFunc != nil {
 			if oldFunc.Name != newFunc.Name {
-				builder.Reset()
-				builder.WriteString("renamed function ")
-				builder.WriteString(oldFunc.Name)
-				builder.WriteString(" -> ")
-				builder.WriteString(newFunc.Name)
-				results = append(results, builder.String())
+				renamedFuncs = append(renamedFuncs, oldFunc.Name+" -> "+newFunc.Name)
+				// builder.Reset()
+				// builder.WriteString("renamed function ")
+				// builder.WriteString(oldFunc.Name)
+				// builder.WriteString(" -> ")
+				// builder.WriteString(newFunc.Name)
+				// results = append(results, builder.String())
 			}
 
 			if len(oldFunc.Params) == len(newFunc.Params) {
 				for i := range oldFunc.Params {
 					if oldFunc.Params[i].Name != newFunc.Params[i].Name && oldFunc.Params[i].Type == newFunc.Params[i].Type {
-						builder.Reset()
-						builder.WriteString("changed parameter in ")
-						builder.WriteString(oldFunc.Name)
-						builder.WriteString(" function")
-						results = append(results, builder.String())
+						changedParams = append(changedParams, oldFunc.Name+" function")
+						// builder.Reset()
+						// builder.WriteString("changed parameter in ")
+						// builder.WriteString(oldFunc.Name)
+						// builder.WriteString(" function")
+						// results = append(results, builder.String())
 					}
 
 					if oldFunc.Params[i].Name == newFunc.Params[i].Name && oldFunc.Params[i].Type != newFunc.Params[i].Type {
-						builder.Reset()
-						builder.WriteString("changed type ")
-						builder.WriteString(oldFunc.Params[i].Type)
-						builder.WriteString(" -> ")
-						builder.WriteString(newFunc.Params[i].Type)
-						results = append(results, builder.String())
+						changedTypes = append(changedTypes, oldFunc.Params[i].Name+" in "+oldFunc.Name+" function")
+						// builder.Reset()
+						// builder.WriteString("changed type ")
+						// builder.WriteString(oldFunc.Params[i].Type)
+						// builder.WriteString(" -> ")
+						// builder.WriteString(newFunc.Params[i].Type)
+						// results = append(results, builder.String())
 					}
 				}
 			}
@@ -106,20 +117,42 @@ func FormattedFunction(diff, lang string) string {
 		}
 	}
 
+	var results []string
+	if len(addedFuncs) == 1 {
+		results = append(results, "added function "+addedFuncs[0])
+	} else if len(addedFuncs) > 1 {
+		results = append(results, "added functions: "+strings.Join(addedFuncs, ", "))
+	}
+
+	if len(deletedFuncs) == 1 {
+		results = append(results, "deleted function "+deletedFuncs[0])
+	} else if len(deletedFuncs) > 1 {
+		results = append(results, "deleted functions: "+strings.Join(deletedFuncs, ", "))
+	}
+
+	if len(renamedFuncs) == 1 {
+		results = append(results, "renamed function "+renamedFuncs[0])
+	} else if len(renamedFuncs) > 1 {
+		results = append(results, "renamed functions: "+strings.Join(renamedFuncs, ", "))
+	}
+
+	if len(changedParams) == 1 {
+		results = append(results, "changed parameter in "+changedParams[0])
+	} else if len(changedParams) > 1 {
+		results = append(results, "changed parameters in functions: "+strings.Join(changedParams, ", "))
+	}
+
+	if len(changedTypes) == 1 {
+		results = append(results, "changed parameter type "+changedTypes[0])
+	} else if len(changedTypes) > 1 {
+		results = append(results, "changed parameter types: "+strings.Join(changedTypes, ", "))
+	}
+
 	if len(results) == 0 {
 		return ""
 	}
 
-	builder.Reset()
-	for i, result := range results {
-		if i > 0 {
-			builder.WriteString(", ")
-		}
-
-		builder.WriteString(result)
-	}
-
-	return builder.String()
+	return strings.Join(results, " | ")
 }
 
 func parseGoFunction(line string) *types.FunctionSignature {
