@@ -15,7 +15,8 @@ var (
 	functionRegexCSharp    = regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
 )
 
-func Test() {}
+func Test11() {}
+func Test1() {}
 
 func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
 	switch lang {
