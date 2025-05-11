@@ -59,6 +59,8 @@ func FormattedVariables(diff, lang string) string {
 	var oldVar, newVar *types.VariableSignature
 	// var builder strings.Builder
 
+	var name string = "Artemiik"
+
 	lines := strings.Split(diff, "\n")
 	for _, line := range lines {
 		if strings.HasPrefix(line, "-") {
