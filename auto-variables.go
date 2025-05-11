@@ -7,10 +7,12 @@ import (
 )
 
 var (
-	varRegexPython  = regexp.MustCompile(`^\s*(\w+)\s*=\s*(.+)`)
-	varRegexTSJS    = regexp.MustCompile(`^\s*(let|const|var)\s+(\w+)(\s*:\s*(\w+))?\s*=\s*(.+);?`)
-	varRegexGo      = regexp.MustCompile(`^\s*var\s+(\w+)\s+(\w+)\s*=\s*(.+)`)
-	defaultVarRegex = regexp.MustCompile(`^\s*(\w+)\s+(\w+)\s*=\s*([^;]+);`)
+	varRegexPython    = regexp.MustCompile(`^\s*(\w+)\s*=\s*(.+)`)
+	varRegexTSJS      = regexp.MustCompile(`^\s*(let|const|var)\s+(\w+)(\s*:\s*(\w+))?\s*=\s*(.+);?`)
+	varRegexGoFull    = regexp.MustCompile(`^\s*var\s+(\w+)\s+(\w+)\s*=\s*(.+)`)
+	varRegexGoShort   = regexp.MustCompile(`^\s*(\w+)\s*:=\s*(.+)`)
+	varRegexGoNoValue = regexp.MustCompile(`^\s*var\s+(\w+)\s+(\w+)`)
+	defaultVarRegex   = regexp.MustCompile(`^\s*(\w+)\s+(\w+)\s*=\s*([^;]+);`)
 )
 
 func ParseToStructureVariable(line, lang string) *types.VariableSignature {
@@ -36,11 +38,22 @@ func ParseToStructureVariable(line, lang string) *types.VariableSignature {
 
 		return &types.VariableSignature{Type: typ, Name: m[2], Value: strings.TrimSpace(m[5])}
 	case "go":
-		m := varRegexGo.FindStringSubmatch(line)
+		m := varRegexGoFull.FindStringSubmatch(line)
 		if m != nil {
-			names := strings.Split(m[1], ",")
-			value := strings.TrimSpace(m[2])
-			return &types.VariableSignature{Type: "", Name: strings.TrimSpace(names[0]), Value: value}
+			// names := strings.Split(m[1], ",")
+			// value := strings.TrimSpace(m[2])
+			// return &types.VariableSignature{Type: "", Name: strings.TrimSpace(names[0]), Value: value}
+			return &types.VariableSignature{Type: m[2], Name: m[1], Value: strings.TrimSpace(m[3])}
+		}
+
+		m = varRegexGoShort.FindStringSubmatch(line)
+		if m != nil {
+			return &types.VariableSignature{Type: "", Name: m[1], Value: strings.TrimSpace(m[2])}
+		}
+
+		m = varRegexGoNoValue.FindStringSubmatch(line)
+		if m != nil {
+			return &types.VariableSignature{Type: m[2], Name: m[1], Value: ""}
 		}
 
 		return nil
@@ -57,9 +70,6 @@ func ParseToStructureVariable(line, lang string) *types.VariableSignature {
 func FormattedVariables(diff, lang string) string {
 	var addedVars, renamedVars, changedTypes, changedValues []string
 	var oldVar, newVar *types.VariableSignature
-	// var builder strings.Builder
-
-	name := "a"
 
 	lines := strings.Split(diff, "\n")
 	for _, line := range lines {
