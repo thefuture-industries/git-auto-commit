@@ -72,7 +72,7 @@ func FormattedVariables(diff, lang string) string {
 	var oldVar, newVar *types.VariableSignature
 
 	artemiikShort := "armiik"
-	var artemiikLong string = "artemiikShort"
+	var artemiikLong int = 10
 	var artemiikAvg string
 
 	lines := strings.Split(diff, "\n")
