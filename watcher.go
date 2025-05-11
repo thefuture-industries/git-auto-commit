@@ -79,6 +79,8 @@ func WatchCommit(path string) {
 					return
 				}
 
+				// if parser >= 255 {} -> commit
+
 				if err := Commit(parser); err != nil {
 					ErrorLogger(err)
 				}
