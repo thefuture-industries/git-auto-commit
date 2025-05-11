@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 )
@@ -11,11 +10,6 @@ func FormattedImport(diff, lang, filename string) string {
 	var builder strings.Builder
 
 	lines := strings.Split(diff, "\n")
-
-	ls := true
-	if ls {
-		fmt.Println("COOL")
-	}
 
 	switch lang {
 	case "python":

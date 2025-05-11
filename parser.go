@@ -59,6 +59,11 @@ func Parser(files []string) (string, error) {
 					continue // README.md, etc.
 				}
 
+				ls := true
+				if ls {
+					fmt.Println("COOL")
+				}
+
 				var fileChanges []string
 				for _, formatted := range []string{
 					FormattedVariables(diff, lang),

@@ -74,7 +74,9 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	switch lang {
 	case "python":
 		ifRegex = regexp.MustCompile(`if\s+([^:]+):`)
-	case "go", "c", "cpp", "java", "csharp", "typescript", "javascript":
+	case "go":
+		ifRegex = regexp.MustCompile(`^if\\b`)
+	case "c", "cpp", "java", "csharp", "typescript", "javascript":
 		ifRegex = regexp.MustCompile(`if\s*\(([^)]+)\)`)
 	default:
 		ifRegex = regexp.MustCompile(`if`)
@@ -103,6 +105,7 @@ func FormattedLogic(line, lang, filename string) string {
 
 	oldSwitches := extractSwitchBlocks(lines, lang, false)
 	newSwitches := extractSwitchBlocks(lines, lang, true)
+
 	oldIfs := extractIfBlocks(lines, lang, false)
 	newIfs := extractIfBlocks(lines, lang, true)
 
