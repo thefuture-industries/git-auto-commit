@@ -7,7 +7,8 @@ import (
 
 func FormattedImport(diff, lang, filename string) string {
 	var importRegex *regexp.Regexp
-	var builder strings.Builder
+
+	var imports []string
 
 	lines := strings.Split(diff, "\n")
 
@@ -33,24 +34,25 @@ func FormattedImport(diff, lang, filename string) string {
 
 					if strings.HasPrefix(trimmed, "\"") && strings.HasSuffix(trimmed, "\"") {
 						importName := strings.Trim(trimmed, "\"")
-						builder.Reset()
-						builder.WriteString("include '")
-						builder.WriteString(importName)
-						builder.WriteString("' in ")
-						builder.WriteString(filename)
-						return builder.String()
+						imports = append(imports, importName)
 					}
 				} else if strings.HasPrefix(trimmed, "import ") {
 					if m := regexp.MustCompile(`^import\s+\"([^\"]+)\"`).FindStringSubmatch(trimmed); m != nil {
-						builder.Reset()
-						builder.WriteString("include '")
-						builder.WriteString(m[1])
-						builder.WriteString("' in ")
-						builder.WriteString(filename)
-						return builder.String()
+						imports = append(imports, m[1])
 					}
 				}
 			}
+		}
+
+		if len(imports) == 1 {
+			return "included '" + imports[0] + "' in " + filename
+		} else if len(imports) > 1 {
+			quoted := make([]string, len(imports))
+			for i, imp := range imports {
+				quoted[i] = "'" + imp + "'"
+			}
+
+			return "included " + strings.Join(quoted, ", ") + " in " + filename
 		}
 
 		return ""
@@ -70,16 +72,20 @@ func FormattedImport(diff, lang, filename string) string {
 		if strings.HasPrefix(line, "+") {
 			l := line[1:]
 			if m := importRegex.FindStringSubmatch(strings.TrimSpace(l)); m != nil {
-				builder.Reset()
-				builder.WriteString("include ")
-				builder.WriteString("'")
-				builder.WriteString(m[1])
-				builder.WriteString("'")
-				builder.WriteString(" in ")
-				builder.WriteString(filename)
-				return builder.String()
+				imports = append(imports, m[1])
 			}
 		}
+	}
+
+	if len(imports) == 1 {
+		return "included '" + imports[0] + "' in " + filename
+	} else if len(imports) > 1 {
+		quoted := make([]string, len(imports))
+		for i, imp := range imports {
+			quoted[i] = "'" + imp + "'"
+		}
+
+		return "included " + strings.Join(quoted, ", ") + " in " + filename
 	}
 
 	return ""

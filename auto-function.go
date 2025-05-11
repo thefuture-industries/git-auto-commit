@@ -52,23 +52,12 @@ func FormattedFunction(diff, lang string) string {
 				if oldFunc != nil {
 					deletedFuncs = append(deletedFuncs, oldFunc.Name)
 				}
-
-				// if oldFunc != nil {
-				// 	builder.Reset()
-				// 	builder.WriteString("deleted function ")
-				// 	builder.WriteString(oldFunc.Name)
-				// 	results = append(results, builder.String())
-				// }
 			}
 		} else if strings.HasPrefix(line, "+") {
 			newFunc = ParseToStructureFunction(line[1:], lang)
 
 			if oldFunc == nil && newFunc != nil {
 				addedFuncs = append(addedFuncs, newFunc.Name)
-				// builder.Reset()
-				// builder.WriteString("added function ")
-				// builder.WriteString(newFunc.Name)
-				// results = append(results, builder.String())
 			}
 		} else {
 			oldFunc, newFunc = nil, nil
@@ -78,33 +67,16 @@ func FormattedFunction(diff, lang string) string {
 		if oldFunc != nil && newFunc != nil {
 			if oldFunc.Name != newFunc.Name {
 				renamedFuncs = append(renamedFuncs, oldFunc.Name+" -> "+newFunc.Name)
-				// builder.Reset()
-				// builder.WriteString("renamed function ")
-				// builder.WriteString(oldFunc.Name)
-				// builder.WriteString(" -> ")
-				// builder.WriteString(newFunc.Name)
-				// results = append(results, builder.String())
 			}
 
 			if len(oldFunc.Params) == len(newFunc.Params) {
 				for i := range oldFunc.Params {
 					if oldFunc.Params[i].Name != newFunc.Params[i].Name && oldFunc.Params[i].Type == newFunc.Params[i].Type {
 						changedParams = append(changedParams, oldFunc.Name+" function")
-						// builder.Reset()
-						// builder.WriteString("changed parameter in ")
-						// builder.WriteString(oldFunc.Name)
-						// builder.WriteString(" function")
-						// results = append(results, builder.String())
 					}
 
 					if oldFunc.Params[i].Name == newFunc.Params[i].Name && oldFunc.Params[i].Type != newFunc.Params[i].Type {
 						changedTypes = append(changedTypes, oldFunc.Params[i].Name+" in "+oldFunc.Name+" function")
-						// builder.Reset()
-						// builder.WriteString("changed type ")
-						// builder.WriteString(oldFunc.Params[i].Type)
-						// builder.WriteString(" -> ")
-						// builder.WriteString(newFunc.Params[i].Type)
-						// results = append(results, builder.String())
 					}
 				}
 			}
