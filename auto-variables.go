@@ -9,7 +9,7 @@ import (
 var (
 	varRegexPython  = regexp.MustCompile(`^\s*(\w+)\s*=\s*(.+)`)
 	varRegexTSJS    = regexp.MustCompile(`^\s*(let|const|var)\s+(\w+)(\s*:\s*(\w+))?\s*=\s*(.+);?`)
-	varRegexGo      = regexp.MustCompile(`^\s*([\w\s,]+):=\s*(.+)`)
+	varRegexGo      = regexp.MustCompile(`^\s*var\s+(\w+)\s+(\w+)\s*=\s*(.+)`)
 	defaultVarRegex = regexp.MustCompile(`^\s*(\w+)\s+(\w+)\s*=\s*([^;]+);`)
 )
 

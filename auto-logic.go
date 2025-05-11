@@ -67,11 +67,54 @@ func extractSwitchBlocks(lines []string, lang string, isNew bool) []types.Switch
 	return blocks
 }
 
-func FormattedLogic(line, lang string) string {
+func extractIfBlocks(lines []string, lang string, isNew bool) []string {
+	var blocks []string
+	var ifRegex *regexp.Regexp
+
+	switch lang {
+	case "python":
+		ifRegex = regexp.MustCompile(`if\s+([^:]+):`)
+	case "go", "c", "cpp", "java", "csharp", "typescript", "javascript":
+		ifRegex = regexp.MustCompile(`if\s*\(([^)]+)\)`)
+	default:
+		ifRegex = regexp.MustCompile(`if`)
+	}
+
+	for _, line := range lines {
+		if (isNew && strings.HasPrefix(line, "+")) || (!isNew && strings.HasPrefix(line, "-")) {
+			l := line[1:]
+			if m := ifRegex.FindStringSubmatch(l); m != nil {
+				expr := "if"
+				if len(m) > 1 {
+					expr = strings.TrimSpace(m[1])
+				}
+
+				blocks = append(blocks, expr)
+			}
+		}
+	}
+
+	return blocks
+}
+
+func FormattedLogic(line, lang, filename string) string {
 	lines := strings.Split(line, "\n")
 	var builder strings.Builder
+
 	oldSwitches := extractSwitchBlocks(lines, lang, false)
 	newSwitches := extractSwitchBlocks(lines, lang, true)
+	oldIfs := extractIfBlocks(lines, lang, false)
+	newIfs := extractIfBlocks(lines, lang, true)
+
+	if len(newIfs) > 0 && len(oldIfs) == 0 {
+		builder.Reset()
+		builder.WriteString("added logic to the ")
+		builder.WriteString("'")
+		builder.WriteString(filename)
+		builder.WriteString("'")
+		builder.WriteString(" file")
+		return builder.String()
+	}
 
 	if len(oldSwitches) > 0 && len(newSwitches) == 0 {
 		builder.WriteString("deleted switch: ")

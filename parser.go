@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 	"sync"
 )
@@ -53,7 +54,7 @@ func Parser(files []string) (string, error) {
 				lang := DetectLanguage(file)
 				if lang == "" {
 					mu.Lock()
-					payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", file))
+					payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", filepath.Base(file)))
 					mu.Unlock()
 					continue // README.md, etc.
 				}
@@ -63,7 +64,7 @@ func Parser(files []string) (string, error) {
 					FormattedVariables(diff, lang),
 					FormattedFunction(diff, lang),
 					FormattedClass(diff, lang),
-					FormattedLogic(diff, lang),
+					FormattedLogic(diff, lang, filepath.Base(file)),
 					FormattedStruct(diff, lang),
 					FormattedType(diff, lang),
 					FormattedInterface(diff, lang),
