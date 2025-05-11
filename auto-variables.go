@@ -59,7 +59,7 @@ func FormattedVariables(diff, lang string) string {
 	var oldVar, newVar *types.VariableSignature
 	// var builder strings.Builder
 
-	var nameIs string = "artem"
+	var nameIs string = "a"
 	var ageIs string = "ae"
 
 	lines := strings.Split(diff, "\n")
