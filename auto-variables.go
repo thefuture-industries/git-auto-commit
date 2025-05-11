@@ -60,7 +60,7 @@ func FormattedVariables(diff, lang string) string {
 	// var builder strings.Builder
 
 	var nameIs string = "artem"
-	var ageIs string = "artem"
+	var ageIs string = "ae"
 
 	lines := strings.Split(diff, "\n")
 	for _, line := range lines {
