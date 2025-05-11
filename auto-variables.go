@@ -71,10 +71,6 @@ func FormattedVariables(diff, lang string) string {
 	var addedVars, renamedVars, changedTypes, changedValues []string
 	var oldVar, newVar *types.VariableSignature
 
-	artemiikShort := "armiik"
-	var artemiikLong int = 10
-	var artemiikAvg string
-
 	lines := strings.Split(diff, "\n")
 	for _, line := range lines {
 		if strings.HasPrefix(line, "-") {
