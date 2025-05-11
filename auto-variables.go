@@ -71,7 +71,7 @@ func FormattedVariables(diff, lang string) string {
 	var addedVars, renamedVars, changedTypes, changedValues []string
 	var oldVar, newVar *types.VariableSignature
 
-	artemiikShort := "artemiik"
+	artemiikShort := "armiik"
 	var artemiikLong string = "artemiikShort"
 	var artemiikAvg string
 
