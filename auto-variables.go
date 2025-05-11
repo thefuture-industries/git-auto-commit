@@ -59,8 +59,8 @@ func FormattedVariables(diff, lang string) string {
 	var oldVar, newVar *types.VariableSignature
 	// var builder strings.Builder
 
-	var singleKLK string = "Artemiik"
-	var multiple string = "Artemiik"
+	var nameIs string = "artem"
+	var ageIs string = "artem"
 
 	lines := strings.Split(diff, "\n")
 	for _, line := range lines {
@@ -72,38 +72,19 @@ func FormattedVariables(diff, lang string) string {
 
 		if oldVar != nil && newVar != nil {
 			if oldVar.Name == newVar.Name && oldVar.Type != newVar.Type {
-				// builder.Reset()
-				// builder.WriteString("changed type of variable ")
-				// builder.WriteString(oldVar.Type)
-				// builder.WriteString(" -> ")
-				// builder.WriteString(newVar.Type)
-				// results = append(results, builder.String())
 				changedTypes = append(changedTypes, oldVar.Name+" ("+oldVar.Type+" -> "+newVar.Type+")")
 			}
 
 			if oldVar.Type == newVar.Type && oldVar.Value == newVar.Value && oldVar.Name != newVar.Name {
-				// builder.Reset()
-				// builder.WriteString("renamed variable ")
-				// builder.WriteString(oldVar.Name)
-				// builder.WriteString(" -> ")
-				// builder.WriteString(newVar.Name)
-				// results = append(results, builder.String())
 				renamedVars = append(renamedVars, oldVar.Name+" -> "+newVar.Name)
 			}
 
 			if oldVar.Name == newVar.Name && oldVar.Type == newVar.Type && oldVar.Value != newVar.Value {
-				// builder.Reset()
-				// builder.WriteString("changed value in variable ")
-				// builder.WriteString(oldVar.Name)
-				// results = append(results, builder.String())
 				changedValues = append(changedValues, oldVar.Name)
 			}
 
-			oldVar, oldVar = nil, nil
+			oldVar, newVar = nil, nil
 		} else if newVar != nil && oldVar == nil {
-			// builder.Reset()
-			// builder.WriteString("added variable ")
-			// builder.WriteString(newVar.Name)
 			addedVars = append(addedVars, newVar.Name)
 
 			// if newVar.Type != "" {
