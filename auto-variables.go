@@ -59,8 +59,7 @@ func FormattedVariables(diff, lang string) string {
 	var oldVar, newVar *types.VariableSignature
 	// var builder strings.Builder
 
-	var nameIs string = "a"
-	var ageIs string = "ae"
+	name := "a"
 
 	lines := strings.Split(diff, "\n")
 	for _, line := range lines {
@@ -86,13 +85,6 @@ func FormattedVariables(diff, lang string) string {
 			oldVar, newVar = nil, nil
 		} else if newVar != nil && oldVar == nil {
 			addedVars = append(addedVars, newVar.Name)
-
-			// if newVar.Type != "" {
-			// 	builder.WriteString(" of type ")
-			// 	builder.WriteString(newVar.Type)
-			// }
-
-			// results = append(results, builder.String())
 			newVar = nil
 		}
 	}
