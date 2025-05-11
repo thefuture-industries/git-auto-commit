@@ -169,6 +169,13 @@ func FormattedClass(diff, lang string) string {
 	oldClass = ParseToStructureClass(strings.Join(oldLines, "\n"), lang)
 	newClass = ParseToStructureClass(strings.Join(newLines, "\n"), lang)
 
+	if oldClass == nil && newClass != nil {
+		builder.Reset()
+		builder.WriteString("added new class module ")
+		builder.WriteString(newClass.Name)
+		results = append(results, builder.String())
+	}
+
 	if oldClass != nil && newClass == nil {
 		builder.Reset()
 		builder.WriteString("deleted class ")

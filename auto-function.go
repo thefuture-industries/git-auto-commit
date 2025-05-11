@@ -7,11 +7,12 @@ import (
 )
 
 var (
-	functionRegexGo     = regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
-	functionRegexPython = regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)`)
-	functionRegexTSJS   = regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
-	functionRegexCJava  = regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
-	functionRegexCSharp = regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexGo        = regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexPython    = regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexTSJS      = regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
+	functionRegexTSJSConst = regexp.MustCompile(`(const|let|var)\s+(\w+)\s*=\s*(?:function)?\s*\(([^)]*)\)\s*=>?`)
+	functionRegexCJava     = regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexCSharp    = regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
 )
 
 func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
@@ -174,32 +175,54 @@ func parsePythonFunction(line string) *types.FunctionSignature {
 
 func parseTSJSFunction(line string) *types.FunctionSignature {
 	m := functionRegexTSJS.FindStringSubmatch(line)
-	if m == nil {
-		return nil
-	}
-
-	name := m[1]
-	returnType := ""
-	if len(m) > 4 {
-		returnType = m[4]
-	}
-
-	params := []types.FunctionParameters{}
-	for _, p := range strings.Split(m[2], ",") {
-		p = strings.TrimSpace(p)
-		if p == "" {
-			continue
+	if m != nil {
+		name := m[1]
+		returnType := ""
+		if len(m) > 4 {
+			returnType = m[4]
 		}
 
-		parts := strings.Split(p, ":")
-		if len(parts) == 2 {
-			params = append(params, types.FunctionParameters{Name: strings.TrimSpace(parts[0]), Type: strings.TrimSpace(parts[1])})
-		} else {
-			params = append(params, types.FunctionParameters{Name: p, Type: ""})
+		params := []types.FunctionParameters{}
+		for _, p := range strings.Split(m[2], ",") {
+			p = strings.TrimSpace(p)
+			if p == "" {
+				continue
+			}
+
+			parts := strings.Split(p, ":")
+			if len(parts) == 2 {
+				params = append(params, types.FunctionParameters{Name: strings.TrimSpace(parts[0]), Type: strings.TrimSpace(parts[1])})
+			} else {
+				params = append(params, types.FunctionParameters{Name: p, Type: ""})
+			}
 		}
+
+		return &types.FunctionSignature{Name: name, Params: params, ReturnType: returnType}
 	}
 
-	return &types.FunctionSignature{Name: name, Params: params, ReturnType: returnType}
+	m = functionRegexTSJSConst.FindStringSubmatch(line)
+	if m != nil {
+		name := m[2]
+
+		params := []types.FunctionParameters{}
+		for _, p := range strings.Split(m[3], ",") {
+			p = strings.TrimSpace(p)
+			if p == "" {
+				continue
+			}
+
+			parts := strings.Split(p, ":")
+			if len(parts) == 2 {
+				params = append(params, types.FunctionParameters{Name: strings.TrimSpace(parts[0]), Type: strings.TrimSpace(parts[1])})
+			} else {
+				params = append(params, types.FunctionParameters{Name: p, Type: ""})
+			}
+		}
+
+		return &types.FunctionSignature{Name: name, Params: params, ReturnType: ""}
+	}
+
+	return nil
 }
 
 func parseCJavaFunction(line string) *types.FunctionSignature {

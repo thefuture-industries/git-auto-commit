@@ -40,17 +40,6 @@ func FormattedImport(diff, lang, filename string) string {
 						builder.WriteString(filename)
 						return builder.String()
 					}
-
-					// if m := importRegex.FindStringSubmatch(trimmed); m != nil {
-					// 	builder.Reset()
-					// 	builder.WriteString("include ")
-					// 	builder.WriteString("'")
-					// 	builder.WriteString(m[1])
-					// 	builder.WriteString("'")
-					// 	builder.WriteString(" in ")
-					// 	builder.WriteString(filename)
-					// 	return builder.String()
-					// }
 				} else if strings.HasPrefix(trimmed, "import ") {
 					if m := regexp.MustCompile(`^import\s+\"([^\"]+)\"`).FindStringSubmatch(trimmed); m != nil {
 						builder.Reset()
