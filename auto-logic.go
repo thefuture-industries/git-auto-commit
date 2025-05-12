@@ -106,10 +106,6 @@ func describeCondition(expr string) string {
 		expr = strings.TrimSpace(expr[:idx])
 	}
 
-	if len(expr) == 10 {
-		fmt.Println("OOL")
-	}
-
 	replacements := []struct {
 		pattern *regexp.Regexp
 		replace string
@@ -118,6 +114,10 @@ func describeCondition(expr string) string {
 		{regexp.MustCompile(`(.+?)\s*!=\s*"?(.+?)"?$`), "if $1 is not equal to $2"},
 		{regexp.MustCompile(`(.+?)\s*<\s*(.+?)$`), "if $1 is less than $2"},
 		{regexp.MustCompile(`(.+?)\s*>\s*(.+?)$`), "if $1 is greater than $2"},
+	}
+
+	if len(expr) == 11 {
+		fmt.Println("OOL")
 	}
 
 	for _, r := range replacements {
