@@ -75,7 +75,7 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	case "python":
 		ifRegex = regexp.MustCompile(`if\s+([^:]+):`)
 	case "go":
-		ifRegex = regexp.MustCompile(`^\s*if\b`)
+		ifRegex = regexp.MustCompile(`^\s*if\s+(.*)`)
 	case "c", "cpp", "java", "csharp", "typescript", "javascript":
 		ifRegex = regexp.MustCompile(`if\s*\(([^)]+)\)`)
 	default:
@@ -136,14 +136,6 @@ func FormattedLogic(line, lang, filename string) string {
 
 	if len(newIfs) > 0 && len(oldIfs) == 0 {
 		builder.Reset()
-		builder.WriteString("added condition")
-		if len(newIfs) > 1 {
-			builder.WriteString("s")
-		}
-
-		builder.WriteString(" to '")
-		builder.WriteString(filename)
-		builder.WriteString("'")
 
 		for i, cond := range newIfs {
 			if i > 0 {
@@ -157,9 +149,6 @@ func FormattedLogic(line, lang, filename string) string {
 		for len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) > 1 {
 			newIfs = newIfs[:len(newIfs)-1]
 			builder.Reset()
-			builder.WriteString("added conditions to ")
-			builder.WriteString(filename)
-			builder.WriteString("'")
 
 			for i, cond := range newIfs {
 				if i > 0 {
