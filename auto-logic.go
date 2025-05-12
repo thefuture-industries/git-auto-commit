@@ -99,6 +99,31 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	return blocks
 }
 
+func describeCondition(expr string) string {
+	expr = strings.TrimSpace(expr)
+
+	replacements := []struct {
+		pattern *regexp.Regexp
+		replace string
+	}{
+		{regexp.MustCompile(`(\w+)\s*==\s*"?(\w+)"?`), "if $1 is equal to $2"},
+		{regexp.MustCompile(`(\w+)\s*!=\s*"?(\w+)"?`), "if $1 is not equal to $2"},
+		{regexp.MustCompile(`(\w+)\s*<\s*(\d+)`), "if $1 is less than $2"},
+		{regexp.MustCompile(`(\w+)\s*>\s*(\d+)`), "if $1 is greater than $2"},
+	}
+
+	for _, r := range replacements {
+		if r.pattern.MatchString(expr) {
+			return r.pattern.ReplaceAllString(expr, r.replace)
+		}
+	}
+
+	expr = strings.ReplaceAll(expr, "&&", " and ")
+	expr = strings.ReplaceAll(expr, "||", " or ")
+
+	return "added condition logic: " + expr
+}
+
 func FormattedLogic(line, lang, filename string) string {
 	lines := strings.Split(line, "\n")
 	var builder strings.Builder
