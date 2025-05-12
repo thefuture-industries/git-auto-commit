@@ -99,7 +99,7 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	return blocks
 }
 
-func _(expr string) string { // describeCondition
+func describeCondition(expr string) string { // describeCondition
 	expr = strings.TrimSpace(expr)
 
 	replacements := []struct {
@@ -136,26 +136,36 @@ func FormattedLogic(line, lang, filename string) string {
 
 	if len(newIfs) > 0 && len(oldIfs) == 0 {
 		builder.Reset()
-		builder.WriteString("added logic to the ")
-		builder.WriteString("'")
+		builder.WriteString("added condition")
+		if len(newIfs) > 1 {
+			builder.WriteString("s")
+		}
+
+		builder.WriteString(" to '")
 		builder.WriteString(filename)
 		builder.WriteString("'")
-		builder.WriteString(" file")
+
+		for i, cond := range newIfs {
+			if i > 0 {
+				builder.WriteString("; ")
+			}
+
+			builder.WriteString(describeCondition(cond))
+		}
+
 		return builder.String()
 	}
 
 	if len(oldSwitches) > 0 && len(newSwitches) == 0 {
-		builder.WriteString("deleted switch: ")
+		builder.WriteString("removed switch on ")
 		for i, sw := range oldSwitches {
 			if i > 0 {
 				builder.WriteString("; ")
 			}
-			builder.WriteString(sw.Expr)
-
+			builder.WriteString("'" + sw.Expr + "'")
 			if len(sw.Cases) > 0 {
-				builder.WriteString(" (cases: ")
+				builder.WriteString(" with cases: ")
 				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
-				builder.WriteString(")")
 			}
 		}
 
@@ -163,17 +173,15 @@ func FormattedLogic(line, lang, filename string) string {
 	}
 
 	if len(newSwitches) > 0 && len(oldSwitches) == 0 {
-		builder.WriteString("added switch: ")
+		builder.WriteString("added switch on ")
 		for i, sw := range newSwitches {
 			if i > 0 {
 				builder.WriteString("; ")
 			}
-			builder.WriteString(sw.Expr)
-
+			builder.WriteString("'" + sw.Expr + "'")
 			if len(sw.Cases) > 0 {
-				builder.WriteString(" (cases: ")
+				builder.WriteString(" with cases: ")
 				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
-				builder.WriteString(")")
 			}
 		}
 
@@ -184,15 +192,15 @@ func FormattedLogic(line, lang, filename string) string {
 		osw := oldSwitches[0]
 		nsw := newSwitches[0]
 		if osw.Expr != nsw.Expr || strings.Join(osw.Cases, ",") != strings.Join(nsw.Cases, ",") {
-			builder.WriteString("changed logic switch '")
+			builder.WriteString("changed switch from '")
 			builder.WriteString(osw.Expr)
-			builder.WriteString(" (cases: ")
+			builder.WriteString("' (cases: ")
 			builder.WriteString(strings.Join(osw.Cases, ", "))
-			builder.WriteString(")' -> '")
+			builder.WriteString(") to '")
 			builder.WriteString(nsw.Expr)
-			builder.WriteString(" (cases: ")
+			builder.WriteString("' (cases: ")
 			builder.WriteString(strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
-			builder.WriteString(")'")
+			builder.WriteString(")")
 			return builder.String()
 		}
 	}
