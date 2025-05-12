@@ -116,10 +116,6 @@ func describeCondition(expr string) string {
 		{regexp.MustCompile(`(.+?)\s*>\s*(.+?)$`), "if $1 is greater than $2"},
 	}
 
-	if len(expr) == 11 {
-		fmt.Println("OOL")
-	}
-
 	for _, r := range replacements {
 		if r.pattern.MatchString(expr) {
 			return r.pattern.ReplaceAllString(expr, r.replace)
@@ -135,6 +131,10 @@ func describeCondition(expr string) string {
 func FormattedLogic(line, lang, filename string) string {
 	lines := strings.Split(line, "\n")
 	var builder strings.Builder
+
+	if len(lines) == 10 {
+		fmt.Println("COOL")
+	}
 
 	oldSwitches := extractSwitchBlocks(lines, lang, false)
 	newSwitches := extractSwitchBlocks(lines, lang, true)
