@@ -128,5 +128,15 @@ func FormattedVariables(diff, lang string) string {
 		return ""
 	}
 
-	return strings.Join(results, " | ")
+	parser := strings.Join(results, " | ")
+	for len(parser) > int(MAX_COMMIT_LENGTH) && len(results) > 1 {
+		results = results[:len(results)-1]
+		parser = strings.Join(results, " | ")
+	}
+
+	if len(parser) > int(MAX_COMMIT_LENGTH) && len(results) == 1 {
+		parser = parser[:int(MAX_COMMIT_LENGTH)]
+	}
+
+	return parser
 }
