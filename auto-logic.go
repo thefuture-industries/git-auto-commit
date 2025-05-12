@@ -75,7 +75,7 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	case "python":
 		ifRegex = regexp.MustCompile(`if\s+([^:]+):`)
 	case "go":
-		ifRegex = regexp.MustCompile(`^\s*if\b`)
+		ifRegex = regexp.MustCompile(`^\s*if\s+(.*)`)
 	case "c", "cpp", "java", "csharp", "typescript", "javascript":
 		ifRegex = regexp.MustCompile(`if\s*\(([^)]+)\)`)
 	default:
@@ -99,8 +99,11 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	return blocks
 }
 
-func _(expr string) string { // describeCondition
+func describeCondition(expr string) string {
 	expr = strings.TrimSpace(expr)
+	if idx := strings.Index(expr, "{"); idx != -1 {
+		expr = strings.TrimSpace(expr[:idx])
+	}
 
 	replacements := []struct {
 		pattern *regexp.Regexp
@@ -111,6 +114,11 @@ func _(expr string) string { // describeCondition
 		{regexp.MustCompile(`(\w+)\s*<\s*(\d+)`), "if $1 is less than $2"},
 		{regexp.MustCompile(`(\w+)\s*>\s*(\d+)`), "if $1 is greater than $2"},
 	}
+
+	// {regexp.MustCompile(`(.+?)\s*==\s*"?(.+?)"?$`), "if $1 is equal to $2"},
+	// 	{regexp.MustCompile(`(.+?)\s*!=\s*"?(.+?)"?$`), "if $1 is not equal to $2"},
+	// 	{regexp.MustCompile(`(.+?)\s*<\s*(.+?)$`), "if $1 is less than $2"},
+	// 	{regexp.MustCompile(`(.+?)\s*>\s*(.+?)$`), "if $1 is greater than $2"},
 
 	for _, r := range replacements {
 		if r.pattern.MatchString(expr) {
@@ -136,65 +144,135 @@ func FormattedLogic(line, lang, filename string) string {
 
 	if len(newIfs) > 0 && len(oldIfs) == 0 {
 		builder.Reset()
-		builder.WriteString("added logic to the ")
-		builder.WriteString("'")
-		builder.WriteString(filename)
-		builder.WriteString("'")
-		builder.WriteString(" file")
-		return builder.String()
+
+		for i, cond := range newIfs {
+			if i > 0 {
+				builder.WriteString("; ")
+			}
+
+			builder.WriteString(describeCondition(cond))
+		}
+
+		result := builder.String()
+		for len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) > 1 {
+			newIfs = newIfs[:len(newIfs)-1]
+			builder.Reset()
+
+			for i, cond := range newIfs {
+				if i > 0 {
+					builder.WriteString("; ")
+				}
+
+				builder.WriteString(describeCondition(cond))
+			}
+
+			result = builder.String()
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	if len(oldSwitches) > 0 && len(newSwitches) == 0 {
-		builder.WriteString("deleted switch: ")
-		for i, sw := range oldSwitches {
-			if i > 0 {
-				builder.WriteString("; ")
+		makeResult := func(switches []types.SwitchSignature) string {
+			var b strings.Builder
+			b.WriteString("removed switch on ")
+			for i, sw := range switches {
+				if i > 0 {
+					b.WriteString("; ")
+				}
+				b.WriteString("'" + sw.Expr + "'")
+				if len(sw.Cases) > 0 {
+					b.WriteString(" with cases: ")
+					b.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				}
 			}
-			builder.WriteString(sw.Expr)
 
-			if len(sw.Cases) > 0 {
-				builder.WriteString(" (cases: ")
-				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
-				builder.WriteString(")")
-			}
+			return b.String()
 		}
 
-		return builder.String()
+		result := makeResult(oldSwitches)
+		for len(result) > int(MAX_COMMIT_LENGTH) && len(oldSwitches) > 1 {
+			oldSwitches = oldSwitches[:len(oldSwitches)-1]
+			result = makeResult(oldSwitches)
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(oldSwitches) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	if len(newSwitches) > 0 && len(oldSwitches) == 0 {
-		builder.WriteString("added switch: ")
-		for i, sw := range newSwitches {
-			if i > 0 {
-				builder.WriteString("; ")
+		makeResult := func(switches []types.SwitchSignature) string {
+			var b strings.Builder
+			b.WriteString("added switch on ")
+			for i, sw := range switches {
+				if i > 0 {
+					b.WriteString("; ")
+				}
+				b.WriteString("'" + sw.Expr + "'")
+				if len(sw.Cases) > 0 {
+					b.WriteString(" with cases: ")
+					b.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				}
 			}
-			builder.WriteString(sw.Expr)
 
-			if len(sw.Cases) > 0 {
-				builder.WriteString(" (cases: ")
-				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
-				builder.WriteString(")")
-			}
+			return b.String()
 		}
 
-		return builder.String()
+		result := makeResult(newSwitches)
+		for len(result) > int(MAX_COMMIT_LENGTH) && len(newSwitches) > 1 {
+			newSwitches = newSwitches[:len(newSwitches)-1]
+			result = makeResult(newSwitches)
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(newSwitches) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	if len(oldSwitches) > 0 && len(newSwitches) > 0 {
 		osw := oldSwitches[0]
 		nsw := newSwitches[0]
-		if osw.Expr != nsw.Expr || strings.Join(osw.Cases, ",") != strings.Join(nsw.Cases, ",") {
-			builder.WriteString("changed logic switch '")
-			builder.WriteString(osw.Expr)
-			builder.WriteString(" (cases: ")
-			builder.WriteString(strings.Join(osw.Cases, ", "))
-			builder.WriteString(")' -> '")
-			builder.WriteString(nsw.Expr)
-			builder.WriteString(" (cases: ")
-			builder.WriteString(strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
-			builder.WriteString(")'")
-			return builder.String()
+
+		makeResult := func(osw, nsw types.SwitchSignature) string {
+			var b strings.Builder
+			b.WriteString("changed switch from '")
+			b.WriteString(osw.Expr)
+			b.WriteString("' (cases: ")
+			b.WriteString(strings.Join(osw.Cases, ", "))
+			b.WriteString(") to '")
+			b.WriteString(nsw.Expr)
+			b.WriteString("' (cases: ")
+			b.WriteString(strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
+			b.WriteString(")")
+
+			return b.String()
 		}
+
+		result := makeResult(osw, nsw)
+		for len(result) > int(MAX_COMMIT_LENGTH) && (len(osw.Cases) > 1 || len(nsw.Cases) > 1) {
+			if len(osw.Cases) > len(nsw.Cases) {
+				osw.Cases = osw.Cases[:len(osw.Cases)-1]
+			} else {
+				nsw.Cases = nsw.Cases[:len(nsw.Cases)-1]
+			}
+
+			result = makeResult(osw, nsw)
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(osw.Cases) == 1 && len(nsw.Cases) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	return ""
