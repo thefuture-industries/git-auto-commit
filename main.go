@@ -18,6 +18,14 @@ func main() {
 		}
 
 		WatchCommit(path)
+	} else if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
+		path, err := GetGitRoot()
+		if err != nil {
+			ErrorLogger(err)
+			return
+		}
+
+		GetVersion(path)
 	} else {
 		AutoCommit()
 	}
