@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
 	"git-auto-commit/types"
 	"io"
@@ -9,7 +9,14 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+	"sync"
 )
+
+var bufferPool = sync.Pool{
+	New: func() interface{} {
+		return new(bytes.Buffer)
+	},
+}
 
 func ExtractIssueNumber(branch string) string {
 	re := regexp.MustCompile(`(\\d+)`)
@@ -40,8 +47,17 @@ func GetOwnerRepository() (string, string, error) {
 }
 
 func GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/issues/%s", owner, repo, issue)
-	req, _ := http.NewRequest("GET", url, nil)
+	var builder strings.Builder
+	builder.Reset()
+
+	builder.WriteString("https://api.github.com/repos/")
+	builder.WriteString(owner)
+	builder.WriteString("/")
+	builder.WriteString(repo)
+	builder.WriteString("/issues/")
+	builder.WriteString(issue)
+
+	req, _ := http.NewRequest("GET", builder.String(), nil)
 	if token != "" {
 		req.Header.Set("Authorization", "token "+token)
 	}
@@ -52,9 +68,17 @@ func GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
 	}
 	defer resp.Body.Close()
 
-	body, _ := io.ReadAll(resp.Body)
+	buf := bufferPool.Get().(*bytes.Buffer)
+	buf.Reset()
+	defer bufferPool.Put(buf)
+
+	_, err = io.Copy(buf, resp.Body)
+	if err != nil {
+		return "", 0, err
+	}
+
 	var githubIssue types.GithubIssue
-	if err := json.Unmarshal(body, &githubIssue); err != nil {
+	if err := json.Unmarshal(buf.Bytes(), &githubIssue); err != nil {
 		return "", 0, err
 	}
 

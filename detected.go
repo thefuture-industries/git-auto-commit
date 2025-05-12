@@ -15,7 +15,11 @@ func DetectLanguage(filename string) string {
 		return "python"
 	case ".js":
 		return "javascript"
+	case ".jsx":
+		return "javascript"
 	case ".ts":
+		return "typescript"
+	case ".tsx":
 		return "typescript"
 	case ".cpp":
 		return "cpp"

@@ -35,8 +35,16 @@ curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scr
 
 Everything is ready now, after making changes to the code, just run:
 
+-   1 Option
+
 ```bash
 git add .
 git auto
 git push
+```
+
+-   2 Option
+
+```bash
+git auto -w OR git auto --watch - Comit observer, you don't have to think and write more `git auto` -w (--watch) will figure it out when to make a comit and commit it yourself!
 ```

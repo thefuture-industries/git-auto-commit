@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -68,46 +67,133 @@ func extractSwitchBlocks(lines []string, lang string, isNew bool) []types.Switch
 	return blocks
 }
 
-func FormattedLogic(line, lang string) string {
+func extractIfBlocks(lines []string, lang string, isNew bool) []string {
+	var blocks []string
+	var ifRegex *regexp.Regexp
+
+	switch lang {
+	case "python":
+		ifRegex = regexp.MustCompile(`if\s+([^:]+):`)
+	case "go":
+		ifRegex = regexp.MustCompile(`^\s*if\b`)
+	case "c", "cpp", "java", "csharp", "typescript", "javascript":
+		ifRegex = regexp.MustCompile(`if\s*\(([^)]+)\)`)
+	default:
+		ifRegex = regexp.MustCompile(`if`)
+	}
+
+	for _, line := range lines {
+		if (isNew && strings.HasPrefix(line, "+")) || (!isNew && strings.HasPrefix(line, "-")) {
+			l := line[1:]
+			if m := ifRegex.FindStringSubmatch(l); m != nil {
+				expr := "if"
+				if len(m) > 1 {
+					expr = strings.TrimSpace(m[1])
+				}
+
+				blocks = append(blocks, expr)
+			}
+		}
+	}
+
+	return blocks
+}
+
+func _(expr string) string { // describeCondition
+	expr = strings.TrimSpace(expr)
+
+	replacements := []struct {
+		pattern *regexp.Regexp
+		replace string
+	}{
+		{regexp.MustCompile(`(\w+)\s*==\s*"?(\w+)"?`), "if $1 is equal to $2"},
+		{regexp.MustCompile(`(\w+)\s*!=\s*"?(\w+)"?`), "if $1 is not equal to $2"},
+		{regexp.MustCompile(`(\w+)\s*<\s*(\d+)`), "if $1 is less than $2"},
+		{regexp.MustCompile(`(\w+)\s*>\s*(\d+)`), "if $1 is greater than $2"},
+	}
+
+	for _, r := range replacements {
+		if r.pattern.MatchString(expr) {
+			return r.pattern.ReplaceAllString(expr, r.replace)
+		}
+	}
+
+	expr = strings.ReplaceAll(expr, "&&", " and ")
+	expr = strings.ReplaceAll(expr, "||", " or ")
+
+	return "added condition logic: " + expr
+}
+
+func FormattedLogic(line, lang, filename string) string {
 	lines := strings.Split(line, "\n")
+	var builder strings.Builder
+
 	oldSwitches := extractSwitchBlocks(lines, lang, false)
 	newSwitches := extractSwitchBlocks(lines, lang, true)
 
+	oldIfs := extractIfBlocks(lines, lang, false)
+	newIfs := extractIfBlocks(lines, lang, true)
+
+	if len(newIfs) > 0 && len(oldIfs) == 0 {
+		builder.Reset()
+		builder.WriteString("added logic to the ")
+		builder.WriteString("'")
+		builder.WriteString(filename)
+		builder.WriteString("'")
+		builder.WriteString(" file")
+		return builder.String()
+	}
+
 	if len(oldSwitches) > 0 && len(newSwitches) == 0 {
-		var parts []string
-		for _, sw := range oldSwitches {
-			cases := ""
+		builder.WriteString("deleted switch: ")
+		for i, sw := range oldSwitches {
+			if i > 0 {
+				builder.WriteString("; ")
+			}
+			builder.WriteString(sw.Expr)
 
 			if len(sw.Cases) > 0 {
-				cases = fmt.Sprintf(" (cases: %s)", strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				builder.WriteString(" (cases: ")
+				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				builder.WriteString(")")
 			}
-
-			parts = append(parts, fmt.Sprintf("%s%s", sw.Expr, cases))
 		}
 
-		return fmt.Sprintf("deleted switch: %s", strings.Join(parts, "; "))
+		return builder.String()
 	}
 
 	if len(newSwitches) > 0 && len(oldSwitches) == 0 {
-		var parts []string
-		for _, sw := range newSwitches {
-			cases := ""
+		builder.WriteString("added switch: ")
+		for i, sw := range newSwitches {
+			if i > 0 {
+				builder.WriteString("; ")
+			}
+			builder.WriteString(sw.Expr)
 
 			if len(sw.Cases) > 0 {
-				cases = fmt.Sprintf(" (cases: %s)", strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				builder.WriteString(" (cases: ")
+				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				builder.WriteString(")")
 			}
-
-			parts = append(parts, fmt.Sprintf("%s%s", sw.Expr, cases))
 		}
 
-		return fmt.Sprintf("added switch: %s", strings.Join(parts, "; "))
+		return builder.String()
 	}
 
 	if len(oldSwitches) > 0 && len(newSwitches) > 0 {
 		osw := oldSwitches[0]
 		nsw := newSwitches[0]
 		if osw.Expr != nsw.Expr || strings.Join(osw.Cases, ",") != strings.Join(nsw.Cases, ",") {
-			return fmt.Sprintf("changed logic switch '%s (cases: %s)' -> '%s (cases: %s)'", osw.Expr, strings.Join(osw.Cases, ", "), nsw.Expr, strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
+			builder.WriteString("changed logic switch '")
+			builder.WriteString(osw.Expr)
+			builder.WriteString(" (cases: ")
+			builder.WriteString(strings.Join(osw.Cases, ", "))
+			builder.WriteString(")' -> '")
+			builder.WriteString(nsw.Expr)
+			builder.WriteString(" (cases: ")
+			builder.WriteString(strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
+			builder.WriteString(")'")
+			return builder.String()
 		}
 	}
 

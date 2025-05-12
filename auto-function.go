@@ -1,10 +1,18 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
+)
+
+var (
+	functionRegexGo        = regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexPython    = regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexTSJS      = regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
+	functionRegexTSJSConst = regexp.MustCompile(`(const|let|var)\s+(\w+)\s*=\s*(?:function)?\s*\(([^)]*)\)\s*=>?`)
+	functionRegexCJava     = regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
+	functionRegexCSharp    = regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
 )
 
 func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
@@ -25,6 +33,7 @@ func ParseToStructureFunction(line, lang string) *types.FunctionSignature {
 }
 
 func FormattedFunction(diff, lang string) string {
+	var addedFuncs, deletedFuncs, renamedFuncs, changedParams, changedTypes []string
 	var oldFunc, newFunc *types.FunctionSignature
 
 	lines := strings.Split(diff, "\n")
@@ -41,14 +50,14 @@ func FormattedFunction(diff, lang string) string {
 				newFunc = nil
 
 				if oldFunc != nil {
-					return fmt.Sprintf("deleted function %s", oldFunc.Name)
+					deletedFuncs = append(deletedFuncs, oldFunc.Name)
 				}
 			}
 		} else if strings.HasPrefix(line, "+") {
 			newFunc = ParseToStructureFunction(line[1:], lang)
 
 			if oldFunc == nil && newFunc != nil {
-				return fmt.Sprintf("added function %s", newFunc.Name)
+				addedFuncs = append(addedFuncs, newFunc.Name)
 			}
 		} else {
 			oldFunc, newFunc = nil, nil
@@ -57,17 +66,17 @@ func FormattedFunction(diff, lang string) string {
 
 		if oldFunc != nil && newFunc != nil {
 			if oldFunc.Name != newFunc.Name {
-				return fmt.Sprintf("renamed function %s -> %s", oldFunc.Name, newFunc.Name)
+				renamedFuncs = append(renamedFuncs, oldFunc.Name+" -> "+newFunc.Name)
 			}
 
 			if len(oldFunc.Params) == len(newFunc.Params) {
 				for i := range oldFunc.Params {
 					if oldFunc.Params[i].Name != newFunc.Params[i].Name && oldFunc.Params[i].Type == newFunc.Params[i].Type {
-						return fmt.Sprintf("changed parameter in %s function", oldFunc.Name)
+						changedParams = append(changedParams, oldFunc.Name+" function")
 					}
 
 					if oldFunc.Params[i].Name == newFunc.Params[i].Name && oldFunc.Params[i].Type != newFunc.Params[i].Type {
-						return fmt.Sprintf("changed type '%s %s' -> '%s %s'", oldFunc.Params[i].Name, oldFunc.Params[i].Type, newFunc.Params[i].Name, newFunc.Params[i].Type)
+						changedTypes = append(changedTypes, oldFunc.Params[i].Name+" in "+oldFunc.Name+" function")
 					}
 				}
 			}
@@ -76,12 +85,46 @@ func FormattedFunction(diff, lang string) string {
 		}
 	}
 
-	return ""
+	var results []string
+	if len(addedFuncs) == 1 {
+		results = append(results, "added function "+addedFuncs[0])
+	} else if len(addedFuncs) > 1 {
+		results = append(results, "added functions: "+strings.Join(addedFuncs, ", "))
+	}
+
+	if len(deletedFuncs) == 1 {
+		results = append(results, "deleted function "+deletedFuncs[0])
+	} else if len(deletedFuncs) > 1 {
+		results = append(results, "deleted functions: "+strings.Join(deletedFuncs, ", "))
+	}
+
+	if len(renamedFuncs) == 1 {
+		results = append(results, "renamed function "+renamedFuncs[0])
+	} else if len(renamedFuncs) > 1 {
+		results = append(results, "renamed functions: "+strings.Join(renamedFuncs, ", "))
+	}
+
+	if len(changedParams) == 1 {
+		results = append(results, "changed parameter in "+changedParams[0])
+	} else if len(changedParams) > 1 {
+		results = append(results, "changed parameters in functions: "+strings.Join(changedParams, ", "))
+	}
+
+	if len(changedTypes) == 1 {
+		results = append(results, "changed parameter type "+changedTypes[0])
+	} else if len(changedTypes) > 1 {
+		results = append(results, "changed parameter types: "+strings.Join(changedTypes, ", "))
+	}
+
+	if len(results) == 0 {
+		return ""
+	}
+
+	return strings.Join(results, " | ")
 }
 
 func parseGoFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`func\s+(\w+)\s*\(([^)]*)\)`)
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexGo.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
@@ -106,8 +149,7 @@ func parseGoFunction(line string) *types.FunctionSignature {
 }
 
 func parsePythonFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`def\s+(\w+)\s*\(([^)]*)\)`)
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexPython.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
@@ -133,39 +175,59 @@ func parsePythonFunction(line string) *types.FunctionSignature {
 }
 
 func parseTSJSFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`function\s+(\w+)\s*\(([^)]*)\)(:\s*(\w+))?`)
-	m := functionRegex.FindStringSubmatch(line)
-	if m == nil {
-		return nil
-	}
-
-	name := m[1]
-	returnType := ""
-	if len(m) > 4 {
-		returnType = m[4]
-	}
-
-	params := []types.FunctionParameters{}
-	for _, p := range strings.Split(m[2], ",") {
-		p = strings.TrimSpace(p)
-		if p == "" {
-			continue
+	m := functionRegexTSJS.FindStringSubmatch(line)
+	if m != nil {
+		name := m[1]
+		returnType := ""
+		if len(m) > 4 {
+			returnType = m[4]
 		}
 
-		parts := strings.Split(p, ":")
-		if len(parts) == 2 {
-			params = append(params, types.FunctionParameters{Name: strings.TrimSpace(parts[0]), Type: strings.TrimSpace(parts[1])})
-		} else {
-			params = append(params, types.FunctionParameters{Name: p, Type: ""})
+		params := []types.FunctionParameters{}
+		for _, p := range strings.Split(m[2], ",") {
+			p = strings.TrimSpace(p)
+			if p == "" {
+				continue
+			}
+
+			parts := strings.Split(p, ":")
+			if len(parts) == 2 {
+				params = append(params, types.FunctionParameters{Name: strings.TrimSpace(parts[0]), Type: strings.TrimSpace(parts[1])})
+			} else {
+				params = append(params, types.FunctionParameters{Name: p, Type: ""})
+			}
 		}
+
+		return &types.FunctionSignature{Name: name, Params: params, ReturnType: returnType}
 	}
 
-	return &types.FunctionSignature{Name: name, Params: params, ReturnType: returnType}
+	m = functionRegexTSJSConst.FindStringSubmatch(line)
+	if m != nil {
+		name := m[2]
+
+		params := []types.FunctionParameters{}
+		for _, p := range strings.Split(m[3], ",") {
+			p = strings.TrimSpace(p)
+			if p == "" {
+				continue
+			}
+
+			parts := strings.Split(p, ":")
+			if len(parts) == 2 {
+				params = append(params, types.FunctionParameters{Name: strings.TrimSpace(parts[0]), Type: strings.TrimSpace(parts[1])})
+			} else {
+				params = append(params, types.FunctionParameters{Name: p, Type: ""})
+			}
+		}
+
+		return &types.FunctionSignature{Name: name, Params: params, ReturnType: ""}
+	}
+
+	return nil
 }
 
 func parseCJavaFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`(\w+)\s+(\w+)\s*\(([^)]*)\)`)
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexCJava.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
@@ -192,9 +254,7 @@ func parseCJavaFunction(line string) *types.FunctionSignature {
 }
 
 func parseCSharpFunction(line string) *types.FunctionSignature {
-	functionRegex := regexp.MustCompile(`(public|private|protected|internal)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(([^)]*)\)`)
-
-	m := functionRegex.FindStringSubmatch(line)
+	m := functionRegexCSharp.FindStringSubmatch(line)
 	if m == nil {
 		return nil
 	}
