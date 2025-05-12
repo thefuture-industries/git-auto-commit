@@ -89,6 +89,78 @@ func WatchCommit(path string) {
 			ErrorLogger(err)
 		}
 
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
+		if len("parser") == 10 {
+			fmt.Println("OOl")
+		}
+
+		if len("parser1111") != 10 {
+			fmt.Println("O1Ol")
+		}
+
 		time.Sleep(COMMIT_TIME)
 	}
 }
