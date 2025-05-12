@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -90,6 +89,7 @@ func parseEnum(line, lang string) *types.EnumSignature {
 
 func FormattedStruct(diff, lang string) string {
 	var oldStruct, newStruct *types.StructureSignature
+	var addedStruct, deletedStruct, renamedStruct []string
 	var oldLines, newLines []string
 
 	lines := strings.Split(diff, "\n")
@@ -105,15 +105,48 @@ func FormattedStruct(diff, lang string) string {
 	newStruct = parseStruct(strings.Join(newLines, "\n"), lang)
 
 	if oldStruct != nil && newStruct == nil {
-		return fmt.Sprintf("deleted struct %s", oldStruct.Name)
+		deletedStruct = append(deletedStruct, oldStruct.Name)
 	}
 
 	if oldStruct == nil && newStruct != nil {
-		return fmt.Sprintf("added struct %s", newStruct.Name)
+		addedStruct = append(addedStruct, newStruct.Name)
 	}
 
 	if oldStruct != nil && newStruct != nil && oldStruct.Name != newStruct.Name {
-		return fmt.Sprintf("renamed struct %s -> %s", oldStruct.Name, newStruct.Name)
+		renamedStruct = append(renamedStruct, oldStruct.Name+" -> "+newStruct.Name)
+	}
+
+	if len(addedStruct) == 1 {
+		return "added structure " + addedStruct[0]
+	} else if len(addedStruct) > 1 {
+		quoted := make([]string, len(addedStruct))
+		for i, structName := range addedStruct {
+			quoted[i] = "'" + structName + "'"
+		}
+
+		return "added structs: " + strings.Join(quoted, ", ")
+	}
+
+	if len(deletedStruct) == 1 {
+		return "deleted structure " + deletedStruct[0]
+	} else if len(deletedStruct) > 1 {
+		quoted := make([]string, len(deletedStruct))
+		for i, structName := range deletedStruct {
+			quoted[i] = "'" + structName + "'"
+		}
+
+		return "deleted structs: " + strings.Join(quoted, ", ")
+	}
+
+	if len(renamedStruct) == 1 {
+		return "renamed structure " + renamedStruct[0]
+	} else if len(renamedStruct) > 1 {
+		quoted := make([]string, len(renamedStruct))
+		for i, structName := range renamedStruct {
+			quoted[i] = "'" + structName + "'"
+		}
+
+		return "renamed structs: " + strings.Join(quoted, ", ")
 	}
 
 	return ""
@@ -121,6 +154,7 @@ func FormattedStruct(diff, lang string) string {
 
 func FormattedType(diff, lang string) string {
 	var oldType, newType *types.TypeSignature
+	var addedType, deletedType, renamedType []string
 	var oldLines, newLines []string
 
 	lines := strings.Split(diff, "\n")
@@ -136,15 +170,48 @@ func FormattedType(diff, lang string) string {
 	newType = parseType(strings.Join(newLines, "\n"), lang)
 
 	if oldType != nil && newType == nil {
-		return fmt.Sprintf("deleted type %s", oldType.Name)
+		deletedType = append(deletedType, oldType.Name)
 	}
 
 	if oldType == nil && newType != nil {
-		return fmt.Sprintf("added type %s", newType.Name)
+		addedType = append(addedType, newType.Name)
 	}
 
 	if oldType != nil && newType != nil && oldType.Name != newType.Name {
-		return fmt.Sprintf("renamed type %s -> %s", oldType.Name, newType.Name)
+		renamedType = append(renamedType, oldType.Name+" -> "+newType.Name)
+	}
+
+	if len(addedType) == 1 {
+		return "added type " + addedType[0]
+	} else if len(addedType) > 1 {
+		quoted := make([]string, len(addedType))
+		for i, typeName := range addedType {
+			quoted[i] = "'" + typeName + "'"
+		}
+
+		return "added types: " + strings.Join(quoted, ", ")
+	}
+
+	if len(deletedType) == 1 {
+		return "deleted type " + deletedType[0]
+	} else if len(deletedType) > 1 {
+		quoted := make([]string, len(deletedType))
+		for i, typeName := range deletedType {
+			quoted[i] = "'" + typeName + "'"
+		}
+
+		return "deleted types: " + strings.Join(quoted, ", ")
+	}
+
+	if len(renamedType) == 1 {
+		return "renamed type " + renamedType[0]
+	} else if len(renamedType) > 1 {
+		quoted := make([]string, len(renamedType))
+		for i, typeName := range renamedType {
+			quoted[i] = "'" + typeName + "'"
+		}
+
+		return "renamed types: " + strings.Join(quoted, ", ")
 	}
 
 	return ""
@@ -152,6 +219,7 @@ func FormattedType(diff, lang string) string {
 
 func FormattedInterface(diff, lang string) string {
 	var oldInterface, newInterface *types.InterfaceSignature
+	var addedInterface, deletedInterface, renamedInterface []string
 	var oldLines, newLines []string
 
 	lines := strings.Split(diff, "\n")
@@ -167,15 +235,48 @@ func FormattedInterface(diff, lang string) string {
 	newInterface = parseInterface(strings.Join(newLines, "\n"), lang)
 
 	if oldInterface != nil && newInterface == nil {
-		return fmt.Sprintf("deleted interface %s", oldInterface.Name)
+		deletedInterface = append(deletedInterface, oldInterface.Name)
 	}
 
 	if oldInterface == nil && newInterface != nil {
-		return fmt.Sprintf("added interface %s", newInterface.Name)
+		addedInterface = append(addedInterface, newInterface.Name)
 	}
 
 	if oldInterface != nil && newInterface != nil && oldInterface.Name != newInterface.Name {
-		return fmt.Sprintf("renamed interface %s -> %s", oldInterface.Name, newInterface.Name)
+		renamedInterface = append(renamedInterface, oldInterface.Name+" -> "+newInterface.Name)
+	}
+
+	if len(addedInterface) == 1 {
+		return "added interface " + addedInterface[0]
+	} else if len(addedInterface) > 1 {
+		quoted := make([]string, len(addedInterface))
+		for i, interfaceName := range addedInterface {
+			quoted[i] = "'" + interfaceName + "'"
+		}
+
+		return "added interfaces: " + strings.Join(quoted, ", ")
+	}
+
+	if len(deletedInterface) == 1 {
+		return "deleted interface " + deletedInterface[0]
+	} else if len(deletedInterface) > 1 {
+		quoted := make([]string, len(deletedInterface))
+		for i, interfaceName := range deletedInterface {
+			quoted[i] = "'" + interfaceName + "'"
+		}
+
+		return "deleted interfaces: " + strings.Join(quoted, ", ")
+	}
+
+	if len(renamedInterface) == 1 {
+		return "renamed interface " + renamedInterface[0]
+	} else if len(renamedInterface) > 1 {
+		quoted := make([]string, len(renamedInterface))
+		for i, interfaceName := range renamedInterface {
+			quoted[i] = "'" + interfaceName + "'"
+		}
+
+		return "renamed interfaces: " + strings.Join(quoted, ", ")
 	}
 
 	return ""
@@ -183,6 +284,7 @@ func FormattedInterface(diff, lang string) string {
 
 func FormattedEnum(diff, lang string) string {
 	var oldEnum, newEnum *types.EnumSignature
+	var addedEnum, deletedEnum, renamedEnum []string
 	var oldLines, newLines []string
 
 	lines := strings.Split(diff, "\n")
@@ -198,15 +300,48 @@ func FormattedEnum(diff, lang string) string {
 	newEnum = parseEnum(strings.Join(newLines, "\n"), lang)
 
 	if oldEnum != nil && newEnum == nil {
-		return fmt.Sprintf("deleted enum %s", oldEnum.Name)
+		deletedEnum = append(deletedEnum, oldEnum.Name)
 	}
 
 	if oldEnum == nil && newEnum != nil {
-		return fmt.Sprintf("added enum %s", newEnum.Name)
+		addedEnum = append(addedEnum, newEnum.Name)
 	}
 
 	if oldEnum != nil && newEnum != nil && oldEnum.Name != newEnum.Name {
-		return fmt.Sprintf("renamed enum %s -> %s", oldEnum.Name, newEnum.Name)
+		renamedEnum = append(renamedEnum, oldEnum.Name+" -> "+newEnum.Name)
+	}
+
+	if len(addedEnum) == 1 {
+		return "added enum " + addedEnum[0]
+	} else if len(addedEnum) > 1 {
+		quoted := make([]string, len(addedEnum))
+		for i, enumName := range addedEnum {
+			quoted[i] = "'" + enumName + "'"
+		}
+
+		return "added enums: " + strings.Join(quoted, ", ")
+	}
+
+	if len(deletedEnum) == 1 {
+		return "deleted enum " + deletedEnum[0]
+	} else if len(deletedEnum) > 1 {
+		quoted := make([]string, len(deletedEnum))
+		for i, enumName := range deletedEnum {
+			quoted[i] = "'" + enumName + "'"
+		}
+
+		return "deleted enums: " + strings.Join(quoted, ", ")
+	}
+
+	if len(renamedEnum) == 1 {
+		return "renamed enum " + renamedEnum[0]
+	} else if len(renamedEnum) > 1 {
+		quoted := make([]string, len(renamedEnum))
+		for i, enumName := range renamedEnum {
+			quoted[i] = "'" + enumName + "'"
+		}
+
+		return "renamed enums: " + strings.Join(quoted, ", ")
 	}
 
 	return ""

@@ -1,8 +1,29 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
+	if len(os.Args) > 1 && (os.Args[1] == "-w" || os.Args[1] == "--watch") {
+		path, err := GetGitRoot()
+		if err != nil {
+			ErrorLogger(err)
+			return
+		}
+
+		if len(os.Args) > 2 {
+			path = fmt.Sprintf("%s/%s", path, os.Args[2])
+		}
+
+		WatchCommit(path)
+	} else {
+		AutoCommit()
+	}
+}
+
+func AutoCommit() {
 	files, err := GetStagedFiles()
 	if err != nil {
 		ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))

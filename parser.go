@@ -1,51 +1,107 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"path/filepath"
+	"strings"
+	"sync"
+)
 
 func appendMsg(commitMsg, addition string) string {
+	var builder strings.Builder
+	builder.Reset()
+
 	if len(commitMsg) == 0 {
 		return addition
 	}
 
-	return fmt.Sprintf("%s | %s", commitMsg, addition)
+	builder.WriteString(commitMsg)
+	builder.WriteString(" | ")
+	builder.WriteString(addition)
+	return builder.String()
 }
 
 func Parser(files []string) (string, error) {
-	var commitMsg string = ""
+	var (
+		payloadMsg string
+		mu         sync.Mutex
+		wg         sync.WaitGroup
+		errChan    = make(chan error, len(files))
+	)
+
+	workers := 3
+	jobs := make(chan string, len(files))
+
+	for i := 0; i < workers; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
+			for file := range jobs {
+				mu.Lock()
+				if uint16(len(strings.Fields(payloadMsg))) > MAX_COMMIT_LENGTH {
+					mu.Unlock()
+					continue
+				}
+				mu.Unlock()
+
+				diff, err := GetDiff(file)
+				if err != nil {
+					errChan <- fmt.Errorf("error getting diff for %s: %w", file, err)
+					continue
+				}
+
+				lang := DetectLanguage(file)
+				if lang == "" {
+					mu.Lock()
+					payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", filepath.Base(file)))
+					mu.Unlock()
+					continue // README.md, etc.
+				}
+
+				var fileChanges []string
+				for _, formatted := range []string{
+					FormattedVariables(diff, lang),
+					FormattedFunction(diff, lang),
+					FormattedClass(diff, lang),
+					FormattedLogic(diff, lang, filepath.Base(file)),
+					FormattedImport(diff, lang, filepath.Base(file)),
+					FormattedStruct(diff, lang),
+					FormattedType(diff, lang),
+					FormattedInterface(diff, lang),
+					FormattedEnum(diff, lang),
+				} {
+					if formatted != "" {
+						fileChanges = append(fileChanges, formatted)
+					} // else -> continue
+				}
+
+				if len(fileChanges) > 0 {
+					mu.Lock()
+					for _, change := range fileChanges {
+						payloadMsg = appendMsg(payloadMsg, change)
+					}
+					mu.Unlock()
+				}
+			}
+		}()
+	}
 
 	for _, file := range files {
-		if uint16(len(commitMsg)) > MAX_COMMIT_LENGTH {
-			break
-		}
+		jobs <- file
+	}
+	close(jobs)
 
-		diff, err := GetDiff(file)
+	wg.Wait()
+	close(errChan)
+
+	for err := range errChan {
 		if err != nil {
 			return "", err
 		}
-
-		lang := DetectLanguage(file)
-		if lang == "" {
-			commitMsg = appendMsg(commitMsg, fmt.Sprintf("the '%s' file has been changed", file))
-			continue // README.md, etc.
-		}
-
-		for _, formatted := range []string{
-			FormattedVariables(diff, lang),
-			FormattedFunction(diff, lang),
-			FormattedClass(diff, lang),
-			FormattedLogic(diff, lang),
-			FormattedStruct(diff, lang),
-			FormattedType(diff, lang),
-			FormattedInterface(diff, lang),
-			FormattedEnum(diff, lang),
-		} {
-			if formatted != "" {
-				commitMsg = appendMsg(commitMsg, formatted)
-			} // else -> continue
-		}
 	}
 
-	if len(commitMsg) == 0 {
+	if len(payloadMsg) == 0 {
 		formattedByRemote, err := FormattedByRemote("")
 		if err != nil {
 			return "", err
@@ -57,11 +113,11 @@ func Parser(files []string) (string, error) {
 		}
 
 		if formattedByRemote != "" {
-			commitMsg = appendMsg(commitMsg, formattedByRemote)
+			payloadMsg = appendMsg(payloadMsg, formattedByRemote)
 		} else {
-			commitMsg = appendMsg(commitMsg, formattedByBranch)
+			payloadMsg = appendMsg(payloadMsg, formattedByBranch)
 		}
 	}
 
-	return commitMsg, nil
+	return payloadMsg, nil
 }
