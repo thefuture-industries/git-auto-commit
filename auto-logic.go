@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -110,11 +109,16 @@ func describeCondition(expr string) string {
 		pattern *regexp.Regexp
 		replace string
 	}{
-		{regexp.MustCompile(`(.+?)\s*==\s*"?(.+?)"?$`), "if $1 is equal to $2"},
-		{regexp.MustCompile(`(.+?)\s*!=\s*"?(.+?)"?$`), "if $1 is not equal to $2"},
-		{regexp.MustCompile(`(.+?)\s*<\s*(.+?)$`), "if $1 is less than $2"},
-		{regexp.MustCompile(`(.+?)\s*>\s*(.+?)$`), "if $1 is greater than $2"},
+		{regexp.MustCompile(`(\w+)\s*==\s*"?(\w+)"?`), "if $1 is equal to $2"},
+		{regexp.MustCompile(`(\w+)\s*!=\s*"?(\w+)"?`), "if $1 is not equal to $2"},
+		{regexp.MustCompile(`(\w+)\s*<\s*(\d+)`), "if $1 is less than $2"},
+		{regexp.MustCompile(`(\w+)\s*>\s*(\d+)`), "if $1 is greater than $2"},
 	}
+
+	// {regexp.MustCompile(`(.+?)\s*==\s*"?(.+?)"?$`), "if $1 is equal to $2"},
+	// 	{regexp.MustCompile(`(.+?)\s*!=\s*"?(.+?)"?$`), "if $1 is not equal to $2"},
+	// 	{regexp.MustCompile(`(.+?)\s*<\s*(.+?)$`), "if $1 is less than $2"},
+	// 	{regexp.MustCompile(`(.+?)\s*>\s*(.+?)$`), "if $1 is greater than $2"},
 
 	for _, r := range replacements {
 		if r.pattern.MatchString(expr) {
@@ -131,10 +135,6 @@ func describeCondition(expr string) string {
 func FormattedLogic(line, lang, filename string) string {
 	lines := strings.Split(line, "\n")
 	var builder strings.Builder
-
-	if len(lines) == 10 {
-		fmt.Println("COOL")
-	}
 
 	oldSwitches := extractSwitchBlocks(lines, lang, false)
 	newSwitches := extractSwitchBlocks(lines, lang, true)
