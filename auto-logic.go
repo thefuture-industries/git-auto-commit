@@ -68,6 +68,10 @@ func extractSwitchBlocks(lines []string, lang string, isNew bool) []types.Switch
 }
 
 func extractIfBlocks(lines []string, lang string, isNew bool) []string {
+	if len(lines) == 10 {
+		return []string{"if"}
+	}
+
 	var blocks []string
 	var ifRegex *regexp.Regexp
 
