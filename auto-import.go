@@ -85,7 +85,17 @@ func FormattedImport(diff, lang, filename string) string {
 			quoted[i] = "'" + imp + "'"
 		}
 
-		return "included " + strings.Join(quoted, ", ") + " in " + filename
+		result := "included " + strings.Join(quoted, ", ") + " in " + filename
+		for len(result) > int(MAX_COMMIT_LENGTH) && len(quoted) > 1 {
+			quoted = quoted[:len(quoted)-1]
+			result = "included " + strings.Join(quoted, ", ") + " in " + filename
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(quoted) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	return ""

@@ -153,56 +153,129 @@ func FormattedLogic(line, lang, filename string) string {
 			builder.WriteString(describeCondition(cond))
 		}
 
-		return builder.String()
+		result := builder.String()
+		for len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) > 1 {
+			newIfs = newIfs[:len(newIfs)-1]
+			builder.Reset()
+			builder.WriteString("added conditions to ")
+			builder.WriteString(filename)
+			builder.WriteString("'")
+
+			for i, cond := range newIfs {
+				if i > 0 {
+					builder.WriteString("; ")
+				}
+
+				builder.WriteString(describeCondition(cond))
+			}
+
+			result = builder.String()
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	if len(oldSwitches) > 0 && len(newSwitches) == 0 {
-		builder.WriteString("removed switch on ")
-		for i, sw := range oldSwitches {
-			if i > 0 {
-				builder.WriteString("; ")
+		makeResult := func(switches []types.SwitchSignature) string {
+			var b strings.Builder
+			b.WriteString("removed switch on ")
+			for i, sw := range switches {
+				if i > 0 {
+					b.WriteString("; ")
+				}
+				b.WriteString("'" + sw.Expr + "'")
+				if len(sw.Cases) > 0 {
+					b.WriteString(" with cases: ")
+					b.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				}
 			}
-			builder.WriteString("'" + sw.Expr + "'")
-			if len(sw.Cases) > 0 {
-				builder.WriteString(" with cases: ")
-				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
-			}
+
+			return b.String()
 		}
 
-		return builder.String()
+		result := makeResult(oldSwitches)
+		for len(result) > int(MAX_COMMIT_LENGTH) && len(oldSwitches) > 1 {
+			oldSwitches = oldSwitches[:len(oldSwitches)-1]
+			result = makeResult(oldSwitches)
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(oldSwitches) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	if len(newSwitches) > 0 && len(oldSwitches) == 0 {
-		builder.WriteString("added switch on ")
-		for i, sw := range newSwitches {
-			if i > 0 {
-				builder.WriteString("; ")
+		makeResult := func(switches []types.SwitchSignature) string {
+			var b strings.Builder
+			b.WriteString("added switch on ")
+			for i, sw := range switches {
+				if i > 0 {
+					b.WriteString("; ")
+				}
+				b.WriteString("'" + sw.Expr + "'")
+				if len(sw.Cases) > 0 {
+					b.WriteString(" with cases: ")
+					b.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
+				}
 			}
-			builder.WriteString("'" + sw.Expr + "'")
-			if len(sw.Cases) > 0 {
-				builder.WriteString(" with cases: ")
-				builder.WriteString(strings.ReplaceAll(strings.Join(sw.Cases, ", "), "\"", "'"))
-			}
+
+			return b.String()
 		}
 
-		return builder.String()
+		result := makeResult(newSwitches)
+		for len(result) > int(MAX_COMMIT_LENGTH) && len(newSwitches) > 1 {
+			newSwitches = newSwitches[:len(newSwitches)-1]
+			result = makeResult(newSwitches)
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(newSwitches) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	if len(oldSwitches) > 0 && len(newSwitches) > 0 {
 		osw := oldSwitches[0]
 		nsw := newSwitches[0]
-		if osw.Expr != nsw.Expr || strings.Join(osw.Cases, ",") != strings.Join(nsw.Cases, ",") {
-			builder.WriteString("changed switch from '")
-			builder.WriteString(osw.Expr)
-			builder.WriteString("' (cases: ")
-			builder.WriteString(strings.Join(osw.Cases, ", "))
-			builder.WriteString(") to '")
-			builder.WriteString(nsw.Expr)
-			builder.WriteString("' (cases: ")
-			builder.WriteString(strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
-			builder.WriteString(")")
-			return builder.String()
+
+		makeResult := func(osw, nsw types.SwitchSignature) string {
+			var b strings.Builder
+			b.WriteString("changed switch from '")
+			b.WriteString(osw.Expr)
+			b.WriteString("' (cases: ")
+			b.WriteString(strings.Join(osw.Cases, ", "))
+			b.WriteString(") to '")
+			b.WriteString(nsw.Expr)
+			b.WriteString("' (cases: ")
+			b.WriteString(strings.ReplaceAll(strings.Join(nsw.Cases, ", "), "\"", "'"))
+			b.WriteString(")")
+
+			return b.String()
 		}
+
+		result := makeResult(osw, nsw)
+		for len(result) > int(MAX_COMMIT_LENGTH) && (len(osw.Cases) > 1 || len(nsw.Cases) > 1) {
+			if len(osw.Cases) > len(nsw.Cases) {
+				osw.Cases = osw.Cases[:len(osw.Cases)-1]
+			} else {
+				nsw.Cases = nsw.Cases[:len(nsw.Cases)-1]
+			}
+
+			result = makeResult(osw, nsw)
+		}
+
+		if len(result) > int(MAX_COMMIT_LENGTH) && len(osw.Cases) == 1 && len(nsw.Cases) == 1 {
+			result = result[:int(MAX_COMMIT_LENGTH)]
+		}
+
+		return result
 	}
 
 	return ""
