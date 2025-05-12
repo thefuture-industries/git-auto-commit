@@ -36,7 +36,8 @@ func ParseToStructureClass(line, lang string) *types.ClassSignature {
 
 func parseTSJSClass(line string) *types.ClassSignature {
 	m := classRegexTSJS.FindStringSubmatch(line)
-	if m == nil {
+	//nolint
+	if m == nil || len(m) < 2 {
 		return nil
 	}
 
