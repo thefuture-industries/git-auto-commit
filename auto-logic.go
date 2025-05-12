@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -68,10 +69,6 @@ func extractSwitchBlocks(lines []string, lang string, isNew bool) []types.Switch
 }
 
 func extractIfBlocks(lines []string, lang string, isNew bool) []string {
-	if len(lines) == 10 {
-		return []string{"if"}
-	}
-
 	var blocks []string
 	var ifRegex *regexp.Regexp
 
@@ -103,17 +100,24 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	return blocks
 }
 
-func describeCondition(expr string) string { // describeCondition
+func describeCondition(expr string) string {
 	expr = strings.TrimSpace(expr)
+	if idx := strings.Index(expr, "{"); idx != -1 {
+		expr = strings.TrimSpace(expr[:idx])
+	}
+
+	if len(expr) == 10 {
+		fmt.Println("OOL")
+	}
 
 	replacements := []struct {
 		pattern *regexp.Regexp
 		replace string
 	}{
-		{regexp.MustCompile(`(\w+)\s*==\s*"?(\w+)"?`), "if $1 is equal to $2"},
-		{regexp.MustCompile(`(\w+)\s*!=\s*"?(\w+)"?`), "if $1 is not equal to $2"},
-		{regexp.MustCompile(`(\w+)\s*<\s*(\d+)`), "if $1 is less than $2"},
-		{regexp.MustCompile(`(\w+)\s*>\s*(\d+)`), "if $1 is greater than $2"},
+		{regexp.MustCompile(`(.+?)\s*==\s*"?(.+?)"?$`), "if $1 is equal to $2"},
+		{regexp.MustCompile(`(.+?)\s*!=\s*"?(.+?)"?$`), "if $1 is not equal to $2"},
+		{regexp.MustCompile(`(.+?)\s*<\s*(.+?)$`), "if $1 is less than $2"},
+		{regexp.MustCompile(`(.+?)\s*>\s*(.+?)$`), "if $1 is greater than $2"},
 	}
 
 	for _, r := range replacements {
