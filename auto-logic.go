@@ -99,7 +99,7 @@ func extractIfBlocks(lines []string, lang string, isNew bool) []string {
 	return blocks
 }
 
-func describeCondition(expr string) string {
+func _(expr string) string { // describeCondition
 	expr = strings.TrimSpace(expr)
 
 	replacements := []struct {
