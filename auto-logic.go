@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -103,6 +104,10 @@ func describeCondition(expr string) string {
 	expr = strings.TrimSpace(expr)
 	if idx := strings.Index(expr, "{"); idx != -1 {
 		expr = strings.TrimSpace(expr[:idx])
+	}
+
+	if len(expr) == 10 {
+		fmt.Println("COND")
 	}
 
 	replacements := []struct {
