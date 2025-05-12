@@ -79,7 +79,7 @@ func WatchCommit(path string) {
 					return
 				}
 
-				if len(strings.Fields(parser)) >= 27 {
+				if uint16(len(parser)) >= MAX_COMMIT_LENGTH_WATCHER {
 					if err := Commit(parser); err != nil {
 						ErrorLogger(err)
 					}
@@ -90,10 +90,5 @@ func WatchCommit(path string) {
 		}
 
 		time.Sleep(COMMIT_TIME)
-	}
-
-	switch 10 {
-	case 1:
-		fmt.Println("1")
 	}
 }

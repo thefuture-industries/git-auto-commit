@@ -39,7 +39,7 @@ func Parser(files []string) (string, error) {
 
 			for file := range jobs {
 				mu.Lock()
-				if uint16(len(strings.Fields(payloadMsg))) > MAX_COMMIT_LENGTH {
+				if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
 					mu.Unlock()
 					continue
 				}
