@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -23,7 +25,7 @@ func AutoCommitUpdate() {
 		return
 	}
 
-	resp, err := http.Get(GITHUB_REPO_URL + "/releases/latest")
+	resp, err := http.Get(GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
 		ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
 		return
@@ -39,31 +41,31 @@ func AutoCommitUpdate() {
 	}
 
 	if strings.TrimSpace(string(version)) == strings.TrimSpace(data.TagName) {
-		fmt.Printf("\033[92myou have the latest version installed %s\033[0m\n", strings.TrimSpace(data.TagName))
+		fmt.Printf("\033[33m[!] you have the latest version installed %s\033[0m\n", strings.TrimSpace(data.TagName))
 		return
 	}
 
 	fmt.Printf("updating to version %s...\n", strings.TrimSpace(data.TagName))
 
-	binaryURL := GITHUB_REPO_URL + "/releases/download/" + strings.TrimSpace(data.TagName) + "/" + BINARY_AUTO_COMMIT
-	destPath := filepath.Join(root, ".git", "hooks", "auto-commit")
+	// ps1 || bash
+	if runtime.GOOS == "windows" {
+		script := fmt.Sprintf("%s/scripts/update-windows-auto-commit.ps1", root)
+		cmd := exec.Command("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
 
-	if err := DownloadBinAutoCommit(binaryURL, destPath); err != nil {
-		ErrorLogger(fmt.Errorf("failed to download new binary: %w", err))
-		return
+		if err := cmd.Run(); err != nil {
+			ErrorLogger(fmt.Errorf("failed to run update script: %w", err))
+			return
+		}
+	} else {
+		script := fmt.Sprintf("%s/scripts/update-linux-auto-commit.sh", root)
+		cmd := exec.Command("bash", script)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			ErrorLogger(fmt.Errorf("failed to run bash script: %w", err))
+			return
+		}
 	}
-
-	err = os.Chmod(destPath, 0755)
-	if err != nil {
-		ErrorLogger(fmt.Errorf("failed to set executable permission: %w", err))
-		return
-	}
-
-	err = os.WriteFile(versionFile, []byte(strings.TrimSpace(data.TagName)), 0644)
-	if err != nil {
-		ErrorLogger(fmt.Errorf("failed to update version file: %w", err))
-		return
-	}
-
-	fmt.Println("successful upgrade to version ", strings.TrimSpace(data.TagName))
 }
