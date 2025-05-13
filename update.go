@@ -19,13 +19,13 @@ func Update() {
 
 	version, err := os.ReadFile(versionFile)
 	if err != nil {
-		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install"))
+		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
 		return
 	}
 
 	resp, err := http.Get(GITHUB_REPO_URL + "/releases/latest")
 	if err != nil {
-		ErrorLogger(fmt.Errorf("could not check latest version"))
+		ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
 		return
 	}
 	defer resp.Body.Close()
@@ -34,21 +34,18 @@ func Update() {
 		TagName string `json:"tag_name"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		ErrorLogger(fmt.Errorf("could not parse version info"))
+		ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
 		return
 	}
 
 	if strings.TrimSpace(string(version)) == strings.TrimSpace(data.TagName) {
-		fmt.Println("you have the latest version installed ", strings.TrimSpace(data.TagName))
+		fmt.Printf("\033[92myou have the latest version installed %s\033[0m\n", strings.TrimSpace(data.TagName))
 		return
 	}
 
-	fmt.Println("updating to version ", strings.TrimSpace(data.TagName), "...")
+	fmt.Printf("updating to version %s...\n", strings.TrimSpace(data.TagName))
 
 	// Красивый вывод прогресса
-	// Все с маленькой буквы
-	// Ошибки подробней
-	// Цветной текст
 
 	binaryURL := GITHUB_REPO_URL + "/releases/download/" + strings.TrimSpace(data.TagName) + "/" + BINARY_AUTO_COMMIT
 	destPath := filepath.Join(root, ".git", "hooks", "auto-commit")
