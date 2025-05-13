@@ -26,3 +26,32 @@ if [ -f "$VERSION_FILE" ]; then
     exit 0
   fi
 fi
+
+download_with_progress() {
+  local url="$1"
+  local output="$2"
+  local bar_width=60
+
+  content_length=$(curl -sI "$url" | grep -i Content-Length | awk '{print $2}' | tr -d '\r')
+  [ -z "$content_length" ] && content_length=0
+
+  echo -n "auto-commit update ["
+  for ((i=0; i<bar_width; i++)); do echo -n "."; done
+  echo -n "] 0%"
+
+  curl -L "$url" --output "$output" --progress-bar | \
+  awk -v bar_width=$bar_width -v total=$content_length '
+    BEGIN { done=0 }
+    {
+      if (match($0, /([0-9]+)%/)) {
+        percent = substr($0, RSTART, RLENGTH-1)
+        filled = int(bar_width * percent / 100)
+        empty = bar_width - filled
+        bar = sprintf("%s%s", sprintf("%*s", filled, "*"), sprintf("%*s", empty, "."))
+        printf "\rauto-commit update [%s] %d%%", bar, percent
+        fflush()
+      }
+    }
+    END { print "" }
+  '
+}
