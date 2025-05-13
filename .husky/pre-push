@@ -9,9 +9,8 @@ cd "$REPO_ROOT"
 make fmt
 make lint
 make check
-make buildrelease
 
 git add .
-git commit -m "build 'binary file' for release/push bin/auto-commit"
+# git commit -m "build 'binary file' for release/push bin/auto-commit"
 
 echo "[+] Success pre-push!"
