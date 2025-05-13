@@ -17,7 +17,7 @@ Write-Host "Git Auto-Commit is an extension for the Git version control system d
 $gitRoot = & git rev-parse --show-toplevel
 Set-Location $gitRoot
 
-$HookName = "auto-commit-win"
+$HookName = "auto-commit"
 
 $versionUrl = "https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
 $tag = (Invoke-RestMethod -Uri $versionUrl -UseBasicParsing).tag_name
