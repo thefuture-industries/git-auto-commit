@@ -20,9 +20,12 @@ jobs:
               with:
                   go-version: '1.23.0'
 
-            - name: Build Windows binary
+            - name: Build auto-commit binary (Windows)
+              run: |
+                  GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o ./bin/auto-commit-win .
+                  upx --best --lzma ./bin/auto-commit-win
 
-            - name: Build auto-commit binary
+            - name: Build auto-commit binary (Linux)
               run: |
                   sudo apt-get update && sudo apt-get install upx -y
                   go build -ldflags="-s -w" -trimpath -o ./bin/auto-commit .
@@ -207,6 +210,7 @@ jobs:
                       [©thefuture-industries](https://github.com/thefuture-industries)
                   files: |
                       ./bin/auto-commit
+                      ./bin/auto-commit-win
                       ./scripts/install-linux-auto-commit.sh
                       ./scripts/install-windows-auto-commit.ps1
                       ./scripts/update-windows-auto-commit.ps1
