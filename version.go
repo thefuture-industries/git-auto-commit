@@ -8,7 +8,13 @@ import (
 	"strings"
 )
 
-func GetVersion(root string) {
+func GetVersion() {
+	root, err := GetGitRoot()
+	if err != nil {
+		ErrorLogger(err)
+		return
+	}
+
 	versionFile := filepath.Join(root, ".git", "hooks", VERSION_FILE)
 
 	version, err := os.ReadFile(versionFile)
