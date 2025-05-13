@@ -207,6 +207,8 @@ jobs:
                       ./bin/auto-commit
                       ./scripts/install-linux-auto-commit.sh
                       ./scripts/install-windows-auto-commit.ps1
+                      ./scripts/update-windows-auto-commit.ps1
+                      ./scripts/update-linux-auto-commit.sh
 
             - name: Create new branch for next version
               run: |
