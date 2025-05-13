@@ -19,8 +19,9 @@ Set-Location $gitRoot
 
 $HookName = "auto-commit"
 
-$Url = "https://github.com/thefuture-industries/git-auto-commit/blob/main/bin/auto-commit?raw=true"
 $versionUrl = "https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
+$tag = (Invoke-RestMethod -Uri $versionUrl -UseBasicParsing).tag_name
+$Url = "https://github.com/thefuture-industries/git-auto-commit/releases/download/$tag/auto-commit"
 
 if (-not (Test-Path ".git/hooks")) {
     Write-Error "The current directory is not a Git repository."
@@ -40,7 +41,6 @@ try {
 
         git config --local alias.auto '!./.git/hooks/auto-commit'
 
-        $tag = (Invoke-RestMethod -Uri $versionUrl -UseBasicParsing).tag_name
         $versionFile = Join-Path -Path ".git/hooks" -ChildPath "auto-commit.version.txt"
         Set-Content -Path $versionFile -Value $tag
 

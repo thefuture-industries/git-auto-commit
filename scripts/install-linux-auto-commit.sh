@@ -22,8 +22,10 @@ BINARY_NAME="auto-commit"
 HOOKS_DIR=".git/hooks"
 HOOK_PATH="$HOOKS_DIR/$BINARY_NAME"
 
-URL="https://github.com/thefuture-industries/git-auto-commit/blob/main/bin/auto-commit?raw=true"
 VERSION_URL="https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
+TAG=$(curl -s "$VERSION_URL" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/auto-commit"
 VERSION_FILE="$HOOKS_DIR/auto-commit.version.txt"
 
 if [ ! -d .git ]; then
@@ -41,7 +43,6 @@ if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 
   git config --local alias.auto '!./.git/hooks/auto-commit'
 
-  TAG=$(curl -s "$VERSION_URL" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
   echo "$TAG" > "$VERSION_FILE"
 
   echo -e "\e[32mSuccessful installation version $TAG and settings alias for auto-commit.\e[0m"
