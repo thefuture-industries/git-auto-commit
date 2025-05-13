@@ -25,7 +25,7 @@ func GetVersion() {
 
 	fmt.Println("[git auto-commit] current version:", string(version))
 
-	resp, err := http.Get(GITHUB_REPO_URL + "/releases/latest")
+	resp, err := http.Get(GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
 		ErrorLogger(fmt.Errorf("could not check latest version"))
 		return

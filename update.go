@@ -45,7 +45,20 @@ func Update() {
 
 	fmt.Println("Updating to version ", strings.TrimSpace(data.TagName), "...")
 
-	// Красивый вывод 
+	// Красивый вывод прогресса
+	// Все с маленькой буквы
+	// Ошибки подробней
+	// Цветной текст
+
+	// "https://github.com/thefuture-industries/git-auto-commit/releases/download/" + strings.TrimSpace(data.TagName) + "/auto-commit"
+
+	binaryURL := GITHUB_REPO_URL + "/releases/download/" + strings.TrimSpace(data.TagName) + "/" + BINARY_AUTO_COMMIT
+	destPath := filepath.Join(root, ".git", "hooks", "auto-commit")
+
+	if err := DownloadBinAutoCommit(binaryURL, destPath); err != nil {
+		ErrorLogger(fmt.Errorf("failed to download new binary: %w", err))
+		return
+	}
 
 	err = os.WriteFile(versionFile, []byte(strings.TrimSpace(data.TagName)), 0644)
 	if err != nil {
