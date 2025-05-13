@@ -66,8 +66,8 @@ func AutoCommitUpdate() {
 	cmd := exec.Command("bash", script)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	if err != nil {
-		return fmt.Errorf("failed to run bash script: %w", err)
+	if err := cmd.Run(); err != nil {
+		ErrorLogger(fmt.Errorf("failed to run bash script: %w", err))
+		return
 	}
 }
