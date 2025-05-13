@@ -9,6 +9,12 @@ import (
 )
 
 func Update() {
+	root, err := GetGitRoot()
+	if err != nil {
+		ErrorLogger(err)
+		return
+	}
+
 	versionFile := filepath.Join(root, ".git", "hooks", VERSION_FILE)
 
 	version, err := os.ReadFile(versionFile)
@@ -16,8 +22,6 @@ func Update() {
 		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install"))
 		return
 	}
-
-	fmt.Println("[git auto-commit] current version:", string(version))
 
 	resp, err := http.Get(GITHUB_REPO_URL + "/releases/latest")
 	if err != nil {
@@ -34,8 +38,19 @@ func Update() {
 		return
 	}
 
-	if strings.TrimSpace(string(version)) != strings.TrimSpace(data.TagName) {
-		fmt.Println("A new version is available: ", strings.TrimSpace(data.TagName))
-		fmt.Println("Please update! 'git auto -u'")
+	if strings.TrimSpace(string(version)) == strings.TrimSpace(data.TagName) {
+		fmt.Println("You have the latest version installed ", strings.TrimSpace(data.TagName))
+		return
 	}
+
+	fmt.Println("Updating to version ", strings.TrimSpace(data.TagName), "...")
+
+	// Красивый вывод 
+
+	err = os.WriteFile(versionFile, []byte(strings.TrimSpace(data.TagName)), 0644)
+	if err != nil {
+		ErrorLogger(fmt.Errorf("failed to update version file: %w", err))
+		return
+	}
+	fmt.Println("Successful upgrade to version ", strings.TrimSpace(data.TagName))
 }
