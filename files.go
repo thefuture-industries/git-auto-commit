@@ -46,6 +46,16 @@ func DownloadBinAutoCommit(url, destPath string) error {
 			if ew != nil {
 				return ew
 			}
+
+			if n != nw {
+				return io.ErrShortWrite
+			}
+		}
+
+		if errRead != nl {
+			if errRead == io.EOF {
+				break
+			}
 		}
 	}
 
