@@ -21,7 +21,10 @@ jobs:
                   go-version: '1.23.0'
 
             - name: Build auto-commit binary
-              run: go build -o ./bin/auto-commit .
+              run: |
+                  sudo apt-get update && sudo apt-get install upx -y
+                  go build -ldflags="-s -w" -trimpath -o ./bin/auto-commit .
+                  upx --best --lzma ./bin/auto-commit
 
             - name: Set up Git
               run: |
