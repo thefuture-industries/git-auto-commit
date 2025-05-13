@@ -43,7 +43,7 @@ function Download-WithProgress {
     $buffer = New-Object byte[] 8192
     $read = 0
     $downloaded = 0
-    $barWidth = 60
+    $barWidth = 50
 
     while (($read = $stream.Read($buffer, 0, $buffer.Length)) -gt 0) {
         $outStream.Write($buffer, 0, $read)
@@ -65,4 +65,6 @@ Download-WithProgress -url $Url -output $hookPath
 Set-Content -Path $versionFile -Value $tag
 
 git config --local alias.auto '!./.git/hooks/auto-commit'
+
 Write-Host "successful upgrade to version $tag"
+exit 0

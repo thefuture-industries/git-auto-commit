@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 )
 
 func AutoCommitUpdate() {
@@ -58,16 +59,14 @@ func AutoCommitUpdate() {
 			ErrorLogger(fmt.Errorf("failed to run update script: %w", err))
 			return
 		}
-
-		return
-	}
-
-	script := fmt.Sprintf("%s/scripts/update-linux-auto-commit.sh", root)
-	cmd := exec.Command("bash", script)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		ErrorLogger(fmt.Errorf("failed to run bash script: %w", err))
-		return
+	} else {
+		script := fmt.Sprintf("%s/scripts/update-linux-auto-commit.sh", root)
+		cmd := exec.Command("bash", script)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			ErrorLogger(fmt.Errorf("failed to run bash script: %w", err))
+			return
+		}
 	}
 }
