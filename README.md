@@ -46,7 +46,7 @@ git push
 -   2 Commands
 
 ```bash
-git auto -w  - Comit observer, you don't have to think and write more `git auto` -w (--watch) will figure it out when to make a comit and commit it yourself!
+git auto -w  - Comit observer, you dont have to think and write more `git auto` -w (--watch) will figure it out when to make a comit and commit it yourself!
 git auto -v - Viewing the current version of auto-commit
 git auto -u - Upgrade to the new auto-commit version
 ```
