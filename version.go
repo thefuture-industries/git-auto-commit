@@ -23,7 +23,7 @@ func GetVersion() {
 		return
 	}
 
-	fmt.Println("[git auto-commit] current version:", string(version))
+	fmt.Println("[git auto-commit] current version:", strings.TrimSpace(string(version)))
 
 	resp, err := http.Get(GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
@@ -41,7 +41,7 @@ func GetVersion() {
 	}
 
 	if strings.TrimSpace(string(version)) != strings.TrimSpace(data.TagName) {
-		fmt.Printf("\033[94ma new version is available: %s\033[0m\n", strings.TrimSpace(data.TagName))
-		fmt.Printf("\033[92mplease update! 'git auto -u'\033[0m\n")
+		fmt.Printf("\033[33m[!] a new version is available: %s\033[0m\n", strings.TrimSpace(data.TagName))
+		fmt.Printf("\033[33m[!] please update! 'git auto -u'\033[0m\n")
 	}
 }

@@ -23,7 +23,7 @@ func AutoCommitUpdate() {
 		return
 	}
 
-	resp, err := http.Get(GITHUB_REPO_URL + "/releases/latest")
+	resp, err := http.Get(GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
 		ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
 		return
@@ -39,7 +39,7 @@ func AutoCommitUpdate() {
 	}
 
 	if strings.TrimSpace(string(version)) == strings.TrimSpace(data.TagName) {
-		fmt.Printf("\033[92myou have the latest version installed %s\033[0m\n", strings.TrimSpace(data.TagName))
+		fmt.Printf("\033[33m[!] you have the latest version installed %s\033[0m\n", strings.TrimSpace(data.TagName))
 		return
 	}
 
