@@ -18,6 +18,11 @@ buildrelease:
 	@go build -ldflags="-s -w" -trimpath -o bin/auto-commit .
 	@upx.exe --best --lzma bin/auto-commit
 
+buildrelease-update:
+	@echo "Running release build update..."
+	@go build -ldflags="-s -w" -trimpath -o bin/auto-commit.update .
+	@upx.exe --best --lzma bin/auto-commit.update
+
 test:
 	@go test -v ./...
 

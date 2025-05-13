@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -45,25 +46,6 @@ func AutoCommitUpdate() {
 
 	fmt.Printf("updating to version %s...\n", strings.TrimSpace(data.TagName))
 
-	binaryURL := GITHUB_REPO_URL + "/releases/download/" + strings.TrimSpace(data.TagName) + "/" + BINARY_AUTO_COMMIT
-	destPath := filepath.Join(root, ".git", "hooks", "auto-commit")
-
-	if err := DownloadBinAutoCommit(binaryURL, destPath); err != nil {
-		ErrorLogger(fmt.Errorf("failed to download new binary: %w", err))
-		return
-	}
-
-	err = os.Chmod(destPath, 0755)
-	if err != nil {
-		ErrorLogger(fmt.Errorf("failed to set executable permission: %w", err))
-		return
-	}
-
-	err = os.WriteFile(versionFile, []byte(strings.TrimSpace(data.TagName)), 0644)
-	if err != nil {
-		ErrorLogger(fmt.Errorf("failed to update version file: %w", err))
-		return
-	}
-
-	fmt.Println("successful upgrade to version ", strings.TrimSpace(data.TagName))
+	// ps1 || bash
+	if runtime.GOOS == "w"
 }
