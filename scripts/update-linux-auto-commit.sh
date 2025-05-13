@@ -22,7 +22,7 @@ URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$
 if [ -f "$VERSION_FILE" ]; then
   CURRENT_TAG=$(cat "$VERSION_FILE" | tr -d ' \n\r')
   if [ "$CURRENT_TAG" = "$TAG" ]; then
-    echo -e "\033[33m[!] you have the latest version installed $TAG\e[0m"
+    echo -e "\033[33m[!] you have the latest version installed $TAG\033[0m"
     exit 0
   fi
 fi
