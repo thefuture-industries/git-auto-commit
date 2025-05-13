@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func DownloadBinAutoCommit(url, destPath string) error {
@@ -35,6 +37,14 @@ func DownloadBinAutoCommit(url, destPath string) error {
 			nw, ew := out.Write(buffer[0:n])
 			if nw > 0 {
 				downloaded += int64(nw)
+				progress := float64(downloaded) * 100 / float64(size)
+				hashes := int(progress * progressBarWidth)
+
+				fmt.Printf("\r[%-*s] %3.0f%%", progressBarWidth, strings.Repeat("#", hashes), progress*100)
+			}
+
+			if ew != nil {
+				return ew
 			}
 		}
 	}
