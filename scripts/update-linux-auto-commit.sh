@@ -18,3 +18,11 @@ fi
 VERSION_URL="https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
 TAG=$(curl -s "$VERSION_URL" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/auto-commit"
+
+if [ -f "$VERSION_FILE" ]; then
+  CURRENT_TAG=$(cat "$VERSION_FILE" | tr -d ' \n\r')
+  if [ "$CURRENT_TAG" = "$TAG" ]; then
+    echo -e "\e[33m[!] you have the latest version installed $TAG\e[0m"
+    exit 0
+  fi
+fi
