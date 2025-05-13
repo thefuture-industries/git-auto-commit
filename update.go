@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func Update() {
+func AutoCommitUpdate() {
 	root, err := GetGitRoot()
 	if err != nil {
 		ErrorLogger(err)
