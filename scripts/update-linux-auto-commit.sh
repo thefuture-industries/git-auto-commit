@@ -55,3 +55,11 @@ download_with_progress() {
     END { print "" }
   '
 }
+
+download_with_progress "$URL" "$HOOK_PATH"
+chmod +x "$HOOK_PATH"
+
+echo "$TAG" > "$VERSION_FILE"
+
+git config --local alias.auto '!./.git/hooks/auto-commit'
+echo "successful upgrade to version $TAG"
