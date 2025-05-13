@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -47,5 +48,26 @@ func AutoCommitUpdate() {
 	fmt.Printf("updating to version %s...\n", strings.TrimSpace(data.TagName))
 
 	// ps1 || bash
-	if runtime.GOOS == "w"
+	if runtime.GOOS == "windows" {
+		script := fmt.Sprintf("%s/scripts/update-windows-auto-commit.ps1", root)
+		cmd := exec.Command("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		if err := cmd.Run(); err != nil {
+			ErrorLogger(fmt.Errorf("failed to run update script: %w", err))
+			return
+		}
+
+		return
+	}
+
+	script := fmt.Sprintf("%s/scripts/update-linux-auto-commit.sh", root)
+	cmd := exec.Command("bash", script)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("failed to run bash script: %w", err)
+	}
 }
