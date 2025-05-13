@@ -21,7 +21,7 @@ $HookName = "auto-commit"
 
 $versionUrl = "https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
 $tag = (Invoke-RestMethod -Uri $versionUrl -UseBasicParsing).tag_name
-$Url = "https://github.com/thefuture-industries/git-auto-commit/releases/download/$tag/auto-commit"
+$Url = "https://github.com/thefuture-industries/git-auto-commit/releases/download/$tag/auto-commit-win"
 
 if (-not (Test-Path ".git/hooks")) {
     Write-Error "The current directory is not a Git repository."
@@ -39,7 +39,7 @@ try {
         Invoke-WebRequest -Uri $Url -OutFile $hookPath -UseBasicParsing
         Write-Host "File saved as $hookPath" -ForegroundColor Yellow
 
-        git config --local alias.auto '!./.git/hooks/auto-commit'
+        git config --local alias.auto '!powershell -c ./.git/hooks/auto-commit'
 
         $versionFile = Join-Path -Path ".git/hooks" -ChildPath "auto-commit.version.txt"
         Set-Content -Path $versionFile -Value $tag

@@ -13,7 +13,7 @@ if ($proc) {
 $versionUrl = "https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
 $tag = (Invoke-RestMethod -Uri $versionUrl -UseBasicParsing).tag_name
 
-$Url = "https://github.com/thefuture-industries/git-auto-commit/releases/download/$tag/auto-commit"
+$Url = "https://github.com/thefuture-industries/git-auto-commit/releases/download/$tag/auto-commit-win"
 
 $HookName = "auto-commit"
 $hookPath = Join-Path -Path ".git/hooks" -ChildPath $HookName
@@ -64,7 +64,8 @@ Download-WithProgress -url $Url -output $hookPath
 
 Set-Content -Path $versionFile -Value $tag
 
-git config --local alias.auto '!./.git/hooks/auto-commit'
+# git config --local alias.auto '!./.git/hooks/auto-commit'
+git config --local alias.auto '!powershell -c ./.git/hooks/auto-commit'
 
 Write-Host "successful upgrade to version $tag"
 exit 0

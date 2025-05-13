@@ -14,9 +14,13 @@ build:
 	@go build -o bin/auto-commit .
 
 buildrelease:
-	@echo "Running release build..."
+	@echo "Running release build (windows, linux)..."
+
 	@go build -ldflags="-s -w" -trimpath -o bin/auto-commit .
 	@upx.exe --best --lzma bin/auto-commit
+
+	@GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-linux .
+	@upx.exe --best --lzma bin/auto-commit-linux
 
 buildrelease-update:
 	@echo "Running release build update..."
