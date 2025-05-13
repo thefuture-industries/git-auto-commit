@@ -39,7 +39,7 @@ try {
         Invoke-WebRequest -Uri $Url -OutFile $hookPath -UseBasicParsing
         Write-Host "File saved as $hookPath" -ForegroundColor Yellow
 
-        git config --local alias.auto '!powershell -c ./.git/hooks/auto-commit'
+        git config --local alias.auto '!./.git/hooks/auto-commit'
 
         $versionFile = Join-Path -Path ".git/hooks" -ChildPath "auto-commit.version.txt"
         Set-Content -Path $versionFile -Value $tag

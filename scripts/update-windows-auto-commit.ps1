@@ -64,8 +64,7 @@ Download-WithProgress -url $Url -output $hookPath
 
 Set-Content -Path $versionFile -Value $tag
 
-# git config --local alias.auto '!./.git/hooks/auto-commit'
-git config --local alias.auto '!powershell -c ./.git/hooks/auto-commit'
+git config --local alias.auto '!./.git/hooks/auto-commit'
 
 Write-Host "successful upgrade to version $tag"
 exit 0
