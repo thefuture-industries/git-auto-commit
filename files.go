@@ -21,9 +21,18 @@ func DownloadBinAutoCommit(url, destPath string) error {
 	}
 	defer out.Close()
 
+	if errProgress := DownloadProgress(resp, out); errProgress != nil {
+		return errProgress
+	}
+
+	_, err = io.Copy(out, resp.Body)
+	return err
+}
+
+func DownloadProgress(resp *http.Response, file *os.File) error {
 	size := resp.ContentLength
 	if size <= 0 {
-		_, err := io.Copy(out, resp.Body)
+		_, err := io.Copy(file, resp.Body)
 		return err
 	}
 
@@ -32,9 +41,9 @@ func DownloadBinAutoCommit(url, destPath string) error {
 	buffer := make([]byte, 32*1024)
 
 	for {
-		n, err := resp.Body.Read(buffer)
+		n, errRead := resp.Body.Read(buffer)
 		if n > 0 {
-			nw, ew := out.Write(buffer[0:n])
+			nw, ew := file.Write(buffer[0:n])
 			if nw > 0 {
 				downloaded += int64(nw)
 				progress := float64(downloaded) * 100 / float64(size)
@@ -52,13 +61,15 @@ func DownloadBinAutoCommit(url, destPath string) error {
 			}
 		}
 
-		if errRead != nl {
+		if errRead != nil {
 			if errRead == io.EOF {
 				break
 			}
+
+			return errRead
 		}
 	}
 
-	_, err = io.Copy(out, resp.Body)
-	return err
+	fmt.Println()
+	return nil
 }

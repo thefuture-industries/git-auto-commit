@@ -45,8 +45,6 @@ func Update() {
 
 	fmt.Printf("updating to version %s...\n", strings.TrimSpace(data.TagName))
 
-	// Красивый вывод прогресса
-
 	binaryURL := GITHUB_REPO_URL + "/releases/download/" + strings.TrimSpace(data.TagName) + "/" + BINARY_AUTO_COMMIT
 	destPath := filepath.Join(root, ".git", "hooks", "auto-commit")
 
