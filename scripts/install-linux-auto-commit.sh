@@ -22,7 +22,11 @@ BINARY_NAME="auto-commit"
 HOOKS_DIR=".git/hooks"
 HOOK_PATH="$HOOKS_DIR/$BINARY_NAME"
 
-URL="https://github.com/thefuture-industries/git-auto-commit/blob/main/bin/auto-commit?raw=true"
+VERSION_URL="https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
+TAG=$(curl -s "$VERSION_URL" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/auto-commit"
+VERSION_FILE="$HOOKS_DIR/auto-commit.version.txt"
 
 if [ ! -d .git ]; then
   echo "[!] There is no .git. Run it in the root of the Git repository."
@@ -39,7 +43,9 @@ if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
 
   git config --local alias.auto '!./.git/hooks/auto-commit'
 
-  echo -e "\e[32mSuccessful installation and settings alias for auto-commit.\e[0m"
+  echo "$TAG" > "$VERSION_FILE"
+
+  echo -e "\e[32mSuccessful installation version $TAG and settings alias for auto-commit.\e[0m"
   echo ""
   echo -e "\e[33mMore detailed: https://github.com/thefuture-industries/git-auto-commit\e[0m"
   echo -e "\e[33mNow you can run: git auto\e[0m"

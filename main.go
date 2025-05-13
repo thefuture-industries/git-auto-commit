@@ -18,6 +18,10 @@ func main() {
 		}
 
 		WatchCommit(path)
+	} else if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
+		GetVersion()
+	} else if len(os.Args) > 1 && (os.Args[1] == "-u" || os.Args[1] == "--update") {
+		AutoCommitUpdate()
 	} else {
 		AutoCommit()
 	}
