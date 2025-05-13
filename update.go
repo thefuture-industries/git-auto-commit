@@ -39,18 +39,16 @@ func Update() {
 	}
 
 	if strings.TrimSpace(string(version)) == strings.TrimSpace(data.TagName) {
-		fmt.Println("You have the latest version installed ", strings.TrimSpace(data.TagName))
+		fmt.Println("you have the latest version installed ", strings.TrimSpace(data.TagName))
 		return
 	}
 
-	fmt.Println("Updating to version ", strings.TrimSpace(data.TagName), "...")
+	fmt.Println("updating to version ", strings.TrimSpace(data.TagName), "...")
 
 	// Красивый вывод прогресса
 	// Все с маленькой буквы
 	// Ошибки подробней
 	// Цветной текст
-
-	// "https://github.com/thefuture-industries/git-auto-commit/releases/download/" + strings.TrimSpace(data.TagName) + "/auto-commit"
 
 	binaryURL := GITHUB_REPO_URL + "/releases/download/" + strings.TrimSpace(data.TagName) + "/" + BINARY_AUTO_COMMIT
 	destPath := filepath.Join(root, ".git", "hooks", "auto-commit")
@@ -60,10 +58,17 @@ func Update() {
 		return
 	}
 
+	err = os.Chmod(destPath, 0755)
+	if err != nil {
+		ErrorLogger(fmt.Errorf("failed to set executable permission: %w", err))
+		return
+	}
+
 	err = os.WriteFile(versionFile, []byte(strings.TrimSpace(data.TagName)), 0644)
 	if err != nil {
 		ErrorLogger(fmt.Errorf("failed to update version file: %w", err))
 		return
 	}
-	fmt.Println("Successful upgrade to version ", strings.TrimSpace(data.TagName))
+
+	fmt.Println("successful upgrade to version ", strings.TrimSpace(data.TagName))
 }

@@ -19,7 +19,7 @@ func GetVersion() {
 
 	version, err := os.ReadFile(versionFile)
 	if err != nil {
-		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install"))
+		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
 		return
 	}
 
