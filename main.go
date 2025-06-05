@@ -19,7 +19,7 @@ func main() {
 
 		WatchCommit(path)
 	} else if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
-		GetVersion()
+		GetVersion(true)
 	} else if len(os.Args) > 1 && (os.Args[1] == "-u" || os.Args[1] == "--update") {
 		AutoCommitUpdate()
 	} else {
@@ -28,6 +28,8 @@ func main() {
 }
 
 func AutoCommit() {
+	GetVersion(false)
+
 	files, err := GetStagedFiles()
 	if err != nil {
 		ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
