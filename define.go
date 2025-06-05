@@ -5,7 +5,7 @@ import "time"
 const (
 	MAX_LINE_LENGTH           uint16        = 1024
 	MAX_COMMIT_LENGTH         uint16        = 300
-	MAX_COMMIT_LENGTH_WATCHER uint16        = 45
+	MAX_COMMIT_LENGTH_WATCHER uint16        = 25
 	COMMIT_TIME               time.Duration = 15 * time.Second
 
 	GITHUB_API_REPO_URL string = "https://api.github.com/repos/thefuture-industries/git-auto-commit"
