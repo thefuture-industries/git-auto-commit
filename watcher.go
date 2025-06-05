@@ -14,6 +14,8 @@ import (
 )
 
 func WatchCommit(path string) {
+	GetVersion(false)
+
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		ErrorLogger(err)

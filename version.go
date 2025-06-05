@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func GetVersion() {
+func GetVersion(isCurrent bool) {
 	root, err := GetGitRoot()
 	if err != nil {
 		ErrorLogger(fmt.Errorf("could not get git root: %w", err))
@@ -23,7 +23,9 @@ func GetVersion() {
 		return
 	}
 
-	fmt.Println("[git auto-commit] current version:", strings.TrimSpace(string(version)))
+	if isCurrent {
+		fmt.Println("[git auto-commit] current version:", strings.TrimSpace(string(version)))
+	}
 
 	resp, err := http.Get(GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
