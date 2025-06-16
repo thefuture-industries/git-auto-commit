@@ -42,7 +42,7 @@ func WatchCommit(path string) {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-sigs
-		InfoLogger("Shutdown work watcher...")
+		InfoLogger("shutdown work watcher...")
 		os.Exit(0)
 	}()
 
