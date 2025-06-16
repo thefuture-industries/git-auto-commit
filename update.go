@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"os/exec"
@@ -47,25 +48,53 @@ func AutoCommitUpdate() {
 
 	fmt.Printf("updating to version %s...\n", strings.TrimSpace(data.TagName))
 
-	// ps1 || bash
+	var scriptUpdate string
+	var scriptUpdateExt string
 	if runtime.GOOS == "windows" {
-		script := fmt.Sprintf("%s/scripts/update-windows-auto-commit.ps1", root)
-		cmd := exec.Command("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", script)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-
-		if err := cmd.Run(); err != nil {
-			ErrorLogger(fmt.Errorf("failed to run update script: %w", err))
-			return
-		}
+		scriptUpdate = "https://github.com/thefuture-industries/git-auto-commit/raw/main/scripts/update-windows-auto-commit.ps1"
+		scriptUpdateExt = ".ps1"
 	} else {
-		script := fmt.Sprintf("%s/scripts/update-linux-auto-commit.sh", root)
-		cmd := exec.Command("bash", script)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		if err := cmd.Run(); err != nil {
-			ErrorLogger(fmt.Errorf("failed to run bash script: %w", err))
-			return
-		}
+		scriptUpdate = "https://github.com/thefuture-industries/git-auto-commit/raw/main/scripts/update-linux-auto-commit.sh"
+		scriptUpdateExt = ".sh"
 	}
+
+	tmpFile := filepath.Join(os.TempDir(), "auto-commit-update"+scriptUpdateExt)
+	err = downloadFile(scriptUpdate, tmpFile)
+	if err != nil {
+		ErrorLogger(fmt.Errorf("failed to download update script: %v", err))
+		return
+	}
+	defer os.Remove(tmpFile)
+
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", tmpFile)
+	} else {
+		cmd = exec.Command("bash", tmpFile)
+	}
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	if err := cmd.Run(); err != nil {
+		ErrorLogger(fmt.Errorf("failed to run update script: %v", err))
+		return
+	}
+}
+
+func downloadFile(url, filepath string) error {
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, resp.Body)
+	return err
 }
