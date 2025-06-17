@@ -100,6 +100,8 @@ func Parser(files []string) (string, error) {
 		}()
 	}
 
+	fmt.Println(len(payloadMsg))
+
 	for _, file := range files {
 		jobs <- file
 	}
