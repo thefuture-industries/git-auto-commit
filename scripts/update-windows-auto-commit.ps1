@@ -67,4 +67,4 @@ Set-Content -Path $versionFile -Value $tag
 git config --local alias.auto '!./.git/hooks/auto-commit'
 
 Write-Host "successful upgrade to version $tag"
-exit 0
+[Environment]::Exit(0)
