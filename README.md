@@ -26,7 +26,7 @@ iex ((New-Object Net.WebClient).DownloadString('https://github.com/thefuture-ind
 Go to the root of the project and run the command.
 
 ```bash
-curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-linux-auto-commit.sh?raw=true | bash
+echo Y | bash <(curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-linux-auto-commit.sh?raw=true)
 ```
 
 ## Setting up

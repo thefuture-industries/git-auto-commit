@@ -61,5 +61,5 @@ chmod +x "$HOOK_PATH"
 
 echo "$TAG" > "$VERSION_FILE"
 
-git config --local alias.auto '!./.git/hooks/auto-commit'
+git config --local alias.auto '!bash -c ./.git/hooks/auto-commit'
 echo "successful upgrade to version $TAG"
