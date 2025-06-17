@@ -21,7 +21,6 @@ var bufferPool = sync.Pool{
 func ExtractIssueNumber(branch string) string {
 	re := regexp.MustCompile(`\d+`)
 	match := re.FindStringSubmatch(branch)
-	fmt.Println(match)
 	if len(match) > 1 {
 		fmt.Println(match[1])
 		return match[1]
