@@ -40,6 +40,7 @@ func GetOwnerRepository() (string, string, error) {
 	regex := regexp.MustCompile(`[:/]([^/:]+)/([^/]+?)(?:\.git)?$`)
 
 	match := regex.FindStringSubmatch(url)
+	fmt.Println(match)
 	if len(match) == 3 {
 		return match[1], match[2], nil
 	}
