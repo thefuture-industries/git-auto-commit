@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -24,10 +23,6 @@ func FormattedByRemote(token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println(owner)
-	fmt.Println(repo)
-	fmt.Println(issue)
 
 	issueName, issueNumber, err := GetIssueData(owner, repo, issue, token)
 	if err != nil {
