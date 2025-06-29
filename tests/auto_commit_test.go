@@ -25,5 +25,7 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 
 	main.AutoCommit()
 
-	if calledInfo
+	if calledInfo != "No files staged for commit." {
+		t.Errorf("")
+	}
 }
