@@ -8,6 +8,8 @@ func TestParser_AddedGoFunction(t *testing.T) {
 	}
 
 	DetectLanguage = func(filename string) string {
-		
+		return "go"
 	}
+
+	msg, err := Parse
 }
