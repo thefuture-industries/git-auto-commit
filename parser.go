@@ -79,7 +79,7 @@ var Parser = func(files []string) (string, error) {
 				if len(fileChanges) > 0 {
 					mu.Lock()
 					for _, change := range fileChanges {
-						nextMsg := appendMsg(payloadMsg, change)
+						nextMsg := AppendMsg(payloadMsg, change)
 						if len(nextMsg) > int(MAX_COMMIT_LENGTH) {
 							if len(payloadMsg) == 0 {
 								if len(change) > int(MAX_COMMIT_LENGTH) {
@@ -126,9 +126,9 @@ var Parser = func(files []string) (string, error) {
 		}
 
 		if formattedByRemote != "" {
-			payloadMsg = appendMsg(payloadMsg, formattedByRemote)
+			payloadMsg = AppendMsg(payloadMsg, formattedByRemote)
 		} else {
-			payloadMsg = appendMsg(payloadMsg, formattedByBranch)
+			payloadMsg = AppendMsg(payloadMsg, formattedByBranch)
 		}
 	}
 
