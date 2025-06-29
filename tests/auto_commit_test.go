@@ -2,7 +2,7 @@ package tests
 
 import (
 	"testing"
-	main "git-auto-commit"
+	"git-auto-commit"
 )
 
 var (
