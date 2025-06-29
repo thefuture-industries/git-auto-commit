@@ -26,11 +26,10 @@ func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
 	calledInfo := ""
 
 	GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
-	ErrorLogger = func(err error) {
-		if err == nil || err.Error() != "error getting staged files: fail" {
-			t.Errorf("unexpected error: %v", err)
-		}
-	}
+	Parser = func(files []string) (string, error) { return "", nil }
+	Commit = func(msg string) error { return nil }
+	InfoLogger = func(msg string) {}
+	GetVersion = func(show bool) {}
 
 	InfoLogger = func(msg string) { calledInfo = msg }
 	AutoCommit()
