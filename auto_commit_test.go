@@ -20,3 +20,14 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
         t.Errorf("expected info log 'No files staged for commit.', got '%s'", calledInfo)
     }
 }
+
+func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
+	getStagedFilesMock = func() ([]string, error) { return nil, errors.New("fail") }
+	errorLoggerMock = func(err error) {
+		if err == nil || err.Error() != "error getting staged files: fail" {
+			t.Errorf("unexpected error: %v", err)
+		}
+	}
+	infoLoggerMock = func(msg string) {}
+	AutoCommit()
+}
