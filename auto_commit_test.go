@@ -15,7 +15,7 @@ var (
 
 func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	calledInfo := ""
-	
+
 	GetStagedFiles = func() ([]string, error) { return []string{}, nil }
     Parser = func(files []string) (string, error) { return "", nil }
     Commit = func(msg string) error { return nil }
@@ -23,13 +23,9 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
     InfoLogger = func(msg string) { calledInfo = msg }
     GetVersion = func(show bool) {}
 
-	getStagedFilesMock = func() ([]string, error) { return []string{}, nil }
-	infoLoggerMock = func(msg string) {
-		if msg != "No files staged for commit." {
-			t.Errorf("unexpected info log: %s", msg)
-		}
-	}
-
-	errorLoggerMock = func(err error) { t.Errorf("unexpected error: %v", err) }
 	AutoCommit()
+
+    if calledInfo != "No files staged for commit." {
+        t.Errorf("expected info log 'No files staged for commit.', got '%s'", calledInfo)
+    }
 }
