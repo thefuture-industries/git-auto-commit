@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func GetVersion(isCurrent bool) {
+var GetVersion = func(isCurrent bool) {
 	root, err := GetGitRoot()
 	if err != nil {
 		ErrorLogger(fmt.Errorf("could not get git root: %w", err))
