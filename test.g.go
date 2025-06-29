@@ -8,3 +8,5 @@ type Mocks struct {
     InfoLogger     func(string)
     GetVersion     func(bool)
 }
+
+func SaveMocks
