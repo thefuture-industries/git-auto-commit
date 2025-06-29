@@ -41,7 +41,35 @@ func GetDiff(file string) (string, error) {
 	return buf.String(), nil
 }
 
-func GetStagedFiles() ([]string, error) {
+// func GetStagedFiles() ([]string, error) {
+// 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
+
+// 	stdout, err := cmd.StdoutPipe()
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	if err := cmd.Start(); err != nil {
+// 		return nil, err
+// 	}
+
+// 	var files []string
+// 	scanner := bufio.NewScanner(stdout)
+// 	for scanner.Scan() {
+// 		files = append(files, scanner.Text())
+// 	}
+
+// 	if err := scanner.Err(); err != nil {
+// 		return nil, err
+// 	}
+
+// 	if err := cmd.Wait(); err != nil {
+// 		return nil, err
+// 	}
+
+// 	return files, nil
+// }
+var GetStagedFiles = func () ([]string, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
 
 	stdout, err := cmd.StdoutPipe()
