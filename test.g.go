@@ -20,4 +20,11 @@ func SaveMocks() *Mocks {
 	}
 }
 
-func (m *Mocks)
+func (m *Mocks) Apply() {
+	GetStagedFiles = m.GetStagedFiles
+	Parser = m.Parser
+	Commit = m.Commit
+	ErrorLogger = m.ErrorLogger
+	InfoLogger = m.InfoLogger
+	GetVersion = m.GetVersion
+}

@@ -6,8 +6,9 @@ import (
 )
 
 func TestAutoCommit_NoStagedFiles(t *testing.T) {
-	calledInfo := ""
+	orig
 
+	calledInfo := ""
 	GetStagedFiles = func() ([]string, error) { return []string{}, nil }
 	Parser = func(files []string) (string, error) { return "", nil }
 	Commit = func(msg string) error { return nil }
