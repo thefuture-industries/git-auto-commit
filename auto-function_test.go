@@ -13,6 +13,8 @@ func TestParser_AddedGoFunction(t *testing.T) {
 
 	msg, err := Parser([]string{"auto-commit-parser-test.go"})
 	if err != nil {
-		
+		t.Fatalf("unexpected error: %v", err)
 	}
+
+	exp
 }
