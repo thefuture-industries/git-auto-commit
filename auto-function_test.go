@@ -11,5 +11,5 @@ func TestParser_AddedGoFunction(t *testing.T) {
 		return "go"
 	}
 
-	msg, err := Parser([]string{"test"})
+	msg, err := Parser([]string{"auto-commit-parser-test.go"})
 }
