@@ -16,7 +16,7 @@ var (
 func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	getStagedFilesMock = func() ([]string, error) { return []string{}, nil }
 	parserMock = func(files []string) (string, error) { return "", nil }
-	commitMock = func(string) error
+	commitMock = func(msg string) error { return nil }
 
 	main.AutoCommit()
 }
