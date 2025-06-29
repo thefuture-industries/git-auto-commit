@@ -67,9 +67,9 @@ var GetDiff = func(file string) (string, error) {
 // 		return nil, err
 // 	}
 
-// 	return files, nil
-// }
-var GetStagedFiles = func () ([]string, error) {
+//		return files, nil
+//	}
+var GetStagedFiles = func() ([]string, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
 
 	stdout, err := cmd.StdoutPipe()
