@@ -21,7 +21,11 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	InfoLogger = func(msg string) { infoLoggerMock(msg) }
 	GetVersion = func(show bool) { getVersionMock(show) }
 
-	Зфкыук()
+	Parser()
+	Commit()
+	ErrorLogger()
+	InfoLogger()
+	GetVersion()
 
 	getStagedFilesMock = func() ([]string, error) { return []string{}, nil }
 	infoLoggerMock = func(msg string) {
