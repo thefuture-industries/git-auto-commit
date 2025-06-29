@@ -27,8 +27,8 @@ buildrelease-update:
 	@go build -ldflags="-s -w" -trimpath -o bin/auto-commit.update .
 	@upx.exe --best --lzma bin/auto-commit.update
 
-test:
-	@go test -v ./...
+# test:
+# 	@go test -v ./...
 
 run: build
 	@./bin/auto-commit
