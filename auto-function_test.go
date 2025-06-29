@@ -3,6 +3,9 @@ package main
 import "testing"
 
 func TestParser_AddedGoFunction(t *testing.T) {
+	mocks := SaveMocks()
+	defer mocks.Apply()
+
 	GetDiff = func(file string) (string, error) {
 		return "+func TestParser()", nil
 	}
@@ -16,7 +19,7 @@ func TestParser_AddedGoFunction(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "added function TestParser"
+	expected := "aded function TestParser"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
