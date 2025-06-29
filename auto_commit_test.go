@@ -38,6 +38,6 @@ func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
 
 	expected := "error getting staged files: fail"
 	if calledErr != expected {
-		t.Errorf("ex")
+		t.Errorf("expected error log '%s', got '%s'", expected, calledErr)
 	}
 }
