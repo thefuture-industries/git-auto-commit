@@ -17,7 +17,7 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	getStagedFilesMock = func() ([]string, error) { return []string{}, nil }
 	parserMock = func(files []string) (string, error) { return "", nil }
 	commitMock = func(msg string) error { return nil }
-	errorLoggerMock = func(err string) { t.Errorf()}
+	errorLoggerMock = func(err error) { t.Errorf("unexpected error: %v", err) }
 
 	main.AutoCommit()
 }
