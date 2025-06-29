@@ -29,9 +29,15 @@ func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
 	InfoLogger = func(msg string) {}
 	GetVersion = func(show bool) {}
 
-	var calledError string
-	
+	var calledErr string
+	ErrorLogger = func(err error) { calledErr = err.Error() }
 
-	InfoLogger = func(msg string) { calledInfo = msg }
+	InfoLogger = func(msg string) { calledErr = msg }
+
 	AutoCommit()
+
+	expected := "error getting staged files: fail"
+	if calledErr != expected {
+		t.Errorf("ex")
+	}
 }
