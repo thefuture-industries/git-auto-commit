@@ -14,7 +14,7 @@ var diffBufferPool = sync.Pool{
 	},
 }
 
-func GetDiff(file string) (string, error) {
+var GetDiff = func(file string) (string, error) {
 	var builder strings.Builder
 	builder.Reset()
 
