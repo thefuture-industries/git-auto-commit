@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func DetectLanguage(filename string) string {
+var DetectLanguage = func(filename string) string {
 	ext := strings.ToLower(filepath.Ext(filename))
 
 	switch ext {
