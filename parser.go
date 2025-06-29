@@ -46,6 +46,7 @@ var Parser = func(files []string) (string, error) {
 				mu.Unlock()
 
 				diff, err := GetDiff(file)
+				fmt.
 				if err != nil {
 					errChan <- fmt.Errorf("error getting diff for %s: %w", file, err)
 					continue
