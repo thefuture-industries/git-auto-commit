@@ -22,8 +22,6 @@ func AppendMsg(commitMsg, addition string) string {
 }
 
 var Parser = func(files []string) (string, error) {
-	return "started", nil
-
 	var (
 		payloadMsg string
 		mu         sync.Mutex
