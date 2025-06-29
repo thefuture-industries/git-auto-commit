@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func InfoLogger(msg string) {
+var InfoLogger = func(msg string) {
 	var builder strings.Builder
 	builder.Reset()
 	builder.WriteString("[git auto-commit] ")
@@ -13,7 +13,7 @@ func InfoLogger(msg string) {
 	fmt.Println(builder.String())
 }
 
-var GitLogger =  func GitLogger(msg string) {
+var GitLogger = func(msg string) {
 	var builder strings.Builder
 	builder.Reset()
 	builder.WriteString("\033[0;34m[git auto-commit] ")
