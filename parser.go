@@ -7,7 +7,7 @@ import (
 	"sync"
 )
 
-func appendMsg(commitMsg, addition string) string {
+func AppendMsg(commitMsg, addition string) string {
 	var builder strings.Builder
 	builder.Reset()
 
@@ -21,7 +21,7 @@ func appendMsg(commitMsg, addition string) string {
 	return builder.String()
 }
 
-func Parser(files []string) (string, error) {
+var Parser = func(files []string) (string, error) {
 	var (
 		payloadMsg string
 		mu         sync.Mutex
@@ -54,7 +54,7 @@ func Parser(files []string) (string, error) {
 				lang := DetectLanguage(file)
 				if lang == "" {
 					mu.Lock()
-					payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", filepath.Base(file)))
+					payloadMsg = AppendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", filepath.Base(file)))
 					mu.Unlock()
 					continue // README.md, etc.
 				}
