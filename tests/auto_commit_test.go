@@ -2,6 +2,7 @@ package tests
 
 import (
 	"testing"
+	"git-auto-commit"
 )
 
 var (
@@ -26,6 +27,6 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	main.AutoCommit()
 
 	if calledInfo != "No files staged for commit." {
-		t.Errorf("")
+		t.Errorf("expected info log 'No files staged for commit.', got '%s'", calledInfo)
 	}
 }
