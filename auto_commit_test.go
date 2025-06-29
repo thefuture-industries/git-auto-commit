@@ -21,6 +21,8 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	InfoLogger = func(msg string) { infoLoggerMock(msg) }
 	GetVersion = func(show bool) { getVersionMock(show) }
 
+	GetStagedFiles()
+
 	getStagedFilesMock = func() ([]string, error) { return []string{}, nil }
 	infoLoggerMock = func(msg string) {
 		if msg != "No files staged for commit." {
