@@ -7,7 +7,7 @@ func TestParser_AddedGoFunction(t *testing.T) {
 		return "+func TestParser() {}", nil
 	}
 
-	DetectLanguage = func(file string) string {
+	DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
