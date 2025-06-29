@@ -8,7 +8,7 @@ import (
 func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	calledInfo := ""
 
-	restore := saveAndRestoreMocks()
+	restore := SaveAndRestoreMocks()
     defer restore()
 
 	AutoCommit()
