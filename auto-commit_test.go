@@ -8,12 +8,8 @@ import (
 func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	calledInfo := ""
 
-	GetStagedFiles = func() ([]string, error) { return []string{}, nil }
-	Parser = func(files []string) (string, error) { return "", nil }
-	Commit = func(msg string) error { return nil }
-	ErrorLogger = func(err error) { t.Errorf("unexpected error: %v", err) }
-	InfoLogger = func(msg string) { calledInfo = msg }
-	GetVersion = func(show bool) {}
+	restore := saveAndRestoreMocks()
+    defer restore()
 
 	AutoCommit()
 
