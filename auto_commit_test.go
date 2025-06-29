@@ -22,7 +22,7 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 }
 
 func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
-	getStagedFilesMock = func() ([]string, error) { return nil, errors.New("fail") }
+	GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
 	errorLoggerMock = func(err error) {
 		if err == nil || err.Error() != "error getting staged files: fail" {
 			t.Errorf("unexpected error: %v", err)
