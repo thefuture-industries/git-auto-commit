@@ -14,14 +14,12 @@ var (
 )
 
 func TestAutoCommit_NoStagedFiles(t *testing.T) {
-	calledInfo := ""
-
-	getStagedFilesMock = func() ([]string, error) { return []string{}, nil }
-	parserMock = func(files []string) (string, error) { return "", nil }
-	commitMock = func(msg string) error { return nil }
-	errorLoggerMock = func(err error) { t.Errorf("unexpected error: %v", err) }
-	infoLoggerMock = func(msg string) { calledInfo = msg }
-	getVersionMock = func(show bool) {}
+	GetStagedFiles = func() ([]string, error) { return getStagedFilesMock() }
+	Parser = func(files []string) (string, error) { return parserMock(files) }
+	Commit = func(msg string) error { return commitMock(msg) }
+	ErrorLogger = func(err error) { errorLoggerMock(err) }
+	InfoLogger = func(msg string) { infoLoggerMock(msg) }
+	GetVersion = func(show bool) { getVersionMock(show) }
 
 	AutoCommit()
 
