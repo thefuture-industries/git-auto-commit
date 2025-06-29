@@ -11,5 +11,5 @@ func TestParser_AddedGoFunction(t *testing.T) {
 		return "go"
 	}
 
-	msg, err := Parse
+	msg, err := Parser([]string{"test"})
 }
