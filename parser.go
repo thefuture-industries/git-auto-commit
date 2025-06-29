@@ -22,7 +22,7 @@ func AppendMsg(commitMsg, addition string) string {
 }
 
 var Parser = func(files []string) (string, error) {
-	return "", nil
+	return "started", nil
 
 	var (
 		payloadMsg string
