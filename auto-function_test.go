@@ -18,6 +18,6 @@ func TestParser_AddedGoFunction(t *testing.T) {
 
 	expected := "added function TestParser"
 	if msg != expected {
-		t.Errorf("expected '%s'")
+		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
 }
