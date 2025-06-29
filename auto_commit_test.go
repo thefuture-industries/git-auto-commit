@@ -23,13 +23,14 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 }
 
 func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
-	calledInfo := ""
-
 	GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
 	Parser = func(files []string) (string, error) { return "", nil }
 	Commit = func(msg string) error { return nil }
 	InfoLogger = func(msg string) {}
 	GetVersion = func(show bool) {}
+
+	var calledError string
+	
 
 	InfoLogger = func(msg string) { calledInfo = msg }
 	AutoCommit()
