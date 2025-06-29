@@ -23,6 +23,8 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 }
 
 func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
+	calledInfo := ""
+
 	GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
 	ErrorLogger = func(err error) {
 		if err == nil || err.Error() != "error getting staged files: fail" {
@@ -30,6 +32,6 @@ func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
 		}
 	}
 
-	InfoLogger = func(msg string) {}
+	InfoLogger = func(msg string) { calledInfo = msg }
 	AutoCommit()
 }
