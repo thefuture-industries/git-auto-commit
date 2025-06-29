@@ -1,8 +1,7 @@
-package tests
+package main
 
 import (
 	"testing"
-	"main"
 )
 
 var (
@@ -24,7 +23,7 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	infoLoggerMock = func(msg string) { calledInfo = msg }
 	getVersionMock = func(show bool) {}
 
-	main.AutoCommit()
+	AutoCommit()
 
 	if calledInfo != "No files staged for commit." {
 		t.Errorf("expected info log 'No files staged for commit.', got '%s'", calledInfo)
