@@ -6,7 +6,8 @@ import (
 )
 
 func TestAutoCommit_NoStagedFiles(t *testing.T) {
-	orig
+	mocks := SaveMocks()
+	defer mocks.Apply()
 
 	calledInfo := ""
 	GetStagedFiles = func() ([]string, error) { return []string{}, nil }
@@ -24,6 +25,9 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 }
 
 func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
+	mocks := SaveMocks()
+	defer mocks.Apply()
+
 	GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
 	Parser = func(files []string) (string, error) { return "", nil }
 	Commit = func(msg string) error { return nil }
