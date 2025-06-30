@@ -2,7 +2,7 @@ package parser
 
 import (
 	"fmt"
-	"git-auto-commit/achelper"
+	"git-auto-commit/achelper/code"
 	"git-auto-commit/acpkg"
 	"git-auto-commit/constants"
 	"git-auto-commit/diff"
