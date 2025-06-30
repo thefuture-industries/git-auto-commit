@@ -2,7 +2,10 @@ package achelper
 
 import (
 	"fmt"
+	"git-auto-commit/constants"
 	"git-auto-commit/diff"
+	"git-auto-commit/git"
+	"git-auto-commit/parser"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -76,14 +79,14 @@ func WatchCommit(path string) {
 					InfoLogger("No files staged for commit.")
 				}
 
-				parser, err := Parser(files)
+				parser, err := parser.Parser(files)
 				if err != nil {
 					ErrorLogger(err)
 					return
 				}
 
-				if uint16(len(parser)) >= MAX_COMMIT_LENGTH_WATCHER {
-					if err := Commit(parser); err != nil {
+				if uint16(len(parser)) >= constants.MAX_COMMIT_LENGTH_WATCHER {
+					if err := git.Commit(parser); err != nil {
 						ErrorLogger(err)
 					}
 				}
@@ -92,6 +95,6 @@ func WatchCommit(path string) {
 			ErrorLogger(err)
 		}
 
-		time.Sleep(COMMIT_TIME)
+		time.Sleep(constants.COMMIT_TIME)
 	}
 }

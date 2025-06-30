@@ -2,7 +2,6 @@ package achelper
 
 import (
 	"fmt"
-	"git-auto-commit/achelper"
 	"git-auto-commit/config"
 	"git-auto-commit/constants"
 	"git-auto-commit/git"
@@ -15,7 +14,7 @@ import (
 var GetVersion = func(isCurrent bool) {
 	root, err := git.GetGitRoot()
 	if err != nil {
-		achelper.ErrorLogger(fmt.Errorf("could not get git root: %w", err))
+		ErrorLogger(fmt.Errorf("could not get git root: %w", err))
 		return
 	}
 
@@ -23,7 +22,7 @@ var GetVersion = func(isCurrent bool) {
 
 	version, err := os.ReadFile(versionFile)
 	if err != nil {
-		achelper.ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
+		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
 		return
 	}
 
