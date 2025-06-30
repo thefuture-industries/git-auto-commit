@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"git-auto-commit/achelper"
 	"git-auto-commit/diff"
 	"git-auto-commit/git"
 	"git-auto-commit/parser"
@@ -31,27 +32,27 @@ func main() {
 }
 
 func AutoCommit() {
-	GetVersion(false)
+	achelper.GetVersion(false)
 
 	files, err := diff.GetStagedFiles()
 	if err != nil {
-		ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
+		achelper.ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
 		return
 	}
 
 	if len(files) == 0 {
-		InfoLogger("No files staged for commit.")
+		achelper.InfoLogger("No files staged for commit.")
 		return
 	}
 
 	parserMsg, err := parser.Parser(files)
 	if err != nil {
-		ErrorLogger(err)
+		achelper.ErrorLogger(err)
 		return
 	}
 
 	if err := Commit(parserMsg); err != nil {
-		ErrorLogger(fmt.Errorf("error committing: %s", err.Error()))
+		achelper.ErrorLogger(fmt.Errorf("error committing: %s", err.Error()))
 		return
 	}
 }
