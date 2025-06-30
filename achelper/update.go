@@ -2,6 +2,7 @@ package achelper
 
 import (
 	"fmt"
+	"git-auto-commit/config"
 	"git-auto-commit/constants"
 	"git-auto-commit/git"
 	"io"
@@ -38,7 +39,7 @@ func AutoCommitUpdate() {
 	var data struct {
 		TagName string `json:"tag_name"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+	if err := config.JSON.NewDecoder(resp.Body).Decode(&data); err != nil {
 		ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
 		return
 	}
