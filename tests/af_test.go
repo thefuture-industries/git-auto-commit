@@ -35,7 +35,7 @@ func TestFormattedFunction_AddedGoFunctions(t *testing.T) {
 	defer mocks.Apply()
 
 	diff.GetDiff = func(file string) (string, error) {
-		return "+func AddedGoFunction1()\n+func AddedGoFunction2()", nil
+		return "+func AddedGoFunction1()\n+func AddedGoFunction2()\n+func AddedGoFunction3()", nil
 	}
 
 	code.DetectLanguage = func(filename string) string {
@@ -47,7 +47,7 @@ func TestFormattedFunction_AddedGoFunctions(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "added function AddedGoFunction"
+	expected := "added functions: AddedGoFunction1, AddedGoFunction2, AddedGoFunction3"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
