@@ -121,12 +121,13 @@ func TestFormattedFunction_ChangedParamNameGoFunction(t *testing.T) {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
 }
-func TestFormattedFunction_ChangedParamNameGoFunction(t *testing.T) {
+
+func TestFormattedFunction_ChangedParamNameGoFunctions(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
 	diff.GetDiff = func(file string) (string, error) {
-		return "-func ParamTest(a int)\n+func ParamTest(b int)", nil
+		return "-func Foo(a int)\n+func Foo(b int)\n-func Bar(x string)\n+func Bar(y string)", nil
 	}
 
 	code.DetectLanguage = func(filename string) string {
