@@ -169,7 +169,7 @@ func FormattedLogic(line, lang, filename string) string {
 			result = builder.String()
 		}
 
-		if len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) == 1 {
+		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newIfs) == 1 {
 			result = result[:int(MAX_COMMIT_LENGTH)]
 		}
 
