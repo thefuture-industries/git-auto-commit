@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"git-auto-commit/diff"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -45,7 +46,7 @@ var Parser = func(files []string) (string, error) {
 				}
 				mu.Unlock()
 
-				diff, err := GetDiff(file)
+				diff, err := diff.GetDiff(file)
 				if err != nil {
 					errChan <- fmt.Errorf("error getting diff for %s: %w", file, err)
 					continue
