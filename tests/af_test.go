@@ -93,7 +93,7 @@ func TestFormattedFunction_ChangedParamTypeGoFunction(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "changed parameter in ParamTest function"
+	expected := "changed parameter type a in TypeTest function"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
