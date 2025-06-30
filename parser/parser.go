@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"git-auto-commit/constants"
 	"git-auto-commit/diff"
 	"path/filepath"
 	"strings"
@@ -40,7 +41,7 @@ var Parser = func(files []string) (string, error) {
 
 			for file := range jobs {
 				mu.Lock()
-				if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
+				if uint16(len(payloadMsg)) > constants.MAX_COMMIT_LENGTH {
 					mu.Unlock()
 					continue
 				}
@@ -81,7 +82,7 @@ var Parser = func(files []string) (string, error) {
 					mu.Lock()
 					for _, change := range fileChanges {
 						nextMsg := AppendMsg(payloadMsg, change)
-						if len(nextMsg) > int(MAX_COMMIT_LENGTH) {
+						if len(nextMsg) > int(constants.MAX_COMMIT_LENGTH) {
 							if len(payloadMsg) == 0 {
 								if len(change) > int(MAX_COMMIT_LENGTH) {
 									change = change[:int(MAX_COMMIT_LENGTH)]
