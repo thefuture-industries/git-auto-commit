@@ -1,6 +1,7 @@
-package main
+package acpkg
 
 import (
+	"git-auto-commit/constants"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -154,7 +155,7 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		result := builder.String()
-		for len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) > 1 {
+		for len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newIfs) > 1 {
 			newIfs = newIfs[:len(newIfs)-1]
 			builder.Reset()
 
@@ -169,8 +170,8 @@ func FormattedLogic(line, lang, filename string) string {
 			result = builder.String()
 		}
 
-		if len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) == 1 {
-			result = result[:int(MAX_COMMIT_LENGTH)]
+		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newIfs) == 1 {
+			result = result[:int(constants.MAX_COMMIT_LENGTH)]
 		}
 
 		return result
@@ -195,13 +196,13 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		result := makeResult(oldSwitches)
-		for len(result) > int(MAX_COMMIT_LENGTH) && len(oldSwitches) > 1 {
+		for len(result) > int(constants.MAX_COMMIT_LENGTH) && len(oldSwitches) > 1 {
 			oldSwitches = oldSwitches[:len(oldSwitches)-1]
 			result = makeResult(oldSwitches)
 		}
 
-		if len(result) > int(MAX_COMMIT_LENGTH) && len(oldSwitches) == 1 {
-			result = result[:int(MAX_COMMIT_LENGTH)]
+		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(oldSwitches) == 1 {
+			result = result[:int(constants.MAX_COMMIT_LENGTH)]
 		}
 
 		return result
@@ -226,13 +227,13 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		result := makeResult(newSwitches)
-		for len(result) > int(MAX_COMMIT_LENGTH) && len(newSwitches) > 1 {
+		for len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newSwitches) > 1 {
 			newSwitches = newSwitches[:len(newSwitches)-1]
 			result = makeResult(newSwitches)
 		}
 
-		if len(result) > int(MAX_COMMIT_LENGTH) && len(newSwitches) == 1 {
-			result = result[:int(MAX_COMMIT_LENGTH)]
+		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newSwitches) == 1 {
+			result = result[:int(constants.MAX_COMMIT_LENGTH)]
 		}
 
 		return result
@@ -258,7 +259,7 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		result := makeResult(osw, nsw)
-		for len(result) > int(MAX_COMMIT_LENGTH) && (len(osw.Cases) > 1 || len(nsw.Cases) > 1) {
+		for len(result) > int(constants.MAX_COMMIT_LENGTH) && (len(osw.Cases) > 1 || len(nsw.Cases) > 1) {
 			if len(osw.Cases) > len(nsw.Cases) {
 				osw.Cases = osw.Cases[:len(osw.Cases)-1]
 			} else {
@@ -268,8 +269,8 @@ func FormattedLogic(line, lang, filename string) string {
 			result = makeResult(osw, nsw)
 		}
 
-		if len(result) > int(MAX_COMMIT_LENGTH) && len(osw.Cases) == 1 && len(nsw.Cases) == 1 {
-			result = result[:int(MAX_COMMIT_LENGTH)]
+		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(osw.Cases) == 1 && len(nsw.Cases) == 1 {
+			result = result[:int(constants.MAX_COMMIT_LENGTH)]
 		}
 
 		return result

@@ -1,7 +1,11 @@
-package main
+package achelper
 
 import (
 	"fmt"
+	"git-auto-commit/achelper/logger"
+	"git-auto-commit/config"
+	"git-auto-commit/constants"
+	"git-auto-commit/git"
 	"io"
 	"net/http"
 	"os"
@@ -12,23 +16,23 @@ import (
 )
 
 func AutoCommitUpdate() {
-	root, err := GetGitRoot()
+	root, err := git.GetGitRoot()
 	if err != nil {
-		ErrorLogger(err)
+		logger.ErrorLogger(err)
 		return
 	}
 
-	versionFile := filepath.Join(root, ".git", "hooks", VERSION_FILE)
+	versionFile := filepath.Join(root, ".git", "hooks", constants.VERSION_FILE)
 
 	version, err := os.ReadFile(versionFile)
 	if err != nil {
-		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
+		logger.ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
 		return
 	}
 
-	resp, err := http.Get(GITHUB_API_REPO_URL + "/releases/latest")
+	resp, err := http.Get(constants.GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
-		ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
+		logger.ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
 		return
 	}
 	defer resp.Body.Close()
@@ -36,8 +40,8 @@ func AutoCommitUpdate() {
 	var data struct {
 		TagName string `json:"tag_name"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
+	if err := config.JSON.NewDecoder(resp.Body).Decode(&data); err != nil {
+		logger.ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
 		return
 	}
 
@@ -61,7 +65,7 @@ func AutoCommitUpdate() {
 	tmpFile := filepath.Join(os.TempDir(), "auto-commit-update"+scriptUpdateExt)
 	err = downloadFile(scriptUpdate, tmpFile)
 	if err != nil {
-		ErrorLogger(fmt.Errorf("failed to download update script: %v", err))
+		logger.ErrorLogger(fmt.Errorf("failed to download update script: %v", err))
 		return
 	}
 	defer os.Remove(tmpFile)
@@ -77,7 +81,7 @@ func AutoCommitUpdate() {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		ErrorLogger(fmt.Errorf("failed to run update script: %v", err))
+		logger.ErrorLogger(fmt.Errorf("failed to run update script: %v", err))
 		return
 	}
 }

@@ -1,4 +1,4 @@
-package main
+package diff
 
 import (
 	"bufio"
@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
+
+	"git-auto-commit/git"
 )
 
 var diffBufferPool = sync.Pool{
@@ -14,11 +16,11 @@ var diffBufferPool = sync.Pool{
 	},
 }
 
-func GetDiff(file string) (string, error) {
+var GetDiff = func(file string) (string, error) {
 	var builder strings.Builder
 	builder.Reset()
 
-	root, err := GetGitRoot()
+	root, err := git.GetGitRoot()
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +43,7 @@ func GetDiff(file string) (string, error) {
 	return buf.String(), nil
 }
 
-func GetStagedFiles() ([]string, error) {
+var GetStagedFiles = func() ([]string, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
 
 	stdout, err := cmd.StdoutPipe()

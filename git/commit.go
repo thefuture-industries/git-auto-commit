@@ -1,13 +1,14 @@
-package main
+package git
 
 import (
 	"fmt"
+	"git-auto-commit/achelper/logger"
 	"os"
 	"os/exec"
 )
 
-func Commit(commitMsg string) error {
-	GitLogger(fmt.Sprintf("commit is: %s", commitMsg))
+var Commit = func(commitMsg string) error {
+	logger.GitLogger(fmt.Sprintf("commit is: %s", commitMsg))
 
 	cmd := exec.Command("git", "commit", "-m", commitMsg)
 	cmd.Stdout = os.Stdout

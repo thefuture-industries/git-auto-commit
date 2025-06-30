@@ -1,13 +1,17 @@
-package main
+package parser
 
 import (
 	"fmt"
+	"git-auto-commit/achelper/code"
+	"git-auto-commit/acpkg"
+	"git-auto-commit/constants"
+	"git-auto-commit/diff"
 	"path/filepath"
 	"strings"
 	"sync"
 )
 
-func appendMsg(commitMsg, addition string) string {
+func AppendMsg(commitMsg, addition string) string {
 	var builder strings.Builder
 	builder.Reset()
 
@@ -21,7 +25,7 @@ func appendMsg(commitMsg, addition string) string {
 	return builder.String()
 }
 
-func Parser(files []string) (string, error) {
+var Parser = func(files []string) (string, error) {
 	var (
 		payloadMsg string
 		mu         sync.Mutex
@@ -39,37 +43,37 @@ func Parser(files []string) (string, error) {
 
 			for file := range jobs {
 				mu.Lock()
-				if uint16(len(payloadMsg)) > MAX_COMMIT_LENGTH {
+				if uint16(len(payloadMsg)) > constants.MAX_COMMIT_LENGTH {
 					mu.Unlock()
 					continue
 				}
 				mu.Unlock()
 
-				diff, err := GetDiff(file)
+				diff, err := diff.GetDiff(file)
 				if err != nil {
 					errChan <- fmt.Errorf("error getting diff for %s: %w", file, err)
 					continue
 				}
 
-				lang := DetectLanguage(file)
+				lang := code.DetectLanguage(file)
 				if lang == "" {
 					mu.Lock()
-					payloadMsg = appendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", filepath.Base(file)))
+					payloadMsg = AppendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", filepath.Base(file)))
 					mu.Unlock()
 					continue // README.md, etc.
 				}
 
 				var fileChanges []string
 				for _, formatted := range []string{
-					FormattedVariables(diff, lang),
-					FormattedFunction(diff, lang),
-					FormattedClass(diff, lang),
-					FormattedLogic(diff, lang, filepath.Base(file)),
-					FormattedImport(diff, lang, filepath.Base(file)),
-					FormattedStruct(diff, lang),
-					FormattedType(diff, lang),
-					FormattedInterface(diff, lang),
-					FormattedEnum(diff, lang),
+					acpkg.FormattedVariables(diff, lang),
+					acpkg.FormattedFunction(diff, lang),
+					acpkg.FormattedClass(diff, lang),
+					acpkg.FormattedLogic(diff, lang, filepath.Base(file)),
+					acpkg.FormattedImport(diff, lang, filepath.Base(file)),
+					acpkg.FormattedStruct(diff, lang),
+					acpkg.FormattedType(diff, lang),
+					acpkg.FormattedInterface(diff, lang),
+					acpkg.FormattedEnum(diff, lang),
 				} {
 					if formatted != "" {
 						fileChanges = append(fileChanges, formatted)
@@ -79,11 +83,11 @@ func Parser(files []string) (string, error) {
 				if len(fileChanges) > 0 {
 					mu.Lock()
 					for _, change := range fileChanges {
-						nextMsg := appendMsg(payloadMsg, change)
-						if len(nextMsg) > int(MAX_COMMIT_LENGTH) {
+						nextMsg := AppendMsg(payloadMsg, change)
+						if len(nextMsg) > int(constants.MAX_COMMIT_LENGTH) {
 							if len(payloadMsg) == 0 {
-								if len(change) > int(MAX_COMMIT_LENGTH) {
-									change = change[:int(MAX_COMMIT_LENGTH)]
+								if len(change) > int(constants.MAX_COMMIT_LENGTH) {
+									change = change[:int(constants.MAX_COMMIT_LENGTH)]
 								}
 
 								payloadMsg = change
@@ -115,20 +119,20 @@ func Parser(files []string) (string, error) {
 	}
 
 	if len(payloadMsg) == 0 {
-		formattedByRemote, err := FormattedByRemote("")
+		formattedByRemote, err := acpkg.FormattedByRemote("")
 		if err != nil {
 			return "", err
 		}
 
-		formattedByBranch, err := FormattedByBranch()
+		formattedByBranch, err := acpkg.FormattedByBranch()
 		if err != nil {
 			return "", err
 		}
 
 		if formattedByRemote != "" {
-			payloadMsg = appendMsg(payloadMsg, formattedByRemote)
+			payloadMsg = AppendMsg(payloadMsg, formattedByRemote)
 		} else {
-			payloadMsg = appendMsg(payloadMsg, formattedByBranch)
+			payloadMsg = AppendMsg(payloadMsg, formattedByBranch)
 		}
 	}
 

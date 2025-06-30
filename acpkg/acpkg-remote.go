@@ -1,6 +1,7 @@
-package main
+package acpkg
 
 import (
+	"git-auto-commit/git"
 	"strconv"
 	"strings"
 )
@@ -9,22 +10,22 @@ func FormattedByRemote(token string) (string, error) {
 	var builder strings.Builder
 	builder.Reset()
 
-	branch, err := GetCurrentBranch()
+	branch, err := git.GetCurrentBranch()
 	if err != nil {
 		return "", err
 	}
 
-	issue := ExtractIssueNumber(branch)
+	issue := git.ExtractIssueNumber(branch)
 	if issue == "" {
 		return "", nil
 	}
 
-	owner, repo, err := GetOwnerRepository()
+	owner, repo, err := git.GetOwnerRepository()
 	if err != nil {
 		return "", err
 	}
 
-	issueName, issueNumber, err := GetIssueData(owner, repo, issue, token)
+	issueName, issueNumber, err := git.GetIssueData(owner, repo, issue, token)
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +42,7 @@ func FormattedByBranch() (string, error) {
 	var builder strings.Builder
 	builder.Reset()
 
-	branch, err := GetCurrentBranch()
+	branch, err := git.GetCurrentBranch()
 	if err != nil {
 		return "", err
 	}

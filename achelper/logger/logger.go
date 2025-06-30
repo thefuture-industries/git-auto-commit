@@ -1,11 +1,11 @@
-package main
+package logger
 
 import (
 	"fmt"
 	"strings"
 )
 
-func InfoLogger(msg string) {
+var InfoLogger = func(msg string) {
 	var builder strings.Builder
 	builder.Reset()
 	builder.WriteString("[git auto-commit] ")
@@ -13,7 +13,7 @@ func InfoLogger(msg string) {
 	fmt.Println(builder.String())
 }
 
-func GitLogger(msg string) {
+var GitLogger = func(msg string) {
 	var builder strings.Builder
 	builder.Reset()
 	builder.WriteString("\033[0;34m[git auto-commit] ")
@@ -22,7 +22,7 @@ func GitLogger(msg string) {
 	fmt.Print(builder.String())
 }
 
-func ErrorLogger(err error) {
+var ErrorLogger = func(err error) {
 	var builder strings.Builder
 	builder.Reset()
 	builder.WriteString("\033[0;31m[git auto-commit] ")

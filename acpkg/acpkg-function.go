@@ -1,6 +1,7 @@
-package main
+package acpkg
 
 import (
+	"git-auto-commit/constants"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -121,13 +122,13 @@ func FormattedFunction(diff, lang string) string {
 	}
 
 	parser := strings.Join(results, " | ")
-	for len(parser) > int(MAX_COMMIT_LENGTH) && len(results) > 1 {
+	for len(parser) > int(constants.MAX_COMMIT_LENGTH) && len(results) > 1 {
 		results = results[:len(results)-1]
 		parser = strings.Join(results, " | ")
 	}
 
-	if len(parser) > int(MAX_COMMIT_LENGTH) && len(results) == 1 {
-		parser = parser[:int(MAX_COMMIT_LENGTH)]
+	if len(parser) > int(constants.MAX_COMMIT_LENGTH) && len(results) == 1 {
+		parser = parser[:int(constants.MAX_COMMIT_LENGTH)]
 	}
 
 	return parser
