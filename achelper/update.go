@@ -2,6 +2,7 @@ package achelper
 
 import (
 	"fmt"
+	"git-auto-commit/git"
 	"io"
 	"net/http"
 	"os"
@@ -12,7 +13,7 @@ import (
 )
 
 func AutoCommitUpdate() {
-	root, err := GetGitRoot()
+	root, err := git.GetGitRoot()
 	if err != nil {
 		ErrorLogger(err)
 		return

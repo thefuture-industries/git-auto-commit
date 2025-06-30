@@ -32,7 +32,7 @@ var GetVersion = func(isCurrent bool) {
 
 	resp, err := http.Get(constants.GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
-		achelper.ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
+		ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
 		return
 	}
 	defer resp.Body.Close()
@@ -41,7 +41,7 @@ var GetVersion = func(isCurrent bool) {
 		TagName string `json:"tag_name"`
 	}
 	if err := config.JSON.NewDecoder(resp.Body).Decode(&data); err != nil {
-		achelper.ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
+		ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
 		return
 	}
 
