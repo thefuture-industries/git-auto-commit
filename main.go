@@ -37,23 +37,23 @@ func AutoCommit() {
 
 	files, err := diff.GetStagedFiles()
 	if err != nil {
-		achelper.ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
+		logger.ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
 		return
 	}
 
 	if len(files) == 0 {
-		achelper.InfoLogger("No files staged for commit.")
+		logger.InfoLogger("No files staged for commit.")
 		return
 	}
 
 	parserMsg, err := parser.Parser(files)
 	if err != nil {
-		achelper.ErrorLogger(err)
+		logger.ErrorLogger(err)
 		return
 	}
 
 	if err := git.Commit(parserMsg); err != nil {
-		achelper.ErrorLogger(fmt.Errorf("error committing: %s", err.Error()))
+		logger.ErrorLogger(fmt.Errorf("error committing: %s", err.Error()))
 		return
 	}
 }
