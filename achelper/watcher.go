@@ -72,12 +72,12 @@ func WatchCommit(path string) {
 
 				files, err := diff.GetStagedFiles()
 				if err != nil {
-					ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
+					logger.ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
 					return
 				}
 
 				if len(files) == 0 {
-					InfoLogger("No files staged for commit.")
+					logger.InfoLogger("No files staged for commit.")
 				}
 
 				parser, err := parser.Parser(files)
