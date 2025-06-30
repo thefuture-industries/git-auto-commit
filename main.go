@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"git-auto-commit/diff"
+	"git-auto-commit/git"
 	"os"
 )
 
 func main() {
 	if len(os.Args) > 1 && (os.Args[1] == "-w" || os.Args[1] == "--watch") {
-		path, err := GetGitRoot()
+		path, err := git.GetGitRoot()
 		if err != nil {
 			ErrorLogger(err)
 			return
@@ -30,7 +32,7 @@ func main() {
 func AutoCommit() {
 	GetVersion(false)
 
-	files, err := GetStagedFiles()
+	files, err := diff.GetStagedFiles()
 	if err != nil {
 		ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
 		return
