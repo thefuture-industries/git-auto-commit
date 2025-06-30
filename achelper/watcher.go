@@ -2,6 +2,7 @@ package achelper
 
 import (
 	"fmt"
+	"git-auto-commit/diff"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -65,7 +66,7 @@ func WatchCommit(path string) {
 					return
 				}
 
-				files, err := GetStagedFiles()
+				files, err := diff.GetStagedFiles()
 				if err != nil {
 					ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
 					return
