@@ -55,7 +55,7 @@ var Parser = func(files []string) (string, error) {
 					continue
 				}
 
-				lang := achelper.DetectLanguage(file)
+				lang := code.DetectLanguage(file)
 				if lang == "" {
 					mu.Lock()
 					payloadMsg = AppendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", filepath.Base(file)))
