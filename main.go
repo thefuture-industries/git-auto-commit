@@ -13,7 +13,7 @@ func main() {
 	if len(os.Args) > 1 && (os.Args[1] == "-w" || os.Args[1] == "--watch") {
 		path, err := git.GetGitRoot()
 		if err != nil {
-			ErrorLogger(err)
+			achelper.ErrorLogger(err)
 			return
 		}
 
@@ -21,11 +21,11 @@ func main() {
 			path = fmt.Sprintf("%s/%s", path, os.Args[2])
 		}
 
-		WatchCommit(path)
+		achelper.WatchCommit(path)
 	} else if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
-		GetVersion(true)
+		achelper.GetVersion(true)
 	} else if len(os.Args) > 1 && (os.Args[1] == "-u" || os.Args[1] == "--update") {
-		AutoCommitUpdate()
+		achelper.AutoCommitUpdate()
 	} else {
 		AutoCommit()
 	}
