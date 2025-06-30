@@ -127,7 +127,7 @@ func TestFormattedFunction_ChangedParamNameGoFunctions(t *testing.T) {
 	defer mocks.Apply()
 
 	diff.GetDiff = func(file string) (string, error) {
-		return "-func Foo(a int)\n+func Foo(b int)\n-func Bar(x string)\n+func Bar(y string)", nil
+		return "-func ParamTest1(a int)\n+func ParamTest1(b int)\n-func ParamTest2(x string)\n+func ParamTest2(y string)", nil
 	}
 
 	code.DetectLanguage = func(filename string) string {
