@@ -35,7 +35,7 @@ func TestParser_DeletedGoFunction(t *testing.T) {
 	defer mocks.Apply()
 
 	diff.GetDiff = func(file string) (string, error) {
-		return "-func TestParser()", nil
+		return "-func TestParser() {}", nil
 	}
 
 	code.DetectLanguage = func(filename string) string {
@@ -70,7 +70,7 @@ func TestParser_RenamedGoFunction(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "deleted function TestParser"
+	expected := "renamed function TestParser -> TestParser"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
