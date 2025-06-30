@@ -34,9 +34,9 @@ func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
-	Parser = func(files []string) (string, error) { return "", nil }
-	Commit = func(msg string) error { return nil }
+	diff.GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
+	parser.Parser = func(files []string) (string, error) { return "", nil }
+	git.Commit = func(msg string) error { return nil }
 	logger.InfoLogger = func(msg string) {}
 	achelper.GetVersion = func(show bool) {}
 
