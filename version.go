@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"git-auto-commit/achelper"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -38,7 +39,7 @@ var GetVersion = func(isCurrent bool) {
 		TagName string `json:"tag_name"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
+		achelper.ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
 		return
 	}
 
