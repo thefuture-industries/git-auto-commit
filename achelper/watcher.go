@@ -2,6 +2,7 @@ package achelper
 
 import (
 	"fmt"
+	"git-auto-commit/achelper/logger"
 	"git-auto-commit/constants"
 	"git-auto-commit/diff"
 	"git-auto-commit/git"
@@ -22,12 +23,12 @@ func WatchCommit(path string) {
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		ErrorLogger(err)
+		logger.ErrorLogger(err)
 		return
 	}
 	defer watcher.Close()
 
-	InfoLogger("Started commit watcher...")
+	logger.InfoLogger("Started commit watcher...")
 
 	if err := filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
 		if info.IsDir() && !strings.HasPrefix(path, ".git") {
