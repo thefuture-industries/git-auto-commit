@@ -30,6 +30,29 @@ func TestFormattedFunction_AddedGoFunction(t *testing.T) {
 	}
 }
 
+func TestFormattedFunction_AddedGoFunction(t *testing.T) {
+	mocks := SaveMocks()
+	defer mocks.Apply()
+
+	diff.GetDiff = func(file string) (string, error) {
+		return "+func AddedGoFunction()", nil
+	}
+
+	code.DetectLanguage = func(filename string) string {
+		return "go"
+	}
+
+	msg, err := parser.Parser([]string{"auto-commit-parser-test.go"})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+
+	expected := "added function AddedGoFunction"
+	if msg != expected {
+		t.Errorf("expected '%s', got '%s'", expected, msg)
+	}
+}
+
 func TestFormattedFunction_DeletedGoFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
