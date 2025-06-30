@@ -1,6 +1,7 @@
 package acpkg
 
 import (
+	"git-auto-commit/git"
 	"strconv"
 	"strings"
 )
@@ -14,12 +15,12 @@ func FormattedByRemote(token string) (string, error) {
 		return "", err
 	}
 
-	issue := ExtractIssueNumber(branch)
+	issue := git.ExtractIssueNumber(branch)
 	if issue == "" {
 		return "", nil
 	}
 
-	owner, repo, err := GetOwnerRepository()
+	owner, repo, err := git.GetOwnerRepository()
 	if err != nil {
 		return "", err
 	}
