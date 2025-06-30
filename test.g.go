@@ -23,7 +23,7 @@ func SaveMocks() *Mocks {
 		Commit:         git.Commit,
 		ErrorLogger:    achelper.ErrorLogger,
 		InfoLogger:     achelper.InfoLogger,
-		GetVersion:     GetVersion,
+		GetVersion:     achelper.GetVersion,
 	}
 }
 
@@ -33,5 +33,5 @@ func (m *Mocks) Apply() {
 	git.Commit = m.Commit
 	achelper.ErrorLogger = m.ErrorLogger
 	achelper.InfoLogger = m.InfoLogger
-	GetVersion = m.GetVersion
+	achelper.GetVersion = m.GetVersion
 }
