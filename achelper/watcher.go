@@ -39,7 +39,7 @@ func WatchCommit(path string) {
 
 		return nil
 	}); err != nil {
-		ErrorLogger(err)
+		logger.ErrorLogger(err)
 		return
 	}
 
@@ -47,7 +47,7 @@ func WatchCommit(path string) {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		<-sigs
-		InfoLogger("shutdown work watcher...")
+		logger.InfoLogger("shutdown work watcher...")
 		os.Exit(0)
 	}()
 
@@ -66,7 +66,7 @@ func WatchCommit(path string) {
 				}
 
 				if err := exec.Command("git", "add", ".").Run(); err != nil {
-					ErrorLogger(err)
+					logger.ErrorLogger(err)
 					return
 				}
 
