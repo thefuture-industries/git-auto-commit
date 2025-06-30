@@ -2,6 +2,7 @@ package achelper
 
 import (
 	"fmt"
+	"git-auto-commit/achelper/logger"
 	"git-auto-commit/config"
 	"git-auto-commit/constants"
 	"git-auto-commit/git"
@@ -17,7 +18,7 @@ import (
 func AutoCommitUpdate() {
 	root, err := git.GetGitRoot()
 	if err != nil {
-		ErrorLogger(err)
+		logger.ErrorLogger(err)
 		return
 	}
 
@@ -25,13 +26,13 @@ func AutoCommitUpdate() {
 
 	version, err := os.ReadFile(versionFile)
 	if err != nil {
-		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
+		logger.ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
 		return
 	}
 
 	resp, err := http.Get(constants.GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
-		ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
+		logger.ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
 		return
 	}
 	defer resp.Body.Close()
@@ -40,7 +41,7 @@ func AutoCommitUpdate() {
 		TagName string `json:"tag_name"`
 	}
 	if err := config.JSON.NewDecoder(resp.Body).Decode(&data); err != nil {
-		ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
+		logger.ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
 		return
 	}
 
@@ -64,7 +65,7 @@ func AutoCommitUpdate() {
 	tmpFile := filepath.Join(os.TempDir(), "auto-commit-update"+scriptUpdateExt)
 	err = downloadFile(scriptUpdate, tmpFile)
 	if err != nil {
-		ErrorLogger(fmt.Errorf("failed to download update script: %v", err))
+		logger.ErrorLogger(fmt.Errorf("failed to download update script: %v", err))
 		return
 	}
 	defer os.Remove(tmpFile)
@@ -80,7 +81,7 @@ func AutoCommitUpdate() {
 	cmd.Stderr = os.Stderr
 
 	if err := cmd.Run(); err != nil {
-		ErrorLogger(fmt.Errorf("failed to run update script: %v", err))
+		logger.ErrorLogger(fmt.Errorf("failed to run update script: %v", err))
 		return
 	}
 }
