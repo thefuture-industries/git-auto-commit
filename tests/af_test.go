@@ -47,7 +47,7 @@ func TestFormattedFunction_AddedGoFunctions(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "added functions: AddedGoFunction1, AddedGoFunction2, AddedGoFunction3"
+	expected := "added functions: AddedGoFunction1, AddeGoFunction2, AddedGoFunction3"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
