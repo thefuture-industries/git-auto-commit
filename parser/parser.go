@@ -124,7 +124,7 @@ var Parser = func(files []string) (string, error) {
 			return "", err
 		}
 
-		formattedByBranch, err := FormattedByBranch()
+		formattedByBranch, err := acpkg.FormattedByBranch()
 		if err != nil {
 			return "", err
 		}
