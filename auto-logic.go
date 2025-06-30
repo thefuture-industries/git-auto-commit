@@ -201,8 +201,8 @@ func FormattedLogic(line, lang, filename string) string {
 			result = makeResult(oldSwitches)
 		}
 
-		if len(result) > int(MAX_COMMIT_LENGTH) && len(oldSwitches) == 1 {
-			result = result[:int(MAX_COMMIT_LENGTH)]
+		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(oldSwitches) == 1 {
+			result = result[:int(constants.MAX_COMMIT_LENGTH)]
 		}
 
 		return result
@@ -227,13 +227,13 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		result := makeResult(newSwitches)
-		for len(result) > int(MAX_COMMIT_LENGTH) && len(newSwitches) > 1 {
+		for len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newSwitches) > 1 {
 			newSwitches = newSwitches[:len(newSwitches)-1]
 			result = makeResult(newSwitches)
 		}
 
-		if len(result) > int(MAX_COMMIT_LENGTH) && len(newSwitches) == 1 {
-			result = result[:int(MAX_COMMIT_LENGTH)]
+		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newSwitches) == 1 {
+			result = result[:int(constants.MAX_COMMIT_LENGTH)]
 		}
 
 		return result
@@ -259,7 +259,7 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		result := makeResult(osw, nsw)
-		for len(result) > int(MAX_COMMIT_LENGTH) && (len(osw.Cases) > 1 || len(nsw.Cases) > 1) {
+		for len(result) > int(constants.MAX_COMMIT_LENGTH) && (len(osw.Cases) > 1 || len(nsw.Cases) > 1) {
 			if len(osw.Cases) > len(nsw.Cases) {
 				osw.Cases = osw.Cases[:len(osw.Cases)-1]
 			} else {
