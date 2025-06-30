@@ -80,7 +80,7 @@ func GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
 	}
 
 	var githubIssue types.GithubIssue
-	if err := config.json.Unmarshal(buf.Bytes(), &githubIssue); err != nil {
+	if err := config.JSON.Unmarshal(buf.Bytes(), &githubIssue); err != nil {
 		return "", 0, err
 	}
 
