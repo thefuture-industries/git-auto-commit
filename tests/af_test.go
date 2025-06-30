@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestParser_AddedGoFunction(t *testing.T) {
+func TestFormattedFunction_AddedGoFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
@@ -30,7 +30,7 @@ func TestParser_AddedGoFunction(t *testing.T) {
 	}
 }
 
-func TestParser_DeletedGoFunction(t *testing.T) {
+func TestFormattedFunction_DeletedGoFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
@@ -53,7 +53,7 @@ func TestParser_DeletedGoFunction(t *testing.T) {
 	}
 }
 
-func TestParser_RenamedGoFunction TestFormattedFunction_ChangedParamName(t *testing.T) {
+func TestFormattedFunction_RenamedGoFunction TestFormattedFunction_ChangedParamName(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
