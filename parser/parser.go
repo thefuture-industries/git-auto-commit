@@ -84,8 +84,8 @@ var Parser = func(files []string) (string, error) {
 						nextMsg := AppendMsg(payloadMsg, change)
 						if len(nextMsg) > int(constants.MAX_COMMIT_LENGTH) {
 							if len(payloadMsg) == 0 {
-								if len(change) > int(MAX_COMMIT_LENGTH) {
-									change = change[:int(MAX_COMMIT_LENGTH)]
+								if len(change) > int(constants.MAX_COMMIT_LENGTH) {
+									change = change[:int(constants.MAX_COMMIT_LENGTH)]
 								}
 
 								payloadMsg = change
