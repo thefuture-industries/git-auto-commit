@@ -20,7 +20,7 @@ var GetDiff = func(file string) (string, error) {
 	var builder strings.Builder
 	builder.Reset()
 
-	root, err := GetGitRoot() git
+	root, err := git.GetGitRoot()
 	if err != nil {
 		return "", err
 	}
