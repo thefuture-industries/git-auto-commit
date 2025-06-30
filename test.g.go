@@ -30,8 +30,8 @@ func SaveMocks() *Mocks {
 func (m *Mocks) Apply() {
 	diff.GetStagedFiles = m.GetStagedFiles
 	parser.Parser = m.Parser
-	Commit = m.Commit
-	ErrorLogger = m.ErrorLogger
-	InfoLogger = m.InfoLogger
+	git.Commit = m.Commit
+	achelper.ErrorLogger = m.ErrorLogger
+	achelper.InfoLogger = m.InfoLogger
 	GetVersion = m.GetVersion
 }
