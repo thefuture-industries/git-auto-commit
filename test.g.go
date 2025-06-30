@@ -26,8 +26,8 @@ func SaveMocks() *Mocks {
 }
 
 func (m *Mocks) Apply() {
-	GetStagedFiles = m.GetStagedFiles
-	Parser = m.Parser
+	diff.GetStagedFiles = m.GetStagedFiles
+	parser.Parser = m.Parser
 	Commit = m.Commit
 	ErrorLogger = m.ErrorLogger
 	InfoLogger = m.InfoLogger
