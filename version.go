@@ -23,7 +23,7 @@ var GetVersion = func(isCurrent bool) {
 
 	version, err := os.ReadFile(versionFile)
 	if err != nil {
-		ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
+		achelper.ErrorLogger(fmt.Errorf("unknown version for auto-commit, please re-install: %w", err))
 		return
 	}
 
@@ -31,9 +31,9 @@ var GetVersion = func(isCurrent bool) {
 		fmt.Println("[git auto-commit] current version:", strings.TrimSpace(string(version)))
 	}
 
-	resp, err := http.Get(GITHUB_API_REPO_URL + "/releases/latest")
+	resp, err := http.Get(constants.GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
-		ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
+		achelper.ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
 		return
 	}
 	defer resp.Body.Close()
