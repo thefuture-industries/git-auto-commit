@@ -47,7 +47,7 @@ func TestFormattedFunction_DeletedGoFunction(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "deleted function TestParser"
+	expected := "deleted function DeletedGoFunction"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
