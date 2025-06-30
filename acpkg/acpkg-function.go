@@ -127,8 +127,8 @@ func FormattedFunction(diff, lang string) string {
 		parser = strings.Join(results, " | ")
 	}
 
-	if len(parser) > int(MAX_COMMIT_LENGTH) && len(results) == 1 {
-		parser = parser[:int(MAX_COMMIT_LENGTH)]
+	if len(parser) > int(constants.MAX_COMMIT_LENGTH) && len(results) == 1 {
+		parser = parser[:int(constants.MAX_COMMIT_LENGTH)]
 	}
 
 	return parser
