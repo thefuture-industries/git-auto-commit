@@ -53,7 +53,7 @@ func TestFormattedFunction_DeletedGoFunction(t *testing.T) {
 	}
 }
 
-func TestFormattedFunction_RenamedGoFunction TestFormattedFunction_ChangedParamName(t *testing.T) {
+func TestFormattedFunction_ChangedParamNameGoFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
