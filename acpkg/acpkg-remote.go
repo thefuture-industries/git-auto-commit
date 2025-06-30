@@ -25,7 +25,7 @@ func FormattedByRemote(token string) (string, error) {
 		return "", err
 	}
 
-	issueName, issueNumber, err := GetIssueData(owner, repo, issue, token)
+	issueName, issueNumber, err := git.GetIssueData(owner, repo, issue, token)
 	if err != nil {
 		return "", err
 	}
