@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"git-auto-commit/diff"
 	"git-auto-commit/git"
+	"git-auto-commit/parser"
 	"os"
 )
 
@@ -43,7 +44,7 @@ func AutoCommit() {
 		return
 	}
 
-	parserMsg, err := Parser(files)
+	parserMsg, err := parser.Parser(files)
 	if err != nil {
 		ErrorLogger(err)
 		return
