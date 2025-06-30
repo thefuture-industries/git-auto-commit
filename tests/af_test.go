@@ -12,7 +12,7 @@ func TestFormattedFunction_AddedGoFunction(t *testing.T) {
 	defer mocks.Apply()
 
 	diff.GetDiff = func(file string) (string, error) {
-		return "+func AddedGoFunction()", nil
+		return "+func AddedGoFunction() {}", nil
 	}
 
 	code.DetectLanguage = func(filename string) string {
@@ -81,7 +81,7 @@ func TestFormattedFunction_DeletedGoFunctions(t *testing.T) {
 	defer mocks.Apply()
 
 	diff.GetDiff = func(file string) (string, error) {
-		return "-func DeletedGoFunction() {}", nil
+		return "-func DeletedGoFunction()\n-func DeletedGoFunction()\n-func DeletedGoFunction()", nil
 	}
 
 	code.DetectLanguage = func(filename string) string {
