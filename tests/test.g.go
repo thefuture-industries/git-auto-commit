@@ -1,4 +1,4 @@
-package main
+package tests
 
 import (
 	"git-auto-commit/achelper"
