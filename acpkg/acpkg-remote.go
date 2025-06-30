@@ -10,7 +10,7 @@ func FormattedByRemote(token string) (string, error) {
 	var builder strings.Builder
 	builder.Reset()
 
-	branch, err := GetCurrentBranch()
+	branch, err := git.GetCurrentBranch()
 	if err != nil {
 		return "", err
 	}
@@ -42,7 +42,7 @@ func FormattedByBranch() (string, error) {
 	var builder strings.Builder
 	builder.Reset()
 
-	branch, err := GetCurrentBranch()
+	branch, err := git.GetCurrentBranch()
 	if err != nil {
 		return "", err
 	}
