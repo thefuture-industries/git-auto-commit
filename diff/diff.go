@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"strings"
 	"sync"
+
+	"git-auto-commit/git"
 )
 
 var diffBufferPool = sync.Pool{
