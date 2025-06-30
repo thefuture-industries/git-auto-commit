@@ -30,12 +30,12 @@ func TestFormattedFunction_AddedGoFunction(t *testing.T) {
 	}
 }
 
-func TestFormattedFunction_AddedGoFunction(t *testing.T) {
+func TestFormattedFunction_AddedGoFunctions(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
 	diff.GetDiff = func(file string) (string, error) {
-		return "+func AddedGoFunction()", nil
+		return "+func AddedGoFunction1()\n+func AddedGoFunction2()", nil
 	}
 
 	code.DetectLanguage = func(filename string) string {
