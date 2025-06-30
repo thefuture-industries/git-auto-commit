@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"git-auto-commit/achelper"
+	"git-auto-commit/achelper/logger"
 	"git-auto-commit/diff"
 	"git-auto-commit/git"
 	"git-auto-commit/parser"
@@ -13,7 +14,7 @@ func main() {
 	if len(os.Args) > 1 && (os.Args[1] == "-w" || os.Args[1] == "--watch") {
 		path, err := git.GetGitRoot()
 		if err != nil {
-			achelper.ErrorLogger(err)
+			logger.ErrorLogger(err)
 			return
 		}
 
