@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"git-auto-commit/achelper"
 	"git-auto-commit/achelper/logger"
-	"git-auto-commit/diff"
-	"git-auto-commit/git"
-	"git-auto-commit/parser"
+	"git-auto-commit/ac"
 	"os"
 )
 
@@ -28,6 +26,6 @@ func main() {
 	} else if len(os.Args) > 1 && (os.Args[1] == "-u" || os.Args[1] == "--update") {
 		achelper.AutoCommitUpdate()
 	} else {
-		AutoCommit()
+		ac.AutoCommit()
 	}
 }
