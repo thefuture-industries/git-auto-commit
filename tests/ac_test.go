@@ -2,6 +2,9 @@ package tests
 
 import (
 	"errors"
+	"git-auto-commit/achelper/logger"
+	"git-auto-commit/diff"
+	"git-auto-commit/parser"
 	"testing"
 )
 
@@ -10,11 +13,11 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	defer mocks.Apply()
 
 	calledInfo := ""
-	GetStagedFiles = func() ([]string, error) { return []string{}, nil }
-	Parser = func(files []string) (string, error) { return "", nil }
-	Commit = func(msg string) error { return nil }
-	ErrorLogger = func(err error) { t.Errorf("unexpected error: %v", err) }
-	InfoLogger = func(msg string) { calledInfo = msg }
+	diff.GetStagedFiles = func() ([]string, error) { return []string{}, nil }
+	parser.Parser = func(files []string) (string, error) { return "", nil }
+	git.Commit = func(msg string) error { return nil }
+	logger.ErrorLogger = func(err error) { t.Errorf("unexpected error: %v", err) }
+	logger.InfoLogger = func(msg string) { calledInfo = msg }
 	GetVersion = func(show bool) {}
 
 	AutoCommit()
