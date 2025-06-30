@@ -3,8 +3,8 @@ package git
 import (
 	"bytes"
 	"fmt"
-	"git-auto-commit/types"
 	"git-auto-commit/config"
+	"git-auto-commit/types"
 	"io"
 	"net/http"
 	"os/exec"
