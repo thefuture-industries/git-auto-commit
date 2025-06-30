@@ -2,8 +2,10 @@ package tests
 
 import (
 	"errors"
+	"git-auto-commit/achelper"
 	"git-auto-commit/achelper/logger"
 	"git-auto-commit/diff"
+	"git-auto-commit/git"
 	"git-auto-commit/parser"
 	"testing"
 )
@@ -18,7 +20,7 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	git.Commit = func(msg string) error { return nil }
 	logger.ErrorLogger = func(err error) { t.Errorf("unexpected error: %v", err) }
 	logger.InfoLogger = func(msg string) { calledInfo = msg }
-	GetVersion = func(show bool) {}
+	achelper.GetVersion = func(show bool) {}
 
 	AutoCommit()
 
