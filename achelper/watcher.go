@@ -82,18 +82,18 @@ func WatchCommit(path string) {
 
 				parser, err := parser.Parser(files)
 				if err != nil {
-					ErrorLogger(err)
+					logger.ErrorLogger(err)
 					return
 				}
 
 				if uint16(len(parser)) >= constants.MAX_COMMIT_LENGTH_WATCHER {
 					if err := git.Commit(parser); err != nil {
-						ErrorLogger(err)
+						logger.ErrorLogger(err)
 					}
 				}
 			}
 		case err := <-watcher.Errors:
-			ErrorLogger(err)
+			logger.ErrorLogger(err)
 		}
 
 		time.Sleep(constants.COMMIT_TIME)

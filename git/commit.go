@@ -2,7 +2,6 @@ package git
 
 import (
 	"fmt"
-	"git-auto-commit/achelper"
 	"os"
 	"os/exec"
 )
