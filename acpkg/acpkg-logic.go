@@ -1,4 +1,4 @@
-package main
+package acpkg
 
 import (
 	"git-auto-commit/constants"

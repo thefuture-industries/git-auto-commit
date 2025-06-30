@@ -2,6 +2,8 @@ package parser
 
 import (
 	"fmt"
+	"git-auto-commit/achelper"
+	"git-auto-commit/acpkg"
 	"git-auto-commit/constants"
 	"git-auto-commit/diff"
 	"path/filepath"
@@ -53,7 +55,7 @@ var Parser = func(files []string) (string, error) {
 					continue
 				}
 
-				lang := DetectLanguage(file)
+				lang := achelper.DetectLanguage(file)
 				if lang == "" {
 					mu.Lock()
 					payloadMsg = AppendMsg(payloadMsg, fmt.Sprintf("the '%s' file has been changed", filepath.Base(file)))
@@ -63,15 +65,15 @@ var Parser = func(files []string) (string, error) {
 
 				var fileChanges []string
 				for _, formatted := range []string{
-					FormattedVariables(diff, lang),
-					FormattedFunction(diff, lang),
-					FormattedClass(diff, lang),
-					FormattedLogic(diff, lang, filepath.Base(file)),
-					FormattedImport(diff, lang, filepath.Base(file)),
-					FormattedStruct(diff, lang),
-					FormattedType(diff, lang),
-					FormattedInterface(diff, lang),
-					FormattedEnum(diff, lang),
+					acpkg.FormattedVariables(diff, lang),
+					acpkg.FormattedFunction(diff, lang),
+					acpkg.FormattedClass(diff, lang),
+					acpkg.FormattedLogic(diff, lang, filepath.Base(file)),
+					acpkg.FormattedImport(diff, lang, filepath.Base(file)),
+					acpkg.FormattedStruct(diff, lang),
+					acpkg.FormattedType(diff, lang),
+					acpkg.FormattedInterface(diff, lang),
+					acpkg.FormattedEnum(diff, lang),
 				} {
 					if formatted != "" {
 						fileChanges = append(fileChanges, formatted)
@@ -117,7 +119,7 @@ var Parser = func(files []string) (string, error) {
 	}
 
 	if len(payloadMsg) == 0 {
-		formattedByRemote, err := FormattedByRemote("")
+		formattedByRemote, err := acpkg.FormattedByRemote("")
 		if err != nil {
 			return "", err
 		}
