@@ -58,7 +58,7 @@ func TestParser_RenamedGoFunction(t *testing.T) {
 	defer mocks.Apply()
 
 	diff.GetDiff = func(file string) (string, error) {
-		return "-func TestParser()", nil
+		return "-func TestParser()\n+func TestParser()", nil
 	}
 
 	code.DetectLanguage = func(filename string) string {
