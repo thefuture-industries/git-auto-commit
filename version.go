@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"git-auto-commit/achelper"
 	"git-auto-commit/config"
+	"git-auto-commit/constants"
 	"git-auto-commit/git"
 	"net/http"
 	"os"
@@ -18,7 +19,7 @@ var GetVersion = func(isCurrent bool) {
 		return
 	}
 
-	versionFile := filepath.Join(root, ".git", "hooks", VERSION_FILE)
+	versionFile := filepath.Join(root, ".git", "hooks", constants.VERSION_FILE)
 
 	version, err := os.ReadFile(versionFile)
 	if err != nil {
