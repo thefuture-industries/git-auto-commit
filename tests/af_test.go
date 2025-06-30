@@ -70,7 +70,7 @@ func TestFormattedFunction_ChangedParamNameGoFunction(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "renamed function TestParser -> TestParser"
+	expected := "changed parameter in PadramTest function"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
