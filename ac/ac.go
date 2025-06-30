@@ -1,4 +1,4 @@
-package acpkg
+package ac
 
 import (
 	"fmt"

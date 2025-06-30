@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"git-auto-commit/ac"
 	"git-auto-commit/achelper"
 	"git-auto-commit/achelper/logger"
-	"git-auto-commit/ac"
+	"git-auto-commit/git"
 	"os"
 )
 
