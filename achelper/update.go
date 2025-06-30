@@ -2,6 +2,7 @@ package achelper
 
 import (
 	"fmt"
+	"git-auto-commit/constants"
 	"git-auto-commit/git"
 	"io"
 	"net/http"
@@ -19,7 +20,7 @@ func AutoCommitUpdate() {
 		return
 	}
 
-	versionFile := filepath.Join(root, ".git", "hooks", VERSION_FILE)
+	versionFile := filepath.Join(root, ".git", "hooks", constants.VERSION_FILE)
 
 	version, err := os.ReadFile(versionFile)
 	if err != nil {
@@ -27,7 +28,7 @@ func AutoCommitUpdate() {
 		return
 	}
 
-	resp, err := http.Get(GITHUB_API_REPO_URL + "/releases/latest")
+	resp, err := http.Get(constants.GITHUB_API_REPO_URL + "/releases/latest")
 	if err != nil {
 		ErrorLogger(fmt.Errorf("could not check latest version: %w", err))
 		return
