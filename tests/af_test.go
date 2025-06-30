@@ -24,7 +24,7 @@ func TestFormattedFunction_AddedGoFunction(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "added function TestParser"
+	expected := "added function AddedGoFunction"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
