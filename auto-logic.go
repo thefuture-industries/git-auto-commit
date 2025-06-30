@@ -155,7 +155,7 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		result := builder.String()
-		for len(result) > int(MAX_COMMIT_LENGTH) && len(newIfs) > 1 {
+		for len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newIfs) > 1 {
 			newIfs = newIfs[:len(newIfs)-1]
 			builder.Reset()
 
@@ -269,8 +269,8 @@ func FormattedLogic(line, lang, filename string) string {
 			result = makeResult(osw, nsw)
 		}
 
-		if len(result) > int(MAX_COMMIT_LENGTH) && len(osw.Cases) == 1 && len(nsw.Cases) == 1 {
-			result = result[:int(MAX_COMMIT_LENGTH)]
+		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(osw.Cases) == 1 && len(nsw.Cases) == 1 {
+			result = result[:int(constants.MAX_COMMIT_LENGTH)]
 		}
 
 		return result
