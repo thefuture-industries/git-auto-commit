@@ -1,5 +1,7 @@
 package main
 
+import "git-auto-commit/diff"
+
 type Mocks struct {
 	GetStagedFiles func() ([]string, error)
 	Parser         func([]string) (string, error)
@@ -11,7 +13,7 @@ type Mocks struct {
 
 func SaveMocks() *Mocks {
 	return &Mocks{
-		GetStagedFiles: GetStagedFiles,
+		GetStagedFiles: diffGetStagedFiles,
 		Parser:         Parser,
 		Commit:         Commit,
 		ErrorLogger:    ErrorLogger,
