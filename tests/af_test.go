@@ -139,7 +139,7 @@ func TestFormattedFunction_ChangedParamNameGoFunctions(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	expected := "changed parameter in ParamTest function"
+	expected := "changed parameters in functions: Foo function, Bar function"
 	if msg != expected {
 		t.Errorf("expected '%s', got '%s'", expected, msg)
 	}
