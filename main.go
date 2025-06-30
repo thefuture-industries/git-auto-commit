@@ -51,7 +51,7 @@ func AutoCommit() {
 		return
 	}
 
-	if err := Commit(parserMsg); err != nil {
+	if err := git.Commit(parserMsg); err != nil {
 		achelper.ErrorLogger(fmt.Errorf("error committing: %s", err.Error()))
 		return
 	}
