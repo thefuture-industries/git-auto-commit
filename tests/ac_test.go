@@ -2,6 +2,7 @@ package tests
 
 import (
 	"errors"
+	"git-auto-commit/ac"
 	"git-auto-commit/achelper"
 	"git-auto-commit/achelper/logger"
 	"git-auto-commit/diff"
@@ -36,15 +37,15 @@ func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
 	GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
 	Parser = func(files []string) (string, error) { return "", nil }
 	Commit = func(msg string) error { return nil }
-	InfoLogger = func(msg string) {}
-	GetVersion = func(show bool) {}
+	logger.InfoLogger = func(msg string) {}
+	achelper.GetVersion = func(show bool) {}
 
 	var calledErr string
-	ErrorLogger = func(err error) { calledErr = err.Error() }
+	logger.ErrorLogger = func(err error) { calledErr = err.Error() }
 
-	InfoLogger = func(msg string) { calledErr = msg }
+	logger.InfoLogger = func(msg string) { calledErr = msg }
 
-	AutoCommit()
+	ac.AutoCommit()
 
 	expected := "error getting staged files: fail"
 	if calledErr != expected {
