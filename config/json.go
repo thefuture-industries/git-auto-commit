@@ -1,4 +1,4 @@
-package main
+package config
 
 import jsoniter "github.com/json-iterator/go"
 

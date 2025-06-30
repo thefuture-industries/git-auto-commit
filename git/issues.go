@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"git-auto-commit/types"
+	"git-auto-commit/config"
 	"io"
 	"net/http"
 	"os/exec"
@@ -79,7 +80,7 @@ func GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
 	}
 
 	var githubIssue types.GithubIssue
-	if err := json.Unmarshal(buf.Bytes(), &githubIssue); err != nil {
+	if err := config.json.Unmarshal(buf.Bytes(), &githubIssue); err != nil {
 		return "", 0, err
 	}
 
