@@ -18,7 +18,7 @@ func SaveMocks() *Mocks {
 	return &Mocks{
 		GetStagedFiles: diff.GetStagedFiles,
 		Parser:         parser.Parser,
-		Commit:         Commit,
+		Commit:         git.Commit,
 		ErrorLogger:    ErrorLogger,
 		InfoLogger:     InfoLogger,
 		GetVersion:     GetVersion,
