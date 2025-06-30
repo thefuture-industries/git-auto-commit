@@ -2,6 +2,7 @@ package main
 
 import (
 	"git-auto-commit/achelper"
+	"git-auto-commit/achelper/logger"
 	"git-auto-commit/diff"
 	"git-auto-commit/git"
 	"git-auto-commit/parser"
@@ -21,8 +22,8 @@ func SaveMocks() *Mocks {
 		GetStagedFiles: diff.GetStagedFiles,
 		Parser:         parser.Parser,
 		Commit:         git.Commit,
-		ErrorLogger:    achelper.ErrorLogger,
-		InfoLogger:     achelper.InfoLogger,
+		ErrorLogger:    logger.ErrorLogger,
+		InfoLogger:     logger.InfoLogger,
 		GetVersion:     achelper.GetVersion,
 	}
 }
@@ -31,7 +32,7 @@ func (m *Mocks) Apply() {
 	diff.GetStagedFiles = m.GetStagedFiles
 	parser.Parser = m.Parser
 	git.Commit = m.Commit
-	achelper.ErrorLogger = m.ErrorLogger
-	achelper.InfoLogger = m.InfoLogger
+	logger.ErrorLogger = m.ErrorLogger
+	logger.InfoLogger = m.InfoLogger
 	achelper.GetVersion = m.GetVersion
 }
