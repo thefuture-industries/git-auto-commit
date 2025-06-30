@@ -1,6 +1,7 @@
 package main
 
 import (
+	"git-auto-commit/constants"
 	"git-auto-commit/types"
 	"regexp"
 	"strings"
@@ -170,7 +171,7 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		if len(result) > int(constants.MAX_COMMIT_LENGTH) && len(newIfs) == 1 {
-			result = result[:int(MAX_COMMIT_LENGTH)]
+			result = result[:int(constants.MAX_COMMIT_LENGTH)]
 		}
 
 		return result
@@ -195,7 +196,7 @@ func FormattedLogic(line, lang, filename string) string {
 		}
 
 		result := makeResult(oldSwitches)
-		for len(result) > int(MAX_COMMIT_LENGTH) && len(oldSwitches) > 1 {
+		for len(result) > int(constants.MAX_COMMIT_LENGTH) && len(oldSwitches) > 1 {
 			oldSwitches = oldSwitches[:len(oldSwitches)-1]
 			result = makeResult(oldSwitches)
 		}
