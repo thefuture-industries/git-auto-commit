@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"git-auto-commit/achelper"
+	"git-auto-commit/config"
+	"git-auto-commit/git"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -10,9 +12,9 @@ import (
 )
 
 var GetVersion = func(isCurrent bool) {
-	root, err := GetGitRoot()
+	root, err := git.GetGitRoot()
 	if err != nil {
-		ErrorLogger(fmt.Errorf("could not get git root: %w", err))
+		achelper.ErrorLogger(fmt.Errorf("could not get git root: %w", err))
 		return
 	}
 
@@ -38,7 +40,7 @@ var GetVersion = func(isCurrent bool) {
 	var data struct {
 		TagName string `json:"tag_name"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+	if err := config.JSON.NewDecoder(resp.Body).Decode(&data); err != nil {
 		achelper.ErrorLogger(fmt.Errorf("could not parse version info: %w", err))
 		return
 	}
