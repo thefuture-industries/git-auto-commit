@@ -9,6 +9,7 @@ lint:
 
 check: fmt lint test
 	@echo "All checks passed!"
+	
 build:
 	@echo "Running build..."
 	@go build -o bin/auto-commit .
