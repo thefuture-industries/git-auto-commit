@@ -2,12 +2,10 @@ package tests
 
 import (
 	"errors"
-	"git-auto-commit/ac"
-	"git-auto-commit/achelper"
-	"git-auto-commit/achelper/logger"
-	"git-auto-commit/diff"
-	"git-auto-commit/git"
-	"git-auto-commit/parser"
+	"git-auto-commit/autocommit"
+	"git-auto-commit/infra/logger"
+	"git-auto-commit/pkg"
+	"git-auto-commit/pkg/git"
 	"testing"
 )
 
@@ -16,14 +14,13 @@ func TestAutoCommit_NoStagedFiles(t *testing.T) {
 	defer mocks.Apply()
 
 	calledInfo := ""
-	diff.GetStagedFiles = func() ([]string, error) { return []string{}, nil }
-	parser.Parser = func(files []string) (string, error) { return "", nil }
+	git.GetStagedFiles = func() ([]string, error) { return []string{}, nil }
+	pkg.Parser = func(files []string) (string, error) { return "", nil }
 	git.Commit = func(msg string) error { return nil }
 	logger.ErrorLogger = func(err error) { t.Errorf("unexpected error: %v", err) }
 	logger.InfoLogger = func(msg string) { calledInfo = msg }
-	achelper.GetVersion = func(show bool) {}
 
-	ac.AutoCommit()
+	autocommit.AutoCommit()
 
 	if calledInfo != "No files staged for commit." {
 		t.Errorf("expected info log 'No files staged for commit.', got '%s'", calledInfo)
@@ -34,18 +31,18 @@ func TestAutoCommit_ErrorGettingFiles(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
-	parser.Parser = func(files []string) (string, error) { return "", nil }
+	git.GetStagedFiles = func() ([]string, error) { return nil, errors.New("fail") }
+	pkg.Parser = func(files []string) (string, error) { return "", nil }
 	git.Commit = func(msg string) error { return nil }
 	logger.InfoLogger = func(msg string) {}
-	achelper.GetVersion = func(show bool) {}
+	autocommit.GetVersion = func(show bool) {}
 
 	var calledErr string
 	logger.ErrorLogger = func(err error) { calledErr = err.Error() }
 
 	logger.InfoLogger = func(msg string) { calledErr = msg }
 
-	ac.AutoCommit()
+	autocommit.AutoCommit()
 
 	expected := "error getting staged files: fail"
 	if calledErr != expected {

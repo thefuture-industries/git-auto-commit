@@ -1,11 +1,10 @@
 package tests
 
 import (
-	"git-auto-commit/achelper"
-	"git-auto-commit/achelper/logger"
-	"git-auto-commit/diff"
-	"git-auto-commit/git"
-	"git-auto-commit/parser"
+	"git-auto-commit/autocommit"
+	"git-auto-commit/infra/logger"
+	"git-auto-commit/pkg"
+	"git-auto-commit/pkg/git"
 )
 
 type Mocks struct {
@@ -19,20 +18,19 @@ type Mocks struct {
 
 func SaveMocks() *Mocks {
 	return &Mocks{
-		GetStagedFiles: diff.GetStagedFiles,
-		Parser:         parser.Parser,
+		GetStagedFiles: git.GetStagedFiles,
+		Parser:         pkg.Parser,
 		Commit:         git.Commit,
 		ErrorLogger:    logger.ErrorLogger,
 		InfoLogger:     logger.InfoLogger,
-		GetVersion:     achelper.GetVersion,
 	}
 }
 
 func (m *Mocks) Apply() {
-	diff.GetStagedFiles = m.GetStagedFiles
-	parser.Parser = m.Parser
+	git.GetStagedFiles = m.GetStagedFiles
+	pkg.Parser = m.Parser
 	git.Commit = m.Commit
 	logger.ErrorLogger = m.ErrorLogger
 	logger.InfoLogger = m.InfoLogger
-	achelper.GetVersion = m.GetVersion
+	autocommit.GetVersion = m.GetVersion
 }

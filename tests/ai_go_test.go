@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"git-auto-commit/achelper/code"
-	"git-auto-commit/diff"
-	"git-auto-commit/parser"
+	"git-auto-commit/pkg"
+	"git-auto-commit/pkg/git"
+	"git-auto-commit/pkg/language"
 	"testing"
 )
 
@@ -11,15 +11,15 @@ func TestFormattedImport_AddedGoImport(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "+import \"fmt\"", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"main.go"})
+	msg, err := pkg.Parser([]string{"main.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -34,15 +34,15 @@ func TestFormattedImport_AddedGoImports(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "+import \"fmt\"\n+import \"os\"", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"main.go"})
+	msg, err := pkg.Parser([]string{"main.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -57,15 +57,15 @@ func TestFormattedImport_AddedImportsBlockGo(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "+import (\n+\"fmt\"\n+\"os\"\n+)", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"main.go"})
+	msg, err := pkg.Parser([]string{"main.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -80,15 +80,15 @@ func TestFormattedImport_AddedImportBlockGo(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "+import (\n+\"fmt\"\n+)", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"main.go"})
+	msg, err := pkg.Parser([]string{"main.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

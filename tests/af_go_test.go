@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"git-auto-commit/achelper/code"
-	"git-auto-commit/diff"
-	"git-auto-commit/parser"
+	"git-auto-commit/pkg"
+	"git-auto-commit/pkg/git"
+	"git-auto-commit/pkg/language"
 	"testing"
 )
 
@@ -11,15 +11,15 @@ func TestFormattedFunction_AddedGoFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "+func AddedGoFunction() {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.go"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -34,15 +34,15 @@ func TestFormattedFunction_AddedGoFunctions(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "+func AddedGoFunction1()\n+func AddedGoFunction2()\n+func AddedGoFunction3()", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.go"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -57,15 +57,15 @@ func TestFormattedFunction_DeletedGoFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-func DeletedGoFunction() {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.go"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -80,15 +80,15 @@ func TestFormattedFunction_DeletedGoFunctions(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-func DeletedGoFunction1()\n-func DeletedGoFunction2()\n-func DeletedGoFunction3()", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.go"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -103,15 +103,15 @@ func TestFormattedFunction_ChangedParamNameGoFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-func ParamTest(a int)\n+func ParamTest(b int)", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.go"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -126,15 +126,15 @@ func TestFormattedFunction_ChangedParamNameGoFunctions(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-func ParamTest1(a int)\n+func ParamTest1(b int)\n-func ParamTest2(x string)\n+func ParamTest2(y string)", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.go"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -149,15 +149,15 @@ func TestFormattedFunction_ChangedParamTypeGoFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-func TypeTest(a int)\n+func TypeTest(a string)", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "go"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.go"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.go"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

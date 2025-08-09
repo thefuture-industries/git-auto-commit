@@ -1,9 +1,9 @@
 package tests
 
 import (
-	"git-auto-commit/achelper/code"
-	"git-auto-commit/diff"
-	"git-auto-commit/parser"
+	"git-auto-commit/pkg"
+	"git-auto-commit/pkg/git"
+	"git-auto-commit/pkg/language"
 	"testing"
 )
 
@@ -11,15 +11,15 @@ func TestFormattedFunction_AddedTSFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "+function AddedTSFunction() {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "typescript"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.ts"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.ts"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -34,15 +34,15 @@ func TestFormattedFunction_AddedTSFunctions(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "+function AddedTSFunction1() {}\n+function AddedTSFunction2() {}\n+function AddedTSFunction3() {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "typescript"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.ts"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.ts"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -57,15 +57,15 @@ func TestFormattedFunction_DeletedTSFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-function DeletedTSFunction() {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "typescript"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.ts"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.ts"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -80,15 +80,15 @@ func TestFormattedFunction_DeletedTSFunctions(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-function DeletedTSFunction1() {}\n-function DeletedTSFunction2() {}\n-function DeletedTSFunction3() {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "typescript"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.ts"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.ts"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -103,15 +103,15 @@ func TestFormattedFunction_ChangedParamNameTSFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-function ParamTest(a: number) {}\n+function ParamTest(b: number) {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "typescript"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.ts"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.ts"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -126,15 +126,15 @@ func TestFormattedFunction_ChangedParamNameTSFunctions(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-function ParamTest1(a: number) {}\n+function ParamTest1(b: number) {}\n-function ParamTest2(x: string) {}\n+function ParamTest2(y: string) {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "typescript"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.ts"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.ts"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -149,15 +149,15 @@ func TestFormattedFunction_ChangedParamTypeTSFunction(t *testing.T) {
 	mocks := SaveMocks()
 	defer mocks.Apply()
 
-	diff.GetDiff = func(file string) (string, error) {
+	git.GetDiff = func(file string) (string, error) {
 		return "-function TypeTest(a: number) {}\n+function TypeTest(a: string) {}", nil
 	}
 
-	code.DetectLanguage = func(filename string) string {
+	language.DetectLanguage = func(filename string) string {
 		return "typescript"
 	}
 
-	msg, err := parser.Parser([]string{"auto-commit-parser-test.ts"})
+	msg, err := pkg.Parser([]string{"auto-commit-parser-test.ts"})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
