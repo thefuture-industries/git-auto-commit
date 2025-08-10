@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"git-auto-commit/pkg/code"
 	"git-auto-commit/pkg/file"
 	"git-auto-commit/pkg/pkgerror"
@@ -11,7 +10,7 @@ import (
 var Parser = func(directory string) (string, error) {
 	info, err := os.Stat(directory)
 	if err != nil {
-		return "", fmt.Errorf("errir getting file info")
+		return "", pkgerror.CreateError(pkgerror.Err_FailedToReadFile)
 	}
 
 	if !info.IsDir() {
@@ -25,13 +24,13 @@ var Parser = func(directory string) (string, error) {
 
 	formatted, err := code.FormattedCode(files)
 	if err != nil {
-		return "", err
+		return "", pkgerror.CreateError(err)
 	}
 
 	if formatted == "" {
 		formattedByRemote, err := code.FormattedByRemote("")
 		if err != nil {
-			return "", fmt.Errorf("failed to format by remote: %w", err)
+			return "", pkgerror.CreateError(pkgerror.Err_RemoteUnavailable)
 		}
 
 		if formattedByRemote != "" {
@@ -42,9 +41,9 @@ var Parser = func(directory string) (string, error) {
 	if formatted == "" {
 		formattedByBranch, err := code.FormattedByBranch()
 		if err != nil {
-			return "", fmt.Errorf("failed to format by branch: %w", err)
+			return "", pkgerror.CreateError(pkgerror.Err_BranchNotFound)
 		}
-		
+
 		if formattedByBranch != "" {
 			formatted = formattedByBranch
 		}

@@ -1,7 +1,7 @@
 package autocommit
 
 import (
-	"fmt"
+	"errors"
 	"git-auto-commit/infra/constants"
 	"git-auto-commit/infra/logger"
 	"git-auto-commit/pkg/git"
@@ -71,7 +71,7 @@ func Watch(path string) {
 
 				directory, err := git.GetStagedCountDirectory()
 				if err != nil {
-					logger.ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
+					logger.ErrorLogger(errors.New("error getting staged files"))
 					return
 				}
 

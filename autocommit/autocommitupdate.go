@@ -55,10 +55,10 @@ func Update() {
 	var scriptUpdate string
 	var scriptUpdateExt string
 	if runtime.GOOS == "windows" {
-		scriptUpdate = "https://github.com/thefuture-industries/git-auto-commit/raw/main/scripts/update-windows-auto-commit.ps1"
+		scriptUpdate = fmt.Sprintf("%s/raw/main/scripts/%s", constants.GITHUB_REPO_URL, constants.GITHUB_SCRIPT_AUTOCOMMIT_UPDATE_WIN)
 		scriptUpdateExt = ".ps1"
 	} else {
-		scriptUpdate = "https://github.com/thefuture-industries/git-auto-commit/raw/main/scripts/update-linux-auto-commit.sh"
+		scriptUpdate = fmt.Sprintf("%s/raw/main/scripts/%s", constants.GITHUB_REPO_URL, constants.GITHUB_SCRIPT_AUTOCOMMIT_UPDATE_LINUX)
 		scriptUpdateExt = ".sh"
 	}
 
