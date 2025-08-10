@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"git-auto-commit/infra/constants"
 	"git-auto-commit/infra/logger"
-	"git-auto-commit/pkg"
 	"git-auto-commit/pkg/git"
+	"git-auto-commit/pkg/parser"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -69,17 +69,18 @@ func Watch(path string) {
 					return
 				}
 
-				files, err := git.GetStagedFiles()
+				directory, err := git.GetStagedCountDirectory()
 				if err != nil {
 					logger.ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
 					return
 				}
 
-				if len(files) == 0 {
+				if directory == "" {
 					logger.InfoLogger("No files staged for commit.")
+					return
 				}
 
-				parser, err := pkg.Parser(files)
+				parser, err := parser.Parser(directory)
 				if err != nil {
 					logger.ErrorLogger(err)
 					return

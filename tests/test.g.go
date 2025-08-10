@@ -3,13 +3,13 @@ package tests
 import (
 	"git-auto-commit/autocommit"
 	"git-auto-commit/infra/logger"
-	"git-auto-commit/pkg"
 	"git-auto-commit/pkg/git"
+	"git-auto-commit/pkg/parser"
 )
 
 type Mocks struct {
 	GetStagedFiles func() ([]string, error)
-	Parser         func([]string) (string, error)
+	Parser         func(string) (string, error)
 	Commit         func(string) error
 	ErrorLogger    func(error)
 	InfoLogger     func(string)
@@ -19,7 +19,7 @@ type Mocks struct {
 func SaveMocks() *Mocks {
 	return &Mocks{
 		GetStagedFiles: git.GetStagedFiles,
-		Parser:         pkg.Parser,
+		Parser:         parser.Parser,
 		Commit:         git.Commit,
 		ErrorLogger:    logger.ErrorLogger,
 		InfoLogger:     logger.InfoLogger,
@@ -28,7 +28,7 @@ func SaveMocks() *Mocks {
 
 func (m *Mocks) Apply() {
 	git.GetStagedFiles = m.GetStagedFiles
-	pkg.Parser = m.Parser
+	parser.Parser = m.Parser
 	git.Commit = m.Commit
 	logger.ErrorLogger = m.ErrorLogger
 	logger.InfoLogger = m.InfoLogger
