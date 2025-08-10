@@ -1,5 +1,22 @@
 package code
 
+import "git-auto-commit/pkg/git"
+
+type Code struct {
+	Git git.GitInterface
+}
+
+type CodeInterface interface {
+	// code.go
+	FormattedCode(files []string) (string, error)
+
+	// comment.go
+
+	// remote.go
+	FormattedByRemote(token string) (string, error)
+	FormattedByBranch() (string, error)
+}
+
 type FunctionSignature struct {
 	Name       string
 	Params     []FunctionParameters

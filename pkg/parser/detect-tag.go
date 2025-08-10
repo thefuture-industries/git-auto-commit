@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var DetectTagByFile = func(filename *string, changed string) string {
+func (p *Parser) DetectTagByFile(filename *string, changed string) string {
 	// check type changed
 	switch changed {
 	case constants.Ch_TypeAdd:

@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func GetGitRoot() (string, error) {
+func (g *Git) GetGitRoot() (string, error) {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -20,7 +20,7 @@ func GetGitRoot() (string, error) {
 	return root, nil
 }
 
-func GetCurrentBranch() (string, error) {
+func (g *Git) GetCurrentBranch() (string, error) {
 	cmd := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
 	out, err := cmd.Output()
 	if err != nil {

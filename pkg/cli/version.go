@@ -1,19 +1,18 @@
-package autocommit
+package cli
 
 import (
 	"fmt"
 	"git-auto-commit/config"
 	"git-auto-commit/infra/constants"
 	"git-auto-commit/infra/logger"
-	"git-auto-commit/pkg/git"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-var GetVersion = func(isCurrent bool) {
-	root, err := git.GetGitRoot()
+func (cli *CLI) GetVersion(isCurrent bool) {
+	root, err := cli.Git.GetGitRoot()
 	if err != nil {
 		logger.ErrorLogger(fmt.Errorf("could not get git root: %w", err))
 		return

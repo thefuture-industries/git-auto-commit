@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-var Commit = func(commitMsg string) error {
+func (g *Git) Commit(commitMsg string) error {
 	logger.GitLogger(fmt.Sprintf("commit is: %s", commitMsg))
 
 	cmd := exec.Command("git", "commit", "-m", commitMsg)

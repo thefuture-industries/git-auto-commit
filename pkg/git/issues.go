@@ -18,7 +18,7 @@ var bufferPool = sync.Pool{
 	},
 }
 
-func ExtractIssueNumber(branch string) string {
+func (g *Git) ExtractIssueNumber(branch string) string {
 	re := regexp.MustCompile(`\d+`)
 	match := re.FindStringSubmatch(branch)
 	if len(match) > 1 {
@@ -29,7 +29,7 @@ func ExtractIssueNumber(branch string) string {
 	return ""
 }
 
-func GetOwnerRepository() (string, string, error) {
+func (g *Git) GetOwnerRepository() (string, string, error) {
 	cmd := exec.Command("git", "remote", "get-url", "origin")
 	out, err := cmd.Output()
 	if err != nil {
@@ -47,7 +47,7 @@ func GetOwnerRepository() (string, string, error) {
 	return "", "", fmt.Errorf("could not parse owner/repository from remote url: %s", url)
 }
 
-func GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
+func (g *Git) GetIssueData(owner, repo, issue, token string) (string, uint32, error) {
 	var builder strings.Builder
 	builder.Reset()
 

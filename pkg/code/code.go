@@ -10,7 +10,7 @@ import (
 
 var ExecCommand = exec.Command
 
-func FormattedCode(files []string) (string, error) {
+func (c *Code) FormattedCode(files []string) (string, error) {
 	args := append([]string{"diff", "--cached", "--name-status"}, files...)
 	cmd := ExecCommand("git", args...)
 

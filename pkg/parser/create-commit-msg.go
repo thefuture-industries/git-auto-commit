@@ -5,8 +5,8 @@ import (
 	"git-auto-commit/infra/constants"
 )
 
-var CreateAutoCommitMsg = func(filename, msg *string, changed string) string {
-	ext := DetectTagByFile(filename, changed)
+func (p *Parser) CreateAutoCommitMsg(filename, msg *string, changed string) string {
+	ext := p.DetectTagByFile(filename, changed)
 
 	msgCommit, ok := constants.Ratio_Commit[ext]
 	if ok {
@@ -17,5 +17,5 @@ var CreateAutoCommitMsg = func(filename, msg *string, changed string) string {
 		return ext + " " + *msg
 	}
 
-	return fmt.Sprintf("%s Processed file - %s is refactored", constants.Type_CommitRefactor, filename)
+	return fmt.Sprintf("%s Processed file - %s is refactored", constants.Type_CommitRefactor, *filename)
 }

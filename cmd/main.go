@@ -2,15 +2,22 @@ package main
 
 import (
 	"fmt"
-	"git-auto-commit/autocommit"
 	"git-auto-commit/infra/logger"
+	"git-auto-commit/pkg/cli"
+	"git-auto-commit/pkg/code"
 	"git-auto-commit/pkg/git"
+	"git-auto-commit/pkg/parser"
 	"os"
 )
 
 func main() {
+	cli := &cli.CLI{
+		Git:    &git.Git{},
+		Parser: &parser.Parser{Code: &code.Code{}},
+	}
+
 	if len(os.Args) > 1 && (os.Args[1] == "-w" || os.Args[1] == "--watch") {
-		path, err := git.GetGitRoot()
+		path, err := cli.Git.GetGitRoot()
 		if err != nil {
 			logger.ErrorLogger(err)
 			return
@@ -20,12 +27,12 @@ func main() {
 			path = fmt.Sprintf("%s/%s", path, os.Args[2])
 		}
 
-		autocommit.Watch(path)
+		cli.Watch(path)
 	} else if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
-		autocommit.GetVersion(true)
+		cli.GetVersion(true)
 	} else if len(os.Args) > 1 && (os.Args[1] == "-u" || os.Args[1] == "--update") {
-		autocommit.Update()
+		cli.Update()
 	} else {
-		autocommit.AutoCommit()
+		cli.AutoCommit()
 	}
 }

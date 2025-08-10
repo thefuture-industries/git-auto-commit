@@ -1,4 +1,4 @@
-package autocommit
+package cli
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"git-auto-commit/infra/constants"
 	"git-auto-commit/infra/logger"
 	"git-auto-commit/pkg/file"
-	"git-auto-commit/pkg/git"
 	"net/http"
 	"os"
 	"os/exec"
@@ -15,8 +14,8 @@ import (
 	"strings"
 )
 
-func Update() {
-	root, err := git.GetGitRoot()
+func (cli *CLI) Update() {
+	root, err := cli.Git.GetGitRoot()
 	if err != nil {
 		logger.ErrorLogger(err)
 		return

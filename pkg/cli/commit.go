@@ -1,16 +1,14 @@
-package autocommit
+package cli
 
 import (
 	"git-auto-commit/infra/logger"
-	"git-auto-commit/pkg/git"
-	"git-auto-commit/pkg/parser"
 	"git-auto-commit/pkg/pkgerror"
 )
 
-func AutoCommit() {
-	GetVersion(false)
+func (cli *CLI) AutoCommit() {
+	cli.GetVersion(false)
 
-	directory, err := git.GetStagedCountDirectory()
+	directory, err := cli.Git.GetStagedCountDirectory()
 	if err != nil {
 		logger.ErrorLogger(pkgerror.Err_FailedToGetDiff)
 		return
@@ -21,12 +19,12 @@ func AutoCommit() {
 		return
 	}
 
-	parserMsg, err := parser.Parser(directory)
+	parserMsg, err := cli.Parser.ParserIndex(directory)
 	if err != nil {
 		return
 	}
 
-	if err := git.Commit(parserMsg); err != nil {
+	if err := cli.Git.Commit(parserMsg); err != nil {
 		return
 	}
 }

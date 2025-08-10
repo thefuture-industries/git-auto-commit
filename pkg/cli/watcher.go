@@ -1,11 +1,9 @@
-package autocommit
+package cli
 
 import (
 	"errors"
 	"git-auto-commit/infra/constants"
 	"git-auto-commit/infra/logger"
-	"git-auto-commit/pkg/git"
-	"git-auto-commit/pkg/parser"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -17,8 +15,8 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-func Watch(path string) {
-	GetVersion(false)
+func (cli *CLI) Watch(path string) {
+	cli.GetVersion(false)
 
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -69,7 +67,7 @@ func Watch(path string) {
 					return
 				}
 
-				directory, err := git.GetStagedCountDirectory()
+				directory, err := cli.Git.GetStagedCountDirectory()
 				if err != nil {
 					logger.ErrorLogger(errors.New("error getting staged files"))
 					return
@@ -80,14 +78,14 @@ func Watch(path string) {
 					return
 				}
 
-				parser, err := parser.Parser(directory)
+				parser, err := cli.Parser.ParserIndex(directory)
 				if err != nil {
 					logger.ErrorLogger(err)
 					return
 				}
 
 				if uint16(len(parser)) >= constants.MAX_COMMIT_LENGTH_WATCHER {
-					if err := git.Commit(parser); err != nil {
+					if err := cli.Git.Commit(parser); err != nil {
 						logger.ErrorLogger(err)
 					}
 				}

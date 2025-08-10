@@ -16,11 +16,11 @@ var diffBufferPool = sync.Pool{
 	},
 }
 
-var GetDiff = func(file string) (string, error) {
+func (g *Git) GetDiff(file string) (string, error) {
 	var builder strings.Builder
 	builder.Reset()
 
-	root, err := GetGitRoot()
+	root, err := g.GetGitRoot()
 	if err != nil {
 		return "", err
 	}
@@ -43,7 +43,7 @@ var GetDiff = func(file string) (string, error) {
 	return buf.String(), nil
 }
 
-var GetStagedCountDirectory = func() (string, error) {
+func (g *Git) GetStagedCountDirectory() (string, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--numstat")
 
 	stdout, err := cmd.StdoutPipe()
@@ -119,7 +119,7 @@ var GetStagedCountDirectory = func() (string, error) {
 	return "", fmt.Errorf("")
 }
 
-var GetStagedFiles = func() ([]string, error) {
+func (g *Git) GetStagedFiles() ([]string, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
 
 	stdout, err := cmd.StdoutPipe()

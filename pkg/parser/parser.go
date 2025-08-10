@@ -1,20 +1,19 @@
 package parser
 
 import (
-	"git-auto-commit/pkg/code"
 	"git-auto-commit/pkg/file"
 	"git-auto-commit/pkg/pkgerror"
 	"os"
 )
 
-var Parser = func(directory string) (string, error) {
+func (p *Parser) ParserIndex(directory string) (string, error) {
 	info, err := os.Stat(directory)
 	if err != nil {
 		return "", pkgerror.CreateError(pkgerror.Err_FailedToReadFile)
 	}
 
 	if !info.IsDir() {
-		return CreateAutoCommitMsg(&directory, nil, ""), nil
+		return p.CreateAutoCommitMsg(&directory, nil, ""), nil
 	}
 
 	files := file.GetFilesInDir(directory)
@@ -22,13 +21,13 @@ var Parser = func(directory string) (string, error) {
 		return "", pkgerror.CreateError(pkgerror.Err_FileNotFound)
 	}
 
-	formatted, err := code.FormattedCode(files)
+	formatted, err := p.Code.FormattedCode(files)
 	if err != nil {
 		return "", pkgerror.CreateError(err)
 	}
 
 	if formatted == "" {
-		formattedByRemote, err := code.FormattedByRemote("")
+		formattedByRemote, err := p.Code.FormattedByRemote("")
 		if err != nil {
 			return "", pkgerror.CreateError(pkgerror.Err_RemoteUnavailable)
 		}
@@ -39,7 +38,7 @@ var Parser = func(directory string) (string, error) {
 	}
 
 	if formatted == "" {
-		formattedByBranch, err := code.FormattedByBranch()
+		formattedByBranch, err := p.Code.FormattedByBranch()
 		if err != nil {
 			return "", pkgerror.CreateError(pkgerror.Err_BranchNotFound)
 		}
