@@ -3,7 +3,9 @@ package git
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"os/exec"
+	"strconv"
 	"strings"
 	"sync"
 )
@@ -41,14 +43,89 @@ var GetDiff = func(file string) (string, error) {
 	return buf.String(), nil
 }
 
+var GetStagedCountDirectory = func() (string, error) {
+	cmd := exec.Command("git", "diff", "--cached", "--numstat")
+
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return "", err
+	}
+
+	if err := cmd.Start(); err != nil {
+		return "", err
+	}
+
+	directoryChanges := make(map[string]int)
+	rootFileChanges := make(map[string]int)
+
+	scanner := bufio.NewScanner(stdout)
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Fields(line)
+		if len(fields) < 3 {
+			continue
+		}
+
+		adds, errAdds := strconv.Atoi(fields[0])
+		dels, errDels := strconv.Atoi(fields[1])
+		if errAdds != nil || errDels != nil {
+			continue
+		}
+
+		file := fields[2]
+		changes := adds + dels
+
+		lastSlash := strings.LastIndex(file, "/")
+		if lastSlash != -1 {
+			dir := file[:lastSlash]
+			directoryChanges[dir] += changes
+		} else {
+			rootFileChanges[file] += changes
+		}
+	}
+
+	if err := cmd.Wait(); err != nil {
+		return "", err
+	}
+
+	var maxDirectory string
+	var maxDirectoryChanges int
+
+	for dir, count := range directoryChanges {
+		if count > maxDirectoryChanges {
+			maxDirectoryChanges = count
+			maxDirectory = dir
+		}
+	}
+
+	var maxRootFile string
+	var maxRootChanges int
+
+	for file, count := range rootFileChanges {
+		if count > maxRootChanges {
+			maxRootChanges = count
+			maxRootFile = file
+		}
+	}
+
+	if maxRootChanges > maxDirectoryChanges {
+		return maxRootFile, nil
+	}
+
+	if maxDirectory != "" {
+		return maxDirectory, nil
+	}
+
+	return "", fmt.Errorf("")
+}
+
 var GetStagedFiles = func() ([]string, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
 
-	stdout, err := cmd.StdoutPipe() 
+	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		return nil, err
 	}
-	
 
 	if err := cmd.Start(); err != nil {
 		return nil, err

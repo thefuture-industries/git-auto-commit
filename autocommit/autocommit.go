@@ -3,25 +3,25 @@ package autocommit
 import (
 	"fmt"
 	"git-auto-commit/infra/logger"
-	"git-auto-commit/pkg"
 	"git-auto-commit/pkg/git"
+	"git-auto-commit/pkg/parser"
 )
 
 func AutoCommit() {
 	GetVersion(false)
 
-	files, err := git.GetStagedFiles()
+	directory, err := git.GetStagedCountDirectory()
 	if err != nil {
 		logger.ErrorLogger(fmt.Errorf("error getting staged files: %s", err.Error()))
 		return
 	}
 
-	if len(files) == 0 {
+	if directory == "" {
 		logger.InfoLogger("No files staged for commit.")
 		return
 	}
 
-	parserMsg, err := pkg.Parser(files)
+	parserMsg, err := parser.Parser(directory)
 	if err != nil {
 		logger.ErrorLogger(err)
 		return
