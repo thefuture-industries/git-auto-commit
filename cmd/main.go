@@ -9,24 +9,21 @@ import (
 )
 
 func main() {
-	args := os.Args[1:]
-	fmt.Println(args)
-
-	if len(args) > 1 && (args[0] == "-w" || args[0] == "--watch") {
+	if len(os.Args) > 1 && (os.Args[1] == "-w" || os.Args[1] == "--watch") {
 		path, err := git.GetGitRoot()
 		if err != nil {
 			logger.ErrorLogger(err)
 			return
 		}
 
-		if len(args) > 2 {
-			path = fmt.Sprintf("%s/%s", path, args[1])
+		if len(os.Args) > 2 {
+			path = fmt.Sprintf("%s/%s", path, os.Args[2])
 		}
 
 		autocommit.Watch(path)
-	} else if len(args) > 1 && (args[0] == "-v" || args[0] == "--version") {
+	} else if len(os.Args) > 1 && (os.Args[1] == "-v" || os.Args[1] == "--version") {
 		autocommit.GetVersion(true)
-	} else if len(args) > 1 && (args[0] == "-u" || args[0] == "--update") {
+	} else if len(os.Args) > 1 && (os.Args[1] == "-u" || os.Args[1] == "--update") {
 		autocommit.Update()
 	} else {
 		autocommit.AutoCommit()

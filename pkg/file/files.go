@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-var GetFilesInDir = func(directory string) []string {
+func GetFilesInDir(directory string) []string {
 	var files []string
 
 	filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {

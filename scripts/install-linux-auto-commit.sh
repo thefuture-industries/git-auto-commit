@@ -41,7 +41,7 @@ if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
   chmod +x "$HOOK_PATH"
   echo -e "\e[33mFile saved as $HOOK_PATH\e[0m"
 
-  git config --local alias.auto '!bash -c ./.git/hooks/auto-commit'
+  git config --local alias.auto "!bash -c './.git/hooks/auto-commit \"\$@\"' --"
 
   echo "$TAG" > "$VERSION_FILE"
 
