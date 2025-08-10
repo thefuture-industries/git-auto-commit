@@ -44,10 +44,11 @@ var GetDiff = func(file string) (string, error) {
 var GetStagedFiles = func() ([]string, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--name-only")
 
-	stdout, err := cmd.StdoutPipe()
+	stdout, err := cmd.StdoutPipe() 
 	if err != nil {
 		return nil, err
 	}
+	
 
 	if err := cmd.Start(); err != nil {
 		return nil, err
