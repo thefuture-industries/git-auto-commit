@@ -3,7 +3,6 @@ package git
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -116,7 +115,7 @@ func (g *Git) GetStagedCountDirectory() (string, error) {
 		return maxDirectory, nil
 	}
 
-	return "", fmt.Errorf("")
+	return "", nil
 }
 
 func (g *Git) GetStagedFiles() ([]string, error) {
