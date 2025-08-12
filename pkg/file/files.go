@@ -8,7 +8,7 @@ import (
 func GetFilesInDir(directory string) []string {
 	var files []string
 
-	filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
+	if err := filepath.Walk(directory, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
 		}
@@ -18,7 +18,9 @@ func GetFilesInDir(directory string) []string {
 		}
 
 		return nil
-	})
+	}); err != nil {
+		return []string{}
+	}
 
 	return files
 }

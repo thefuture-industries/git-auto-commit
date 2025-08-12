@@ -31,7 +31,7 @@ func logMessage(prefix, msg, color string) {
 
 	if logFile != nil {
 		fileMsg := fmt.Sprintf("[git auto-commit] %s\n", msg)
-		logFile.WriteString(fileMsg)
+		_, _ = logFile.WriteString(fileMsg)
 	}
 }
 
