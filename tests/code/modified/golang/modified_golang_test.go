@@ -9,11 +9,11 @@ import (
 	"testing"
 )
 
-const implementeExpectedTest string = "Implemented source code files"
+const modifieExpectedTest string = "Updated command-line tools"
 
-func TestImplementedGolang(t *testing.T) {
+func TestModifiedGolang(t *testing.T) {
 	gitOutput := `
-		A	src/main.go
+		M	cmd/main.go
 	`
 
 	code.ExecCommand = func(name string, args ...string) *exec.Cmd {
@@ -25,14 +25,14 @@ func TestImplementedGolang(t *testing.T) {
 
 	c := &code.Code{}
 
-	files := []string{"src/main.go"}
+	files := []string{"cmd/main.go"}
 	msg, err := c.FormattedCode(files)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	if !strings.EqualFold(strings.TrimSpace(msg), strings.TrimSpace(implementeExpectedTest)) {
-		t.Errorf("Expected commit message:\n%q\nGot:\n%q", implementeExpectedTest, msg)
+	if !strings.EqualFold(strings.TrimSpace(msg), strings.TrimSpace(modifieExpectedTest)) {
+		t.Errorf("Expected commit message:\n%q\nGot:%q", modifieExpectedTest, msg)
 	}
 
 	fmt.Println("Formatted commit message:", msg)

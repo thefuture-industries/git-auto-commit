@@ -1,6 +1,8 @@
 package code
 
-import "git-auto-commit/pkg/git"
+import (
+	"git-auto-commit/pkg/git"
+)
 
 type Code struct {
 	Git git.GitInterface

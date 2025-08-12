@@ -59,23 +59,23 @@ func (c *Code) FormattedCode(files []string) (string, error) {
 		return "", err
 	}
 
-	msg := build(added, modified, deleted)
-	return msg, nil
+	msg := c.build(added, modified, deleted)
+	return c.WithTag(files, msg), nil
 }
 
-func build(added, modified, deleted []string) string {
+func (c *Code) build(added, modified, deleted []string) string {
 	var parts []string
 
 	if len(added) > 0 {
-		parts = append(parts, "implemented "+summarize(added))
+		parts = append(parts, "implemented "+c.summarize(added))
 	}
 
 	if len(modified) > 0 {
-		parts = append(parts, "updated "+summarize(modified))
+		parts = append(parts, "updated "+c.summarize(modified))
 	}
 
 	if len(deleted) > 0 {
-		parts = append(parts, "removed "+summarize(deleted))
+		parts = append(parts, "removed "+c.summarize(deleted))
 	}
 
 	msg := strings.Join(parts, ", ")
@@ -86,7 +86,7 @@ func build(added, modified, deleted []string) string {
 	return msg
 }
 
-func summarize(files []string) string {
+func (c *Code) summarize(files []string) string {
 	folders := map[string]struct{}{}
 	for _, file := range files {
 		directory := strings.Split(filepath.ToSlash(file), "/")[0]

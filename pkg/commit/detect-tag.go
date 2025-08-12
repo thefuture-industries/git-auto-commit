@@ -1,4 +1,4 @@
-package parser
+package commit
 
 import (
 	"git-auto-commit/infra/constants"
@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (p *Parser) DetectTagByFile(filename *string, changed string) string {
+func DetectTagByFile(filename *string, changed string) string {
 	// check type changed
 	switch changed {
 	case constants.Ch_TypeAdd:

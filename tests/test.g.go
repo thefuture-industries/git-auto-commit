@@ -1,5 +1,9 @@
 package tests
 
+import (
+	"os/exec"
+)
+
 func (m *gitMocks) GetStagedCountDirectory() (string, error) {
 	return m.stagedDir, m.stagedErr
 }
@@ -46,4 +50,8 @@ func (m *parserMocks) CreateAutoCommitMsg(filename, msg *string, changed string)
 
 func (m *parserMocks) DetectTagByFile(filename *string, changed string) string {
 	return ""
+}
+
+func FakeExecCommand(output string) *exec.Cmd {
+	return exec.Command("echo", output)
 }

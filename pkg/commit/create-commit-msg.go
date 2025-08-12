@@ -1,12 +1,12 @@
-package parser
+package commit
 
 import (
 	"fmt"
 	"git-auto-commit/infra/constants"
 )
 
-func (p *Parser) CreateAutoCommitMsg(filename, msg *string, changed string) string {
-	ext := p.DetectTagByFile(filename, changed)
+func CreateAutoCommitMsg(filename, msg *string, changed string) string {
+	ext := DetectTagByFile(filename, changed)
 
 	msgCommit, ok := constants.Ratio_Commit[ext]
 	if ok {
