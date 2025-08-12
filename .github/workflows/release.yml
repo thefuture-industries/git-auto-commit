@@ -39,12 +39,10 @@ jobs:
 
             - name: Build auto-commit binary (macOS intel)
               run: |
-                  sudo apt-get update && sudo apt-get install upx -y
                   GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-macos-amd64 ./cmd
 
             - name: Build auto-commit binary (macOS Apple Silicon / M1, M2)
               run: |
-                  sudo apt-get update && sudo apt-get install upx -y
                   GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-macos-arm64 ./cmd
 
             - name: Set up Git
@@ -203,6 +201,14 @@ jobs:
 
                       ```bash
                       curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-linux-auto-commit.sh?raw=true | bash
+                      ```
+
+                      #### If you're on macOS
+
+                      Go to the root of the project and run the command.
+
+                      ```bash
+                      echo Y | curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-macos-auto-commit.sh?raw=true | bash
                       ```
 
                       ### Setting up
