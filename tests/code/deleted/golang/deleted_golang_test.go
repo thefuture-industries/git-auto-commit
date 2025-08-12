@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-const deleteExpectedTest string = "Removed middleware components"
+const deleteExpectedTest string = "[refactor] Removed middleware components"
 
 func TestDeletedGolang(t *testing.T) {
 	gitOutput := `

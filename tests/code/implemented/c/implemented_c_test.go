@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-const implementeExpectedTest string = "Implemented source code files"
+const implementeExpectedTest string = "[feat] Implemented source code files"
 
 func TestImplementedGolang(t *testing.T) {
 	gitOutput := `

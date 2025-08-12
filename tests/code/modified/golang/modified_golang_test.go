@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-const modifieExpectedTest string = "Updated command-line tools"
+const modifieExpectedTest string = "[fix] Updated command-line tools"
 
 func TestModifiedGolang(t *testing.T) {
 	gitOutput := `
