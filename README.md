@@ -29,6 +29,14 @@ Go to the root of the project and run the command.
 echo Y | bash <(curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-linux-auto-commit.sh?raw=true)
 ```
 
+### If you're on macOS
+
+Go to the root of the project and run the command.
+
+```bash
+echo Y | curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-macos-auto-commit.sh?raw=true | bash
+```
+
 ## Setting up
 
 ### Launch
