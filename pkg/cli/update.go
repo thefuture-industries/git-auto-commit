@@ -53,12 +53,18 @@ func (cli *CLI) Update() {
 
 	var scriptUpdate string
 	var scriptUpdateExt string
-	if runtime.GOOS == "windows" {
+
+	switch runtime.GOOS {
+	case "windows":
 		scriptUpdate = fmt.Sprintf("%s/raw/main/scripts/%s", constants.GITHUB_REPO_URL, constants.GITHUB_SCRIPT_AUTOCOMMIT_UPDATE_WIN)
 		scriptUpdateExt = ".ps1"
-	} else {
+	case "darwin":
+		scriptUpdate = fmt.Sprintf("%s/raw/main/scripts/%s", constants.GITHUB_REPO_URL, constants.GITHUB_SCRIPT_AUTOCOMMIT_UPDATE_MACOS)
+		scriptUpdateExt = ".sh"
+	default:
 		scriptUpdate = fmt.Sprintf("%s/raw/main/scripts/%s", constants.GITHUB_REPO_URL, constants.GITHUB_SCRIPT_AUTOCOMMIT_UPDATE_LINUX)
 		scriptUpdateExt = ".sh"
+
 	}
 
 	tmpFile := filepath.Join(os.TempDir(), "auto-commit-update"+scriptUpdateExt)

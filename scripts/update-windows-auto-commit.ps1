@@ -13,7 +13,7 @@ if ($proc) {
 $versionUrl = "https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
 $tag = (Invoke-RestMethod -Uri $versionUrl -UseBasicParsing).tag_name
 
-$Url = "https://github.com/thefuture-industries/git-auto-commit/releases/download/$tag/auto-commit-win"
+$Url = "https://github.com/thefuture-industries/git-auto-commit/releases/download/$tag/auto-commit-windows-amd64"
 
 $HookName = "auto-commit"
 $hookPath = Join-Path -Path ".git/hooks" -ChildPath $HookName

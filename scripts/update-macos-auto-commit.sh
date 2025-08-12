@@ -18,13 +18,14 @@ fi
 VERSION_URL="https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
 TAG=$(curl -s "$VERSION_URL" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 
+OS="darwin"
 ARCH=$(uname -m)
 
 case "$ARCH" in
   x86_64)
     ARCH="amd64"
     ;;
-  aarch64|arm64)
+  arm64)
     ARCH="arm64"
     ;;
   *)
@@ -33,7 +34,7 @@ case "$ARCH" in
     ;;
 esac
 
-URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/${HOOK_NAME}-linux-${ARCH}"
+URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/${HOOK_NAME}-macos-${ARCH}"
 
 if [ -f "$VERSION_FILE" ]; then
   CURRENT_TAG=$(cat "$VERSION_FILE" | tr -d ' \n\r')

@@ -225,12 +225,14 @@ jobs:
 
                       [©thefuture-industries](https://github.com/thefuture-industries)
                   files: |
-                      ./bin/auto-commit
-                      ./bin/auto-commit-win
-                      ./scripts/install-linux-auto-commit.sh
+                      ./bin/auto-commit-windows-amd64
+                      ./bin/auto-commit-linux-amd64
+                      ./bin/auto-commit-linux-arm64
+                      ./bin/auto-commit-macos-amd64
+                      ./bin/auto-commit-macos-arm64
                       ./scripts/install-windows-auto-commit.ps1
-                      ./scripts/update-windows-auto-commit.ps1
-                      ./scripts/update-linux-auto-commit.sh
+                      ./scripts/install-linux-auto-commit.sh
+                      ./scripts/install-macos-auto-commit.sh
 
             - name: Create new branch for next version
               run: |
