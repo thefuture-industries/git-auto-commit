@@ -6,8 +6,7 @@ Set-Location $gitRoot
 
 $proc = Get-Process "auto-commit" -ErrorAction SilentlyContinue
 if ($proc) {
-    $proc | Stop-Process -Force
-    Start-Sleep -Seconds 2
+    try { $proc | Stop-Process -Force -ErrorAction SilentlyContinue } catch {}
 }
 
 $versionUrl = "https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
@@ -67,4 +66,4 @@ Set-Content -Path $versionFile -Value $tag
 git config --local alias.auto '!./.git/hooks/auto-commit'
 
 Write-Host "successful upgrade to version $tag"
-[Environment]::Exit(0)
+return

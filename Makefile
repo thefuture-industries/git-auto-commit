@@ -22,10 +22,14 @@ check: fmt lint test
 	
 build:
 	@echo "Running build..."
+
+	@find . -type f -name "*.sh" -exec sed -i 's/\r$$//' {} \;
 	@go build -o $(BIN) ./cmd
 
 buildrelease:
 	@echo "Running release build (windows, linux)..."
+
+	@find . -type f -name "*.sh" -exec sed -i 's/\r$$//' {} \;
 
 	# windows
 	@GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-windows-amd64 ./cmd
@@ -47,6 +51,9 @@ buildrelease:
 
 buildrelease-update:
 	@echo "Running release build update..."
+	
+	@find . -type f -name "*.sh" -exec sed -i 's/\r$$//' {} \;
+
 	@go build -ldflags="-s -w" -trimpath -o $(BIN).update ./cmd
 	$(UPX) --best --lzma $(BIN).update || true
 

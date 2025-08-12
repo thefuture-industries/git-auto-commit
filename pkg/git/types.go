@@ -7,7 +7,7 @@ type GitInterface interface {
 	GetDiff(file string) (string, error)
 	GetStagedCountDirectory() (string, error)
 	GetStagedFiles() ([]string, error)
-	
+
 	// commit.go
 	Commit(commitMsg string) error
 
@@ -20,7 +20,6 @@ type GitInterface interface {
 	GetOwnerRepository() (string, string, error)
 	GetIssueData(owner, repo, issue, token string) (string, uint32, error)
 }
-
 
 type GithubIssue struct {
 	Title  string `json:"title"`
