@@ -17,7 +17,23 @@ fi
 
 VERSION_URL="https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
 TAG=$(curl -s "$VERSION_URL" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
-URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/auto-commit"
+
+ARCH=$(uname -m)
+
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+    ;;
+  aarch64|arm64)
+    ARCH="arm64"
+    ;;
+  *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
+esac
+
+URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/${HOOK_NAME}-linux-${ARCH}"
 
 if [ -f "$VERSION_FILE" ]; then
   CURRENT_TAG=$(cat "$VERSION_FILE" | tr -d ' \n\r')
@@ -61,5 +77,5 @@ chmod +x "$HOOK_PATH"
 
 echo "$TAG" > "$VERSION_FILE"
 
-git config --local alias.auto '!bash -c ./.git/hooks/auto-commit'
+git config --local alias.auto "!bash -c './.git/hooks/auto-commit \"\$@\"' --"
 echo "successful upgrade to version $TAG"

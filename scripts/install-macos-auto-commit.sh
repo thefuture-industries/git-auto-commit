@@ -1,0 +1,74 @@
+#!/bin/bash
+
+set -e
+
+HOME="$(git rev-parse --show-toplevel)"
+cd "$HOME"
+
+echo ""
+cat <<'EOF'
+        _ _                 _                                            _ _
+   __ _(_) |_    __ _ _   _| |_ ___         ___ ___  _ __ ___  _ __ ___ (_) |_
+  / _` | | __|  / _` | | | |   __/ _ \ _____ / __/ _ \| '_ ` _ \| '_ ` _ \| | __|
+ | (_| | | |_  | (_| | |_| | || (_) |_____| (_| (_) | | | | | | | | | | | | |_
+  \__, |_|\__|  \__,_|\__,_|\__\___/       \___\___/|_| |_| |_|_| |_| |_|_|\__|
+  |___/
+EOF
+echo ""
+
+echo -e "\e[33mGit Auto-Commit is an extension for the Git version control system designed to automatically generate meaningful and context-sensitive commit messages based on changes made to the codebase. The tool simplifies developers' workflows by allowing them to focus on the content of edits rather than on the formulation of descriptions for commits.\e[0m"
+
+HOOKS_DIR=".git/hooks"
+HOOK_NAME="auto-commit"
+HOOK_PATH="$HOOKS_DIR/$HOOK_NAME"
+
+VERSION_URL="https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
+TAG=$(curl -s "$VERSION_URL" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+OS="darwin"
+ARCH=$(uname -m)
+
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+    ;;
+  arm64)
+    ARCH="arm64"
+    ;;
+  *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
+esac
+
+URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/${HOOK_NAME}-macos-$ARCH"
+VERSION_FILE="$HOOKS_DIR/auto-commit.version.txt"
+
+if [ ! -d .git ]; then
+  echo "[!] There is no .git. Run it in the root of the Git repository."
+  exit 1
+fi
+
+read -p "Should I install git auto-commit in the project? (Y/N) " answer
+
+if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
+  echo -e "\e[32mInstalling $URL...\e[0m"
+  curl -L "$URL" -o "$HOOK_PATH"
+  chmod +x "$HOOK_PATH"
+  echo -e "\e[33mFile saved as $HOOK_PATH\e[0m"
+
+  git config --local alias.auto "!bash -c './.git/hooks/auto-commit \"\$@\"' --"
+
+  echo "$TAG" > "$VERSION_FILE"
+
+  echo -e "\e[32mSuccessful installation version $TAG and alias set for auto-commit.\e[0m"
+  echo ""
+  echo -e "\e[33mMore details: https://github.com/thefuture-industries/git-auto-commit\e[0m"
+  echo -e "\e[33mNow you can run: git auto\e[0m"
+elif [[ "$answer" == "N" || "$answer" == "n" ]]; then
+  echo -e "\e[33mSkipping installation.\e[0m"
+  exit 0
+else
+  echo -e "\e[31mInvalid input. Please enter Y or N.\e[0m"
+  exit 1
+fi

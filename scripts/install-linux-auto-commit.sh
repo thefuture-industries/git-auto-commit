@@ -25,7 +25,22 @@ HOOK_PATH="$HOOKS_DIR/$BINARY_NAME"
 VERSION_URL="https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
 TAG=$(curl -s "$VERSION_URL" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 
-URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/auto-commit"
+ARCH=$(uname -m)
+
+case "$ARCH" in
+  x86_64)
+    ARCH="amd64"
+    ;;
+  aarch64|arm64)
+    ARCH="arm64"
+    ;;
+  *)
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+    ;;
+esac
+
+URL="https://github.com/thefuture-industries/git-auto-commit/releases/download/$TAG/${BINARY_NAME}-linux-${ARCH}"
 VERSION_FILE="$HOOKS_DIR/auto-commit.version.txt"
 
 if [ ! -d .git ]; then
@@ -41,7 +56,7 @@ if [[ "$answer" == "Y" || "$answer" == "y" ]]; then
   chmod +x "$HOOK_PATH"
   echo -e "\e[33mFile saved as $HOOK_PATH\e[0m"
 
-  git config --local alias.auto '!bash -c ./.git/hooks/auto-commit'
+  git config --local alias.auto "!bash -c './.git/hooks/auto-commit \"\$@\"' --"
 
   echo "$TAG" > "$VERSION_FILE"
 

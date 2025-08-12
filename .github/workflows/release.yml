@@ -20,16 +20,32 @@ jobs:
               with:
                   go-version: '1.23.0'
 
-            - name: Build auto-commit binary (Windows)
+            - name: Build auto-commit binary (windows adm64)
               run: |
-                  GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o ./bin/auto-commit-win .
-                  upx --best --lzma ./bin/auto-commit-win
+                  GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-windows-amd64 ./cmd
+                  upx --best --lzma bin/auto-commit-windows-amd64 || true
 
-            - name: Build auto-commit binary (Linux)
+            - name: Build auto-commit binary (linux adm64)
               run: |
                   sudo apt-get update && sudo apt-get install upx -y
-                  go build -ldflags="-s -w" -trimpath -o ./bin/auto-commit .
-                  upx --best --lzma ./bin/auto-commit
+                  GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-linux-amd64 ./cmd
+                  upx --best --lzma bin/auto-commit-linux-amd64 || true
+
+            - name: Build auto-commit binary (linux arm64)
+              run: |
+                  sudo apt-get update && sudo apt-get install upx -y
+                  GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-linux-arm64 ./cmd
+                  upx --best --lzma bin/auto-commit-linux-arm64 || true
+
+            - name: Build auto-commit binary (macOS intel)
+              run: |
+                  sudo apt-get update && sudo apt-get install upx -y
+                  GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-macos-amd64 ./cmd
+
+            - name: Build auto-commit binary (macOS Apple Silicon / M1, M2)
+              run: |
+                  sudo apt-get update && sudo apt-get install upx -y
+                  GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-macos-arm64 ./cmd
 
             - name: Set up Git
               run: |
@@ -209,12 +225,14 @@ jobs:
 
                       [©thefuture-industries](https://github.com/thefuture-industries)
                   files: |
-                      ./bin/auto-commit
-                      ./bin/auto-commit-win
-                      ./scripts/install-linux-auto-commit.sh
+                      ./bin/auto-commit-windows-amd64
+                      ./bin/auto-commit-linux-amd64
+                      ./bin/auto-commit-linux-arm64
+                      ./bin/auto-commit-macos-amd64
+                      ./bin/auto-commit-macos-arm64
                       ./scripts/install-windows-auto-commit.ps1
-                      ./scripts/update-windows-auto-commit.ps1
-                      ./scripts/update-linux-auto-commit.sh
+                      ./scripts/install-linux-auto-commit.sh
+                      ./scripts/install-macos-auto-commit.sh
 
             - name: Create new branch for next version
               run: |
