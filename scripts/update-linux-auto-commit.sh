@@ -11,8 +11,7 @@ HOOK_PATH="$HOOKS_DIR/$HOOK_NAME"
 VERSION_FILE="$HOOKS_DIR/auto-commit.version.txt"
 
 if pgrep -f "$HOOK_PATH" > /dev/null; then
-  pkill -f "$HOOK_PATH"
-  sleep 2
+  pkill -f "$HOOK_PATH" || true
 fi
 
 VERSION_URL="https://api.github.com/repos/thefuture-industries/git-auto-commit/releases/latest"
@@ -79,3 +78,4 @@ echo "$TAG" > "$VERSION_FILE"
 
 git config --local alias.auto "!bash -c './.git/hooks/auto-commit \"\$@\"' --"
 echo "successful upgrade to version $TAG"
+exit 0
