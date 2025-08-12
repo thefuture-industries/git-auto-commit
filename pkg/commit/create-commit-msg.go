@@ -5,8 +5,8 @@ import (
 	"git-auto-commit/infra/constants"
 )
 
-func CreateAutoCommitMsg(filename, msg *string, changed string) string {
-	ext := DetectTagByFile(filename, changed)
+func CreateAutoCommitMsg(filename, msg *string, tag string) string {
+	ext := DetectTagByFile(filename, tag)
 
 	msgCommit, ok := constants.Ratio_Commit[ext]
 	if ok {

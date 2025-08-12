@@ -7,17 +7,20 @@ import (
 	"strings"
 )
 
-func DetectTagByFile(filename *string, changed string) string {
+func DetectTagByFile(filename *string, tag string) string {
 	// check type changed
-	switch changed {
-	case constants.Ch_TypeAdd:
+	switch tag {
+	case constants.NameStatus_Added:
 		return constants.Type_CommitFeat
 
-	case constants.Ch_TypeDelete:
+	case constants.NameStatus_Deleted:
 		return constants.Type_CommitRefactor
 
-	case constants.Ch_TypeChanged:
+	case constants.NameStatus_Modified:
 		return constants.Type_CommitFix
+
+	case constants.NameStatus_Renamed:
+		return constants.Type_CommitRefactor
 
 	}
 

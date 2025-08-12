@@ -60,7 +60,7 @@ func (c *Code) FormattedCode(files []string) (string, error) {
 	}
 
 	msg := c.build(added, modified, deleted)
-	return c.WithTag(files, msg), nil
+	return c.WithTag(files, msg, added, modified, deleted), nil
 }
 
 func (c *Code) build(added, modified, deleted []string) string {
