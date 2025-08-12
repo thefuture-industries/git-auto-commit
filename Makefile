@@ -28,12 +28,22 @@ buildrelease:
 	@echo "Running release build (windows, linux)..."
 
 	# windows
-	@GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit ./cmd
-	upx.exe --best --lzma bin/auto-commit || true
+	@GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-windows-amd64 ./cmd
+	upx.exe --best --lzma bin/auto-commit-windows-amd64 || true
 
-	# linux
-	@GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-linux ./cmd
-	upx --best --lzma bin/auto-commit-linux || true
+	# linux amd64
+	GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-linux-amd64 ./cmd
+	upx --best --lzma bin/auto-commit-linux-amd64 || true
+
+	# linux arm64
+	GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-linux-arm64 ./cmd
+	upx --best --lzma bin/auto-commit-linux-arm64 || true
+
+	# macOS (Intel)
+	@GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-macos-amd64 ./cmd
+
+	# macOS (Apple Silicon / M1, M2)
+	@GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -trimpath -o bin/auto-commit-macos-arm64 ./cmd
 
 buildrelease-update:
 	@echo "Running release build update..."

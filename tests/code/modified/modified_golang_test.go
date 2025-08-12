@@ -2,7 +2,6 @@ package golang
 
 import (
 	"fmt"
-	"git-auto-commit/infra/constants"
 	"git-auto-commit/pkg/code"
 	"git-auto-commit/tests"
 	"os/exec"
@@ -10,9 +9,11 @@ import (
 	"testing"
 )
 
-func TestImplementedStyleGolang(t *testing.T) {
+const modifieExpectedTest string = "[fix] Updated command-line tools"
+
+func TestModified(t *testing.T) {
 	gitOutput := `
-		A	styles/components.css
+		M	cmd/main.mdf
 	`
 
 	code.ExecCommand = func(name string, args ...string) *exec.Cmd {
@@ -24,15 +25,15 @@ func TestImplementedStyleGolang(t *testing.T) {
 
 	c := &code.Code{}
 
-	files := []string{"styles/components.css"}
+	files := []string{"cmd/main.mdf"}
 	msg, err := c.FormattedCode(files)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
 	}
 
-	if !strings.Contains(msg, constants.Type_CommitStyle) {
-		t.Errorf("Expected commit message including:%q Got: %q", constants.Type_CommitStyle, msg)
+	if !strings.EqualFold(strings.TrimSpace(msg), strings.TrimSpace(modifieExpectedTest)) {
+		t.Errorf("Expected commit message:\n%q\nGot:%q", modifieExpectedTest, msg)
 	}
 
-	fmt.Println("Formatted commit message:", msg)
+	fmt.Println("==> Formatted commit message:", msg)
 }

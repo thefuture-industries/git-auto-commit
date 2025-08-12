@@ -11,9 +11,9 @@ import (
 
 const deleteExpectedTest string = "[refactor] Removed middleware components"
 
-func TestDeletedGolang(t *testing.T) {
+func TestDeleted(t *testing.T) {
 	gitOutput := `
-		D	middleware/rate.go
+		D	middleware/rate.del
 	`
 
 	code.ExecCommand = func(name string, args ...string) *exec.Cmd {
@@ -25,7 +25,7 @@ func TestDeletedGolang(t *testing.T) {
 
 	c := &code.Code{}
 
-	files := []string{"middleware/rate.go"}
+	files := []string{"middleware/rate.del"}
 	msg, err := c.FormattedCode(files)
 	if err != nil {
 		t.Fatalf("Unexpected error: %v", err)
@@ -35,5 +35,5 @@ func TestDeletedGolang(t *testing.T) {
 		t.Errorf("Expected commit message:\n%q\nGot:%q", deleteExpectedTest, msg)
 	}
 
-	fmt.Println("Formatted commit message:", msg)
+	fmt.Println("==>  Formatted commit message:", msg)
 }

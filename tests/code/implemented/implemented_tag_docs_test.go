@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestImplementedDocGolang(t *testing.T) {
+func TestImplementedTagDoc(t *testing.T) {
 	gitOutput := `
 		A	README.md
 	`
@@ -34,17 +34,17 @@ func TestImplementedDocGolang(t *testing.T) {
 		t.Errorf("Expected commit message including:%q Got: %q", constants.Type_CommitDocs, msg)
 	}
 
-	fmt.Println("Formatted commit message:", msg)
+	fmt.Println("==> Formatted commit message:", msg)
 }
 
-func TestImplementedDocsGolang(t *testing.T) {
+func TestImplementedTagDocs(t *testing.T) {
 	gitNameStatusOutput := `
 		A       docs/code/readme.md
 		M       docs/code/download.txt
 		M       main/docs/security.md
-		D       pkg/create-commit-msg.c
-		A       pkg/detect-tag.c
-		A       pkg/parser/types.c
+		D       pkg/create-commit-msg.impl
+		A       pkg/detect-tag.impl
+		A       pkg/parser/types.impl
 	`
 
 	code.ExecCommand = func(name string, args ...string) *exec.Cmd {
@@ -66,5 +66,5 @@ func TestImplementedDocsGolang(t *testing.T) {
 		t.Errorf("Expected commit message including:%q Got: %q", constants.Type_CommitDocs, msg)
 	}
 
-	fmt.Println("Formatted commit message:", msg)
+	fmt.Println("==> Formatted commit message:", msg)
 }
