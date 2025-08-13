@@ -48,6 +48,9 @@ func (cli *CLI) Watch(path string) {
 		os.Exit(0)
 	}()
 
+	var lastChange time.Time
+	var commitScheduled bool
+
 	for {
 		select {
 		case event := <-watcher.Events:
@@ -62,6 +65,14 @@ func (cli *CLI) Watch(path string) {
 					continue
 				}
 
+				lastChange = time.Now()
+				commitScheduled = true
+			}
+		case err := <-watcher.Errors:
+			logger.ErrorLogger(err)
+
+		default:
+			if commitScheduled && time.Since(lastChange) >= time.Minute {
 				if err := exec.Command("git", "add", ".").Run(); err != nil {
 					logger.ErrorLogger(err)
 					return
@@ -84,14 +95,15 @@ func (cli *CLI) Watch(path string) {
 					return
 				}
 
-				if uint16(len(parser)) >= constants.MAX_COMMIT_LENGTH_WATCHER {
-					if err := cli.Git.Commit(parser); err != nil {
-						logger.ErrorLogger(err)
-					}
+				if err := cli.Git.Commit(parser); err != nil {
+					logger.ErrorLogger(err)
 				}
+
+				commitScheduled = false
 			}
-		case err := <-watcher.Errors:
-			logger.ErrorLogger(err)
+
+			time.Sleep(650 * time.Millisecond)
+
 		}
 
 		time.Sleep(constants.COMMIT_TIME)

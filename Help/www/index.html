@@ -1,182 +1,143 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Git Auto-Commit - The Future Industries</title>
-		<meta
-			name="description"
-			content="Git Auto-Commit is a tool for automatic, context-sensitive commit message generation. Simplify your workflow and focus on coding, not commit messages."
-		/>
-		<meta
-			name="keywords"
-			content="git, auto-commit, commits, automation, devtools, ci/cd"
-		/>
-		<meta name="author" content="The Future Industries" />
-		<meta
-			property="og:title"
-			content="Git Auto-Commit - Automatic Commit Generation Tool"
-		/>
-		<meta
-			property="og:description"
-			content="Generate commits automatically with meaningful messages based on your changes."
-		/>
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content="https://your-domain.com/" />
-		<meta name="robots" content="index, follow" />
-		<meta name="theme-color" content="#0d1117" />
-		<meta name="format-detection" content="telephone=no" />
-		<meta http-equiv="X-Frame-Options" content="DENY" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<link rel="canonical" href="https://your-domain.com/" />
-		<style>
-			body {
-				margin: 0;
-				padding: 0;
-				background: #0d1117;
-				color: #c9d1d9;
-				font-family: 'Inter', sans-serif;
-				line-height: 1.6;
-				scrollbar-width: none; /* Firefox */
-				-ms-overflow-style: none;
-			}
-			body::-webkit-scrollbar {
-				display: none; /* Chrome, Safari, Opera */
-			}
-			.container {
-				max-width: 1000px;
-				margin: 0 auto;
-				padding: 4rem 2rem;
-			}
-			h1,
-			h2 {
-				color: #58a6ff;
-				margin-top: 2rem;
-				margin-bottom: 1rem;
-			}
-			p {
-				margin-bottom: 1.5rem;
-				font-size: 1rem;
-			}
-			pre {
-				background: #17243b; /* голубой фон для скриптов */
-				color: #e6edf3;
-				padding: 1rem;
-				border-radius: 0.5rem;
-				overflow-x: auto;
-				font-family: 'Fira Code', monospace;
-				margin-bottom: 2rem;
-			}
-			.highlight {
-				color: #79c0ff;
-				font-weight: bold;
-			}
-			footer {
-				margin-top: 4rem;
-				font-size: 0.9rem;
-				color: #8b949e;
-				text-align: center;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-			<h1>Git auto-commit - automatic commit generation tool</h1>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Git Auto-Commit - The Future Industries</title>
+    <meta name="description" content="Git Auto-Commit is a tool for automatic, context-sensitive commit message generation. Simplify your workflow and focus on coding, not commit messages." />
+    <meta name="keywords" content="git, auto-commit, commits, automation, devtools, ci/cd" />
+    <meta name="author" content="The Future Industries" />
+    <meta property="og:title" content="Git Auto-Commit - Automatic Commit Generation Tool" />
+    <meta property="og:description" content="Generate commits automatically with meaningful messages based on your changes." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://git-auto-commit.vercel.app/" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="https://git-auto-commit.vercel.app/" />
 
-			<p>
-				Git Auto-Commit is an extension for the Git version control
-				system designed to automatically generate meaningful and
-				context-sensitive commit messages based on changes made to the
-				codebase. The tool simplifies developers' workflows by allowing
-				them to focus on the content of edits rather than on the
-				formulation of descriptions for commits.
-			</p>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+            color: #333333;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+        h1, h2, h3 {
+            color: #1a73e8;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        pre {
+            background: #f5f7fa;
+            color: #0d1117;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            border: 1px solid #e0e4e9;
+            margin-bottom: 1.5rem;
+        }
+        code {
+            background: #eef2f6;
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+        }
+        ul {
+            padding-left: 1.5rem;
+        }
+        .highlight {
+            color: #1a73e8;
+            font-weight: bold;
+        }
+        footer {
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #777;
+            text-align: center;
+        }
+        .command-title {
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #e0e4e9;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Git Auto-Commit — Automatic Commit Generation Tool</h1>
 
-			<p>
-				The development is conducted as an open source project and is
-				distributed under the MIT license (or other compatible
-				licensing, depending on the implementation). Git Auto-Commit can
-				be integrated into CI/CD pipelines, hook scripts, or used
-				manually via the command line.
-			</p>
+        <p>
+            <strong>Git Auto-Commit</strong> is an extension for Git designed to automatically generate meaningful, context-aware commit messages based on your code changes.
+            This tool streamlines the development workflow by letting you focus on writing code instead of manually crafting commit messages.
+        </p>
 
-			<h2>Main features:</h2>
-			<ul>
-				<li>
-					Analysis of changes in the work tree and automatic
-					generation of commit messages in natural language.
-				</li>
-				<li>
-					Integration with Git via the
-					<code>git auto</code> sub-command or configuration of user
-					aliases.
-				</li>
-				<li>
-					Support for templates and configurations for customizing
-					message structure to project standards (Conventional
-					Commits, Semantic Commit Messages, etc.).
-				</li>
-				<li>
-					Scalability: works both in small projects and in large
-					monorepositories.
-				</li>
-			</ul>
+        <p>
+            Developed as an open-source project under the MIT license (or compatible licensing), Git Auto-Commit can be integrated into CI/CD pipelines, hook scripts, or used manually via the command line.
+        </p>
 
-			<h2>Install</h2>
-			<p>
-				<span class="highlight">If you're on Windows</span><br />
-				Go to the root of the project and run the command:
-			</p>
-			<pre>
-iex ((New-Object Net.WebClient).DownloadString('https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-windows-auto-commit.ps1?raw=true'))</pre
-			>
+        <h2>Main Features</h2>
+        <ul>
+            <li>Analyzes changes and generates commit messages in natural language.</li>
+            <li>Integrates with Git via the <code>git auto</code> sub-command or custom aliases.</li>
+            <li>Supports templates and configurations (e.g., Conventional Commits, Semantic Commit Messages).</li>
+            <li>Scales from small projects to large monorepositories.</li>
+        </ul>
 
-			<p>
-				<span class="highlight">If you're on Linux</span><br />
-				Go to the root of the project and run the command:
-			</p>
-			<pre>
-echo Y | bash &lt;(curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-linux-auto-commit.sh?raw=true)</pre
-			>
+        <h2>Install</h2>
 
-			<p>
-				<span class="highlight">If you're on MacOS</span><br />
-				Go to the root of the project and run the command:
-			</p>
-			<pre>
-echo Y | curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-macos-auto-commit.sh?raw=true | bash</pre
-			>
+        <p class="highlight">Windows</p>
+        <pre>iex ((New-Object Net.WebClient).DownloadString('https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-windows-auto-commit.ps1?raw=true'))</pre>
 
-			<h2>Setting up</h2>
-			<h3>Launch</h3>
-			<p>
-				Everything is ready now, after making changes to the code, just
-				run:
-			</p>
+        <p class="highlight">Linux</p>
+        <pre>echo Y | bash &lt;(curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-linux-auto-commit.sh?raw=true)</pre>
 
-			<p>1 Option</p>
-			<pre>
+        <p class="highlight">macOS</p>
+        <pre>echo Y | curl -fsSL https://github.com/thefuture-industries/git-auto-commit/blob/main/scripts/install-macos-auto-commit.sh?raw=true | bash</pre>
+
+        <h2>Setting Up</h2>
+        <h3>Launch</h3>
+        <p>Once installed, you can start committing automatically:</p>
+
+        <div class="command-title">Option 1 — Manual Commit</div>
+        <pre>
 git add .
 git auto
-git push</pre
-			>
+git push
+        </pre>
 
-			<p>2 Commands</p>
-			<pre>
-git auto -w   # Commit observer: you don't have to think and write anymore, `git auto -w` will figure it out and commit for you!
-git auto -v   # Viewing the current version of auto-commit
-git auto -u   # Upgrade to the new auto-commit version</pre
-			>
+        <div class="command-title">Option 2 — Git Auto Commands</div>
+        <pre>
+git auto -w   # Watch mode: automatically commits when changes are detected
+git auto -v   # View current auto-commit version
+git auto -u   # Update to the latest auto-commit version
+        </pre>
 
-			<footer>
-				Distributed under the MIT License • &copy; 2025 The Future
-				Industries
-			</footer>
-		</div>
+        <hr>
 
-		<script>
-			// Тебе пока не нужен JS для функционала, но оставляю базовую структуру:
-			console.log('Git Auto-Commit page loaded!');
-		</script>
-	</body>
+        <footer>
+            Distributed under the MIT License • &copy; 2025 The Future Industries
+        </footer>
+    </div>
+
+    <script>
+        console.log('Git Auto-Commit page loaded!');
+    </script>
+</body>
 </html>
