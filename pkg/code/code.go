@@ -1,7 +1,6 @@
 package code
 
 import (
-	"bufio"
 	"git-auto-commit/infra/constants"
 	"os/exec"
 	"path/filepath"
@@ -12,32 +11,32 @@ var ExecCommand = exec.Command
 
 func (c *Code) FormattedCode(files []string) (string, error) {
 	args := append([]string{"diff", "--cached", "--name-status"}, files...)
-	cmd := ExecCommand("git", args...)
 
-	stdout, err := cmd.StdoutPipe()
+	stdout, err := ExecCommand("git", args...).Output()
 	if err != nil {
-		return "", err
-	}
-
-	if err := cmd.Start(); err != nil {
 		return "", err
 	}
 
 	var added, modified, deleted []string
 
-	scanner := bufio.NewScanner(stdout)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
+	lines := strings.Split(strings.TrimSpace(string(stdout)), "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
 
-		parts := strings.Fields(line)
-		if len(parts) != 2 {
-			continue
+		sep := strings.IndexByte(line, '\t')
+		if sep == -1 {
+			sep = strings.IndexByte(line, ' ')
+			if sep == -1 {
+				continue
+			}
 		}
 
-		status, file := parts[0], parts[1]
+		status := strings.TrimSpace(line[:sep])
+		file := strings.TrimSpace(line[sep+1:])
+
 		switch status {
 		case constants.NameStatus_Added:
 			added = append(added, file)
@@ -49,14 +48,6 @@ func (c *Code) FormattedCode(files []string) (string, error) {
 			deleted = append(deleted, file)
 
 		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		return "", err
-	}
-
-	if err := cmd.Wait(); err != nil {
-		return "", err
 	}
 
 	msg := c.build(added, modified, deleted)
@@ -87,33 +78,44 @@ func (c *Code) build(added, modified, deleted []string) string {
 }
 
 func (c *Code) summarize(files []string) string {
-	folders := map[string]struct{}{}
+	seen := make(map[string]struct{}, len(files))
+	names := make([]string, 0, len(files))
+
 	for _, file := range files {
-		directory := strings.Split(filepath.ToSlash(file), "/")[0]
+		var dir string
 
-		if directory == "." || directory == "" {
-			directory = strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
-		}
-
-		folders[directory] = struct{}{}
-	}
-
-	names := make([]string, 0, len(folders))
-	for name := range folders {
-		if desc, ok := constants.EXPANDING_NOTATION_FOLDERS[name]; ok {
-			names = append(names, desc)
+		if slash := strings.IndexByte(file, '/'); slash != -1 {
+			dir = file[:slash]
 		} else {
-			names = append(names, name)
+			dir = strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
+		}
+
+		if dir == "." || dir == "" {
+			dir = strings.TrimSuffix(filepath.Base(file), filepath.Ext(file))
+		}
+
+		if _, exists := seen[dir]; !exists {
+			seen[dir] = struct{}{}
+			if desc, ok := constants.EXPANDING_NOTATION_FOLDERS[dir]; ok {
+				names = append(names, desc)
+			} else {
+				names = append(names, dir)
+			}
 		}
 	}
 
-	if len(names) == 1 {
+	switch len(names) {
+	case 0:
+		return ""
+
+	case 1:
 		return names[0]
-	}
 
-	if len(names) == 2 {
+	case 2:
 		return names[0] + " and " + names[1]
-	}
 
-	return strings.Join(names[:len(names)-1], ", ") + " and " + names[len(names)-1]
+	default:
+		return strings.Join(names[:len(names)-1], ", ") + " and " + names[len(names)-1]
+
+	}
 }
