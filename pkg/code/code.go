@@ -21,6 +21,7 @@ func (c *Code) FormattedCode(files []string) (string, error) {
 
 	lines := strings.Split(strings.TrimSpace(string(stdout)), "\n")
 	for _, line := range lines {
+		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
@@ -32,9 +33,9 @@ func (c *Code) FormattedCode(files []string) (string, error) {
 				continue
 			}
 		}
-
-		status := line[:sep]
-		file := line[sep+1:]
+		
+		status := strings.TrimSpace(line[:sep])
+		file := strings.TrimSpace(line[sep+1:])
 
 		switch status {
 		case constants.NameStatus_Added:
@@ -82,7 +83,7 @@ func (c *Code) summarize(files []string) string {
 
 	for _, file := range files {
 		var dir string
-		
+
 		if slash := strings.IndexByte(file, '/'); slash != -1 {
 			dir = file[:slash]
 		} else {
@@ -109,7 +110,7 @@ func (c *Code) summarize(files []string) string {
 
 	case 1:
 		return names[0]
-		
+
 	case 2:
 		return names[0] + " and " + names[1]
 
