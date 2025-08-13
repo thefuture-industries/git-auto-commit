@@ -33,7 +33,7 @@ func (c *Code) FormattedCode(files []string) (string, error) {
 				continue
 			}
 		}
-		
+
 		status := strings.TrimSpace(line[:sep])
 		file := strings.TrimSpace(line[sep+1:])
 
