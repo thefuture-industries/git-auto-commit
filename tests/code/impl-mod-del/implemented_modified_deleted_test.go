@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-const implementeModifieDeleteExpectedTest string = "[fix] Implemented source code files, updated public reusable packages, removed error"
+const implementeModifieDeleteExpectedTest string = "[feat] Implemented source code files, updated public reusable packages, removed error"
 
 func TestImplementedModifiedDeleted(t *testing.T) {
 	gitOutput := `
